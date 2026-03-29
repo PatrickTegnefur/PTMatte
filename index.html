@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PT Matematik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  portal.css  —  PT Matematik · Alfred Dalinskolan
+ *  Patrick Tegnefur · Förstelärare & IT-pedagog
+ *
+ *  Importeras av alla sidor på portalen via:
+ *    <link rel="stylesheet" href="[relativ sökväg]/portal.css">
+ *
+ *  STRUKTUR:
+ *   1. Google Fonts-import
+ *   2. Globala tokens (:root)
+ *   3. Teman  — AD Ljust / AD Mörkt / PT Ljust / PT Mörkt
+ *   4. Reset & bas
+ *   5. Header  (portal-header, portal-back, portal-crumb, tema-toggle)
+ *   6. Modul-navigation  (module-nav, mnav-btn)
+ *   7. Gemensamma UI-komponenter
+ *      — Knappar (tab-btn, start-btn, check-btn m.fl.)
+ *      — Bråkvisning (fv)
+ *      — Förkunskaps-quiz (mq-*)
+ *      — Framstegsindikatorer (mq-pip, step-dot)
+ *      — Färg-badges (pill-video, pill-sim m.fl.)
+ *   8. Responsiv  (max-width: 600px)
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. TYPSNITT ──────────────────────────────────────────────────── */
+/* ── 2. GLOBALA TOKENS ────────────────────────────────────────────── */
+:root {
+  --radius:  14px;
+  --trans:   0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. TEMAN
+   Varje tema definierar ALLA variabler fullständigt.
+   Åk 7 = Blå · Åk 8 = Grön · Åk 9 = Röd/Rosa
+
+   AD-färger:  Blågrön #00A19A · Guld #FBBC33 · Rosa #EC6095
+               Grön #A2C617   · Gul #FFDE14
+   PT-färger:  Blå #306BF0 · Röd #F03048 · Orange #FF8837
+               Grön #39C762 · Klarblå #7179E8
+   PT-gradient: #66C7C2 → #F4A261 → #EC6095
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── AD LJUST ─────────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #006a64;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  /* Kolumn-gradienter */
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  /* Badges */
+  --b7: #d8eaff; --b7t: #1040a0;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── AD MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #0a2048; --b7t: #7ab0ff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* ── PT LJUST ─────────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #306BF0;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #dce8fe; --b7t: #1a4ecc;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── PT MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #16204a; --b7t: #80aaff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* PT Mörkt — gradient-accenter på aktiva element */
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .check-btn-main,
+[data-theme="pt-dark"] .check-main,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .mq-next-btn,
+[data-theme="pt-dark"] .ex-next-big,
+[data-theme="pt-dark"] .snav-btn.primary,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .row-check,
+[data-theme="pt-dark"] .level-btn.active {
+  background: #EC6095 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-theme="pt-dark"] .progress-fill {
+  background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+}
+[data-theme="pt-dark"] .fv .fv-n  { color: #F4A261; }
+[data-theme="pt-dark"] .fv .fv-b  { opacity: 0.5; }
+[data-theme="pt-dark"] .rect-seg.on-a   { background: #66C7C2; color: #12101c; }
+[data-theme="pt-dark"] .rect-seg.rs-one { background: #66C7C2; }
+[data-theme="pt-dark"] .frac-card.fc-ok    { border-color: #39C762; background: rgba(57,199,98,0.1); }
+[data-theme="pt-dark"] .frac-card:hover    { border-color: #66C7C2; }
+[data-theme="pt-dark"] .sub-btn.active     { background: rgba(244,162,97,0.13); color: #F4A261; border-bottom: 2px solid #F4A261; }
+
+/* AD Mörkt — tab-knapp */
+[data-theme="ad-dark"] .tab-btn.active {
+  background: linear-gradient(90deg, #00A19A, #FBBC33);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RESET & BAS
+═══════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HEADER
+═══════════════════════════════════════════════════════════════════ */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Tillbaka-länk */
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+
+/* Brödsmulor */
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+
+/* Tema-toggle */
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* Klar-indikator och -knapp */
+.done-ind {
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--correct);
+  background: rgba(24,163,72,0.12);
+  border: 1px solid rgba(24,163,72,0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  display: none;
+}
+.done-ind.show { display: inline-block; }
+
+.done-hdr-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.done-hdr-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. MODUL-NAVIGATION  (Föregående / Nästa)
+═══════════════════════════════════════════════════════════════════ */
+.module-nav {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.mnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.mnav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface2);
+}
+.mnav-btn.primary {
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  border-color: transparent;
+  color: #fff;
+}
+.mnav-btn.primary:hover { opacity: 0.9; }
+.mnav-btn.primary .mnav-label { color: rgba(255,255,255,0.75); }
+.mnav-btn.primary .mnav-title { color: #fff; }
+
+.mnav-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  display: block;
+}
+.mnav-title  { display: block; }
+.mnav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. GEMENSAMMA UI-KOMPONENTER
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tab-navigation ───────────────────────────────────────────────── */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.tab-btn:hover  { border-color: var(--accent); color: var(--text); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Bråkvisning (fv) ─────────────────────────────────────────────── */
+.fv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  margin: 0 0.22rem;
+  vertical-align: middle;
+  gap: 1px;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.fv .fv-n { font-family: var(--font-b); color: var(--accent); font-weight: 500; }
+.fv .fv-b { width: 100%; min-width: 1em; height: 1.5px; background: currentColor; border-radius: 1px; opacity: 0.6; }
+.fv .fv-d { font-family: var(--font-b); }
+.fv.fv-sm .fv-n, .fv.fv-sm .fv-d { font-size: 0.82em; }
+.fv.fv-md .fv-n, .fv.fv-md .fv-d { font-size: 1.05em; }
+.fv.fv-lg .fv-n, .fv.fv-lg .fv-d { font-size: 1.4em; }
+
+/* ── Segmentstaplar (rektanglar) ──────────────────────────────────── */
+.rect-seg {
+  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-b);
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+.rect-seg:last-child { border-right: none; }
+.rect-seg.on-a  { background: var(--accent); color: #fff; }
+.rect-seg.on-b  { background: var(--hi2);    color: #1a1200; font-weight: 600; }
+.rect-seg.off   { background: var(--surface2); color: var(--muted); }
+.rect-seg.rs-one { background: var(--accent); }
+
+/* ── Förkunskaps-quiz (mq-*) ──────────────────────────────────────── */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.bad,
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.mq-opt:hover       { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok,
+.mq-opt.ok          { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err,
+.mq-opt.err         { border-color: var(--wrong); background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal,
+.mq-opt.reveal      { border-color: var(--correct); color: var(--correct); }
+
+.mq-fb, .ex-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.ok, .ex-fb.ok     { color: var(--correct); }
+.mq-fb.bad, .mq-fb.mq-fb-err,
+.ex-fb.bad               { color: var(--wrong); }
+.mq-fb.show, .ex-fb.show { display: block; }
+
+.mq-next-btn, .mq-next, .quiz-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next-btn.show,
+.mq-next.show,
+.quiz-next.show  { display: inline-block; }
+.mq-next-btn:hover,
+.mq-next:hover,
+.quiz-next:hover { opacity: 0.85; }
+
+/* ── Knappar ──────────────────────────────────────────────────────── */
+.start-btn, .check-main, .ex-next-big {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.start-btn:hover,
+.check-main:hover,
+.ex-next-big:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.check-btn, .row-check {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.check-btn:hover, .row-check:hover { opacity: 0.85; }
+
+/* ── Navigationspunktar (steg-genomgång) ──────────────────────────── */
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot:hover  { border-color: var(--accent); }
+.step-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 18px;
+  border-radius: 4px;
+}
+
+/* ── Framsteg / progress ──────────────────────────────────────────── */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Pills (typ-indikatorer) ──────────────────────────────────────── */
+.pill { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+.pill-pdf    { background: #f5e8ff; color: #600090; border-color: #c080f0; }
+
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+[data-theme="ad-dark"] .pill-pdf,
+[data-theme="pt-dark"] .pill-pdf   { background: #200030; color: #d080ff; border-color: #500080; }
+
+/* ── Programmering & NP badges ────────────────────────────────────── */
+.badge-prog { background: var(--badge-prog); color: var(--badge-prog-t); }
+.badge-np   { background: var(--badge-np);   color: var(--badge-np-t); }
+
+/* ── Kort (card) ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info-ruta ────────────────────────────────────────────────────── */
+.info-box {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* ── Highlight-ruta ───────────────────────────────────────────────── */
+.hl {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+.hl.gold { border-left: 3px solid var(--hi2); }
+.hl.blue { border-left: 3px solid var(--accent); }
+
+/* ── Quiz-komponenter ─────────────────────────────────────────────── */
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--font-b);
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+.quiz-opt:hover   { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.quiz-opt.wrong   { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+
+.quiz-fb {
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  display: none;
+  color: var(--muted);
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok   { color: var(--correct); }
+.quiz-fb.bad  { color: var(--wrong); }
+
+/* ── Lärar-tips (teacher-guide) ───────────────────────────────────── */
+.teacher-guide {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface2);
+  user-select: none;
+  transition: background 0.15s;
+}
+.tg-header:hover         { background: var(--border); }
+.tg-chevron              { margin-left: auto; font-size: 0.7rem; transition: transform 0.25s; }
+.tg-header.open .tg-chevron { transform: rotate(180deg); }
+.tg-body {
+  padding: 0.8rem 1rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tg-body strong { color: var(--text); }
+
+/* ─── 8. RESPONSIV ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .module-nav          { padding: 0.75rem 1rem 2rem; }
+  .mnav-btn            { font-size: 0.75rem; padding: 0.5rem 0.9rem; }
+  .nav-tabs            { padding: 0.5rem 0.75rem; gap: 0.25rem; top: 52px; }
+  .tab-btn             { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <img src="PT_Vit.svg"       alt="PT logotyp"        class="header-logo pt-logo" />
+        <img src="AD_pippi_vit.svg" alt="Alfred Dalinskolan" class="header-logo ad-logo" />
+        <h1>PT Matematik</h1>
+      </div>
+      <div class="header-actions">
+        <button class="hdr-btn" onclick="openModal('bio')" aria-label="Om mig">
+          <span class="hdr-btn-icon">👤</span>
+          <span>Om mig</span>
+        </button>
+        <button class="hdr-btn" onclick="openModal('info')" aria-label="Instruktioner">
+          <span class="hdr-btn-icon">💡</span>
+          <span>Instruktioner</span>
+        </button>
+        <button class="theme-toggle" onclick="cycleTheme()" id="themeToggle" aria-label="Byt tema">
+          <span class="theme-toggle-icon" id="themeIcon">🎨</span>
+          <span id="themeLabel">PT Ljust</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-label">PT Matematik</p>
+    <h2 class="hero-title">Välj ditt <em>område</em></h2>
+    <p class="hero-desc">
+      Klicka på ett område nedan för att komma till övningar, genomgångar och material för din kurs.
+    </p>
+  </section>
+
+  <div class="divider"><hr /></div>
+
+  <!-- KOLUMNER -->
+  <main class="grid-wrapper">
+
+    <!-- ÅK 7 -->
+    <div class="grade-col col-7">
+      <div class="grade-header">
+        <span class="grade-badge">7</span>
+        <div class="grade-meta"><strong>Årskurs 7</strong></div>
+      </div>
+      <ul class="topic-list">
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)">
+            <span class="topic-num">7.1</span><span class="topic-name">Tal</span><span class="topic-chevron">▼</span>
+          </div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak7/7-1-tal/tal1.html"><span class="sub-dot"></span><span>[1] – Positionssystemet</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-1-tal/tal2.html"><span class="sub-dot"></span><span>[2] – Decimaltal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-1-tal/tal3.html"><span class="sub-dot"></span><span>[3] – Multiplikation och division med 10, 100 och 1000</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-1-tal/tal4.html"><span class="sub-dot"></span><span>[4] – Avrundning</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-1-tal/tal5.html"><span class="sub-dot"></span><span>[5] – Delbarhet och primtal</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)">
+            <span class="topic-num">7.2</span><span class="topic-name">Statistik</span><span class="topic-chevron">▼</span>
+          </div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak7/7-2-statistik/stat1.html"><span class="sub-dot"></span><span>[1] – Tabeller</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-2-statistik/stat2.html"><span class="sub-dot"></span><span>[2] – Lägesmått och spridningsmått</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-2-statistik/stat3.html"><span class="sub-dot"></span><span>[3] – Diagram</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-2-statistik/stat4.html"><span class="sub-dot"></span><span>[4] – Lägesmått i tabeller och diagram</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)">
+            <span class="topic-num">7.3</span><span class="topic-name">Geometri</span>
+            <a class="chapter-link" href="ak7/7-3-geometri/index.html" onclick="event.stopPropagation()" title="Gå till kapitelöversikt">→</a>
+            <span class="topic-chevron">▼</span>
+          </div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak7/7-3-geometri/geo1.html"><span class="sub-dot"></span><span>[1] – Geometriska begrepp</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-3-geometri/geo2.html"><span class="sub-dot"></span><span>[2] – Vinklar och vinkelsummor</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-3-geometri/geo3.html"><span class="sub-dot"></span><span>[3] – Omkrets</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-3-geometri/geo4.html"><span class="sub-dot"></span><span>[4] – Area</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-3-geometri/geo5.html"><span class="sub-dot"></span><span>[5] – Volym</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-3-geometri/geo6.html"><span class="sub-dot"></span><span>[6] – Begränsningsyta</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)">
+            <span class="topic-num">7.4</span><span class="topic-name">Algebra</span><span class="topic-chevron">▼</span>
+          </div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak7/7-4-algebra/alg1.html"><span class="sub-dot"></span><span>[1] – Prioriteringsregler</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-4-algebra/alg2.html"><span class="sub-dot"></span><span>[2] – Algebraiska uttryck</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-4-algebra/alg3.html"><span class="sub-dot"></span><span>[3] – Ekvationer med balansmetoden</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-4-algebra/alg4.html"><span class="sub-dot"></span><span>[4] – Problemlösning med ekvationer</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-4-algebra/alg5.html"><span class="sub-dot"></span><span>[5] – Aritmetiska talföljder och mönster</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)">
+            <span class="topic-num">7.5</span><span class="topic-name">Bråk</span><span class="topic-chevron">▼</span>
+          </div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak7/7-5-brak/brak1.html"><span class="sub-dot"></span><span>[1] – Skriva tal i bråkform</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-5-brak/brak2.html"><span class="sub-dot"></span><span>[2] – Beräkna delen</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-5-brak/brak3.html"><span class="sub-dot"></span><span>[3] – Jämföra bråk</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-5-brak/brak4.html"><span class="sub-dot"></span><span>[4] – Addera och subtrahera bråk</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-5-brak/brak5.html"><span class="sub-dot"></span><span>[5] – Bråkform och decimalform</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)">
+            <span class="topic-num">7.6</span><span class="topic-name">Procent</span><span class="topic-chevron">▼</span>
+          </div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak7/7-6-procent/proc1.html"><span class="sub-dot"></span><span>[1] – Beräkna delen</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-6-procent/proc2.html"><span class="sub-dot"></span><span>[2] – Beräkna andelen</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-6-procent/proc3.html"><span class="sub-dot"></span><span>[3] – Beräkna det hela</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak7/7-6-procent/proc4.html"><span class="sub-dot"></span><span>[4] – Bråkform, decimalform och procentform</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+      </ul>
+      <div class="topic-separator"><span>Extra</span></div>
+      <ul class="topic-list">
+        <li><div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">P.7</span><span class="topic-name">Programmering</span><span class="topic-chevron">▼</span></div><ul class="sub-list"></ul></li>
+      </ul>
+    </div>
+
+    <!-- ÅK 8 -->
+    <div class="grade-col col-8">
+      <div class="grade-header">
+        <span class="grade-badge">8</span>
+        <div class="grade-meta"><strong>Årskurs 8</strong></div>
+      </div>
+      <ul class="topic-list">
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">8.1</span><span class="topic-name">Tal</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak8/8-1-tal/1.html"><span class="sub-dot"></span><span>[1] – Decimaltal och bråktal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-1-tal/2.html"><span class="sub-dot"></span><span>[2] – Multiplikation och division av bråk</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-1-tal/3.html"><span class="sub-dot"></span><span>[3] – Multiplikation och division av tal i decimalform</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-1-tal/4.html"><span class="sub-dot"></span><span>[4] – Addition och subtraktion av negativa tal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-1-tal/5.html"><span class="sub-dot"></span><span>[5] – Multiplikation och division av negativa tal</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">8.2</span><span class="topic-name">Geometri</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak8/8-2-geometri/1.html"><span class="sub-dot"></span><span>[1] – Geometriska begrepp</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/2.html"><span class="sub-dot"></span><span>[2] – Längdenheter och omkrets</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/3.html"><span class="sub-dot"></span><span>[3] – Cirkelns omkrets</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/4.html"><span class="sub-dot"></span><span>[4] – Areaenheter och area</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/5.html"><span class="sub-dot"></span><span>[5] – Cirkelns area</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/6.html"><span class="sub-dot"></span><span>[6] – Cirkelbåge och cirkelsektor</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/7.html"><span class="sub-dot"></span><span>[7] – Volymenheter och volym av prisma och cylinder</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/8.html"><span class="sub-dot"></span><span>[8] – Volym av kon, klot och pyramid</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-2-geometri/9.html"><span class="sub-dot"></span><span>[9] – Begränsningsarea av rymdgeometriska figurer</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">8.3</span><span class="topic-name">Algebra</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak8/8-3-algebra/1.html"><span class="sub-dot"></span><span>[1] – Teckna och förenkla algebraiska uttryck</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-3-algebra/2.html"><span class="sub-dot"></span><span>[2] – Ekvationer med x i båda led</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-3-algebra/3.html"><span class="sub-dot"></span><span>[3] – Multiplikation av parenteser</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-3-algebra/4.html"><span class="sub-dot"></span><span>[4] – Problemlösning med ekvationer</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">8.4</span><span class="topic-name">Samband och förändring</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak8/8-4-samband/1.html"><span class="sub-dot"></span><span>[1] – Samband</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-4-samband/2.html"><span class="sub-dot"></span><span>[2] – Linjära samband</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-4-samband/3.html"><span class="sub-dot"></span><span>[3] – Proportionalitet</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-4-samband/4.html"><span class="sub-dot"></span><span>[4] – Samband med sträcka, tid och hastighet</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">8.5</span><span class="topic-name">Procent</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak8/8-5-procent/1.html"><span class="sub-dot"></span><span>[1] – Procent — andelen, delen, det hela</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-5-procent/2.html"><span class="sub-dot"></span><span>[2] – Förändring i procent</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-5-procent/3.html"><span class="sub-dot"></span><span>[3] – Beräkna delen med DAH</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-5-procent/4.html"><span class="sub-dot"></span><span>[4] – Förändringsfaktor</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">8.6</span><span class="topic-name">Sannolikhetslära</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak8/8-6-sannolikhet/1.html"><span class="sub-dot"></span><span>[1] – Sannolikhet — introduktion</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-6-sannolikhet/2.html"><span class="sub-dot"></span><span>[2] – Beräkningar med sannolikhet</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-6-sannolikhet/3.html"><span class="sub-dot"></span><span>[3] – Upprepade händelser och träddiagram</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-6-sannolikhet/4.html"><span class="sub-dot"></span><span>[4] – Beroende och oberoende händelser</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak8/8-6-sannolikhet/5.html"><span class="sub-dot"></span><span>[5] – Kombinatorik</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+      </ul>
+      <div class="topic-separator"><span>Extra</span></div>
+      <ul class="topic-list">
+        <li><div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">P.8</span><span class="topic-name">Programmering</span><span class="topic-chevron">▼</span></div><ul class="sub-list"></ul></li>
+      </ul>
+    </div>
+
+    <!-- ÅK 9 -->
+    <div class="grade-col col-9">
+      <div class="grade-header">
+        <span class="grade-badge">9</span>
+        <div class="grade-meta"><strong>Årskurs 9</strong></div>
+      </div>
+      <ul class="topic-list">
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">9.1</span><span class="topic-name">Tal</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak9/9-1-tal/1.html"><span class="sub-dot"></span><span>[1] – Stora tal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/2.html"><span class="sub-dot"></span><span>[2] – Prefix för stora tal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/3.html"><span class="sub-dot"></span><span>[3] – Grundpotensform — stora tal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/4.html"><span class="sub-dot"></span><span>[4] – Räkna med grundpotenser</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/5.html"><span class="sub-dot"></span><span>[5] – Små tal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/6.html"><span class="sub-dot"></span><span>[6] – Prefix för små tal</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/7.html"><span class="sub-dot"></span><span>[7] – Räkna med stora och små grundpotenser</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/8.html"><span class="sub-dot"></span><span>[8] – Kvadrattal och kvadratrötter</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-1-tal/9.html"><span class="sub-dot"></span><span>[9] – Andragradsekvationer</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">9.2</span><span class="topic-name">Geometri</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak9/9-2-geometri/1.html"><span class="sub-dot"></span><span>[1] – Vinklar och deras egenskaper</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-2-geometri/2.html"><span class="sub-dot"></span><span>[2] – Pythagoras sats</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-2-geometri/3.html"><span class="sub-dot"></span><span>[3] – Längdskala</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-2-geometri/4.html"><span class="sub-dot"></span><span>[4] – Area och volymskala</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-2-geometri/5.html"><span class="sub-dot"></span><span>[5] – Likformighet</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">9.3</span><span class="topic-name">Samband och förändring</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak9/9-3-samband/1.html"><span class="sub-dot"></span><span>[1] – Funktioner</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-3-samband/2.html"><span class="sub-dot"></span><span>[2] – Linjära funktioner</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-3-samband/3.html"><span class="sub-dot"></span><span>[3] – Koordinatsystem</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-3-samband/4.html"><span class="sub-dot"></span><span>[4] – Räta linjens ekvation</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-3-samband/5.html"><span class="sub-dot"></span><span>[5] – Talföljder</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">9.4</span><span class="topic-name">Procent</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak9/9-4-procent/1.html"><span class="sub-dot"></span><span>[1] – Beräkna delen</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-4-procent/2.html"><span class="sub-dot"></span><span>[2] – Beräkna det hela</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-4-procent/3.html"><span class="sub-dot"></span><span>[3] – Beräkna andelen</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-4-procent/4.html"><span class="sub-dot"></span><span>[4] – Förändringsfaktor</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-4-procent/5.html"><span class="sub-dot"></span><span>[5] – Upprepade förändringar</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-4-procent/6.html"><span class="sub-dot"></span><span>[6] – Procentenheter</span><span class="sub-arrow">›</span></a></li>
+            <li><a class="sub-link" href="ak9/9-4-procent/7.html"><span class="sub-dot"></span><span>[7] – Promille och ppm</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">9.5</span><span class="topic-name">Statistik</span><span class="topic-chevron">▼</span></div>
+          <ul class="sub-list">
+            <li><a class="sub-link" href="ak9/9-5-statistik/1.html"><span class="sub-dot"></span><span>[1] – Låddiagram</span><span class="sub-arrow">›</span></a></li>
+          </ul>
+        </li>
+
+        <li><div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">NP</span><span class="topic-name">Nationella provet</span><span class="topic-chevron">▼</span></div><ul class="sub-list"></ul></li>
+
+      </ul>
+      <div class="topic-separator"><span>Extra</span></div>
+      <ul class="topic-list">
+        <li><div class="topic-trigger" onclick="toggleChapter(this)"><span class="topic-num">P.9</span><span class="topic-name">Programmering</span><span class="topic-chevron">▼</span></div><ul class="sub-list"></ul></li>
+      </ul>
+    </div>
+
+  </main>
+
+  <!-- MATTEMATCH -->
+  <div class="mattematch-wrapper">
+    <div class="mattematch-panel">
+      <div class="mattematch-header" onclick="toggleMattematch(this)">
+        <span class="mattematch-icon">⚽</span>
+        <span class="mattematch-title">Mattematch</span>
+        <span class="mattematch-sub">— 20 läxor med mängdträning</span>
+        <span class="mattematch-chevron">▼</span>
+      </div>
+      <div class="mattematch-grid-wrap">
+        <div class="mattematch-grid">
+          <a class="mm-btn" href="mattematch/mm1.html"><span class="mm-num">1</span><span>Match 1</span></a>
+          <a class="mm-btn" href="mattematch/mm2.html"><span class="mm-num">2</span><span>Match 2</span></a>
+          <a class="mm-btn" href="mattematch/mm3.html"><span class="mm-num">3</span><span>Match 3</span></a>
+          <a class="mm-btn" href="mattematch/mm4.html"><span class="mm-num">4</span><span>Match 4</span></a>
+          <a class="mm-btn" href="mattematch/mm5.html"><span class="mm-num">5</span><span>Match 5</span></a>
+          <a class="mm-btn" href="mattematch/mm6.html"><span class="mm-num">6</span><span>Match 6</span></a>
+          <a class="mm-btn" href="mattematch/mm7.html"><span class="mm-num">7</span><span>Match 7</span></a>
+          <a class="mm-btn" href="mattematch/mm8.html"><span class="mm-num">8</span><span>Match 8</span></a>
+          <a class="mm-btn" href="mattematch/mm9.html"><span class="mm-num">9</span><span>Match 9</span></a>
+          <a class="mm-btn" href="mattematch/mm10.html"><span class="mm-num">10</span><span>Match 10</span></a>
+          <a class="mm-btn" href="mattematch/mm11.html"><span class="mm-num">11</span><span>Match 11</span></a>
+          <a class="mm-btn" href="mattematch/mm12.html"><span class="mm-num">12</span><span>Match 12</span></a>
+          <a class="mm-btn" href="mattematch/mm13.html"><span class="mm-num">13</span><span>Match 13</span></a>
+          <a class="mm-btn" href="mattematch/mm14.html"><span class="mm-num">14</span><span>Match 14</span></a>
+          <a class="mm-btn" href="mattematch/mm15.html"><span class="mm-num">15</span><span>Match 15</span></a>
+          <a class="mm-btn" href="mattematch/mm16.html"><span class="mm-num">16</span><span>Match 16</span></a>
+          <a class="mm-btn" href="mattematch/mm17.html"><span class="mm-num">17</span><span>Match 17</span></a>
+          <a class="mm-btn" href="mattematch/mm18.html"><span class="mm-num">18</span><span>Match 18</span></a>
+          <a class="mm-btn" href="mattematch/mm19.html"><span class="mm-num">19</span><span>Match 19</span></a>
+          <a class="mm-btn" href="mattematch/mm20.html"><span class="mm-num">20</span><span>Match 20</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© <span id="yr"></span> Patrick Tegnefur &nbsp;·&nbsp; Förstelärare och IT-pedagog &nbsp;·&nbsp; Alfred Dalinskolan, Huskvarna</p>
+  </footer>
+
+  <!-- MODAL: BIO -->
+  <div class="modal-backdrop" id="modal-bio" onclick="closeOnBackdrop(event, 'bio')">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Om mig</span>
+        <button class="modal-close" onclick="closeModal('bio')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="bio-top">
+      <div class="bio-avatar">PT</div>
+          <div>
+            <div class="bio-name">Patrick Tegnefur</div>
+            <div class="bio-title">Förstelärare &amp; IT-pedagog</div>
+          </div>
+        </div>
+        <div class="bio-tags">
+          <span class="bio-tag">🏫 Alfred Dalinskolan, Huskvarna</span>
+          <span class="bio-tag">⭐ Förstelärare</span>
+          <span class="bio-tag">💻 IT-pedagog</span>
+          <span class="bio-tag">📐 Matematik — grundskola &amp; gymnasiet</span>
+          <span class="bio-tag">🔬 Biologi — grundskola &amp; gymnasiet</span>
+        </div>
+        <p class="bio-text">
+          Välkommen till AD Matematik — en plats där jag samlar mitt undervisningsmaterial
+          i form av genomgångar, videoförklaringar, uppgifter och simuleringar.
+          Materialet är primärt avsett för mina elever men fritt tillgängligt för alla
+          som vill använda det.
+          <br><br>
+          Sidan byggs löpande ut med nytt innehåll och nya funktioner. Hör gärna av
+          dig om du har frågor eller förslag!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: INSTRUKTIONER -->
+  <div class="modal-backdrop" id="modal-info" onclick="closeOnBackdrop(event, 'info')">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Så här använder du portalen</span>
+        <button class="modal-close" onclick="closeModal('info')">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="instr-section">
+          <h3>🗂 Hur portalen är uppbyggd</h3>
+          <ul>
+            <li>Materialet är organiserat i tre kolumner — en per årskurs (7, 8 och 9).</li>
+            <li>Varje kolumn innehåller kapitel. Klicka på ett kapitel för att expandera det och se delkapitlen.</li>
+            <li>Under separatorn <em>Extra</em> finns bonusmaterial som Programmering.</li>
+            <li>Längst ned finns <strong>Mattematch</strong> — 20 läxor för mängdträning.</li>
+          </ul>
+        </div>
+
+        <div class="instr-divider"></div>
+
+        <div class="instr-section">
+          <h3>⚡ Hur övningarna fungerar</h3>
+          <ul>
+            <li>Varje delkapitel innehåller genomgångar, uppgifter och/eller videoförklaringar.</li>
+            <li>Mattematch-övningarna bygger på kognitiv vetenskap och är utformade för effektiv mängdträning — repetera gärna ofta och i korta pass.</li>
+            <li>Simuleringar och interaktiva uppgifter är märkta och kräver ingen inloggning.</li>
+          </ul>
+        </div>
+
+        <div class="instr-divider"></div>
+
+        <div class="instr-section">
+          <h3>🎨 Övriga funktioner</h3>
+          <ul>
+            <li>Växla mellan fyra utseenden med knappen uppe till höger — ditt val sparas till nästa besök.</li>
+            <li>Sidan fungerar på mobil, surfplatta och dator.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // ── Modaler ────────────────────────────────────────────────────
+    function openModal(id) {
+      document.getElementById('modal-' + id).classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+      document.getElementById('modal-' + id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeOnBackdrop(e, id) {
+      if (e.target === e.currentTarget) closeModal(id);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        ['bio','info'].forEach(id => closeModal(id));
+      }
+    });
+
+    // Auto-märk badges för Programmering och NP
+    document.querySelectorAll('.topic-num').forEach(el => {
+      const t = el.textContent.trim();
+      if (t.startsWith('P.'))  el.classList.add('badge-prog');
+      if (t === 'NP')          el.classList.add('badge-np');
+    });
+
+    // ── Tema-toggle (cyklar igenom alla fyra) ──────────────────────
+    const THEMES = [
+      { id: 'pt-light', label: 'PT Ljust',  icon: '☀️' },
+      { id: 'pt-dark',  label: 'PT Mörkt',  icon: '🌙' },
+      { id: 'ad-light', label: 'AD Ljust',  icon: '🌿' },
+      { id: 'ad-dark',  label: 'AD Mörkt',  icon: '🌑' },
+    ];
+
+    let currentIdx = 0;
+
+    function applyTheme(idx) {
+      const t = THEMES[idx];
+      document.documentElement.setAttribute('data-theme', t.id);
+      document.getElementById('themeLabel').textContent = t.label;
+      document.getElementById('themeIcon').textContent  = t.icon;
+      localStorage.setItem('math-portal-theme', t.id);
+    }
+
+    function cycleTheme() {
+      currentIdx = (currentIdx + 1) % THEMES.length;
+      applyTheme(currentIdx);
+    }
+
+    // Återställ sparat tema
+    const VALID = THEMES.map(t => t.id);
+    const saved = localStorage.getItem('math-portal-theme');
+    if (saved && VALID.includes(saved)) {
+      currentIdx = THEMES.findIndex(t => t.id === saved);
+    } else {
+      currentIdx = 0; // pt-light som standard
+      localStorage.removeItem('math-portal-theme');
+    }
+    applyTheme(currentIdx);
+
+    // ── Kapitel-accordion ──────────────────────────────────────────
+    function toggleChapter(trigger) {
+      const subList = trigger.nextElementSibling;
+      const isOpen  = trigger.classList.contains('open');
+
+      trigger.closest('.grade-col').querySelectorAll('.topic-trigger.open').forEach(t => {
+        if (t !== trigger) {
+          t.classList.remove('open');
+          const sl = t.nextElementSibling;
+          sl.style.maxHeight = '0';
+          sl.classList.remove('open');
+        }
+      });
+
+      if (isOpen) {
+        trigger.classList.remove('open');
+        subList.style.maxHeight = '0';
+        subList.classList.remove('open');
+      } else {
+        trigger.classList.add('open');
+        subList.classList.add('open');
+        subList.style.maxHeight = subList.scrollHeight + 'px';
+      }
+    }
+
+    // ── Mattematch-accordion ───────────────────────────────────────
+    function toggleMattematch(header) {
+      const wrap   = header.nextElementSibling;
+      const isOpen = header.classList.contains('open');
+      if (isOpen) {
+        header.classList.remove('open');
+        wrap.style.maxHeight = '0';
+        wrap.classList.remove('open');
+      } else {
+        header.classList.add('open');
+        wrap.classList.add('open');
+        wrap.style.maxHeight = wrap.scrollHeight + 'px';
+      }
+    }
+  </script>
+</body>
+</html>

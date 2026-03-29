@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bråk 2 — Beräkna delen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  portal.css  —  PT Matematik · Alfred Dalinskolan
+ *  Patrick Tegnefur · Förstelärare & IT-pedagog
+ *
+ *  Importeras av alla sidor på portalen via:
+ *    <link rel="stylesheet" href="[relativ sökväg]/portal.css">
+ *
+ *  STRUKTUR:
+ *   1. Google Fonts-import
+ *   2. Globala tokens (:root)
+ *   3. Teman  — AD Ljust / AD Mörkt / PT Ljust / PT Mörkt
+ *   4. Reset & bas
+ *   5. Header  (portal-header, portal-back, portal-crumb, tema-toggle)
+ *   6. Modul-navigation  (module-nav, mnav-btn)
+ *   7. Gemensamma UI-komponenter
+ *      — Knappar (tab-btn, start-btn, check-btn m.fl.)
+ *      — Bråkvisning (fv)
+ *      — Förkunskaps-quiz (mq-*)
+ *      — Framstegsindikatorer (mq-pip, step-dot)
+ *      — Färg-badges (pill-video, pill-sim m.fl.)
+ *   8. Responsiv  (max-width: 600px)
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. TYPSNITT ──────────────────────────────────────────────────── */
+/* ── 2. GLOBALA TOKENS ────────────────────────────────────────────── */
+:root {
+  --radius:  14px;
+  --trans:   0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. TEMAN
+   Varje tema definierar ALLA variabler fullständigt.
+   Åk 7 = Blå · Åk 8 = Grön · Åk 9 = Röd/Rosa
+
+   AD-färger:  Blågrön #00A19A · Guld #FBBC33 · Rosa #EC6095
+               Grön #A2C617   · Gul #FFDE14
+   PT-färger:  Blå #306BF0 · Röd #F03048 · Orange #FF8837
+               Grön #39C762 · Klarblå #7179E8
+   PT-gradient: #66C7C2 → #F4A261 → #EC6095
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── AD LJUST ─────────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #006a64;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  /* Kolumn-gradienter */
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  /* Badges */
+  --b7: #d8eaff; --b7t: #1040a0;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── AD MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #0a2048; --b7t: #7ab0ff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* ── PT LJUST ─────────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #306BF0;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #dce8fe; --b7t: #1a4ecc;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── PT MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #16204a; --b7t: #80aaff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* PT Mörkt — gradient-accenter på aktiva element */
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .check-btn-main,
+[data-theme="pt-dark"] .check-main,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .mq-next-btn,
+[data-theme="pt-dark"] .ex-next-big,
+[data-theme="pt-dark"] .snav-btn.primary,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .row-check,
+[data-theme="pt-dark"] .level-btn.active {
+  background: #EC6095 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-theme="pt-dark"] .progress-fill {
+  background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+}
+[data-theme="pt-dark"] .fv .fv-n  { color: #F4A261; }
+[data-theme="pt-dark"] .fv .fv-b  { opacity: 0.5; }
+[data-theme="pt-dark"] .rect-seg.on-a   { background: #66C7C2; color: #12101c; }
+[data-theme="pt-dark"] .rect-seg.rs-one { background: #66C7C2; }
+[data-theme="pt-dark"] .frac-card.fc-ok    { border-color: #39C762; background: rgba(57,199,98,0.1); }
+[data-theme="pt-dark"] .frac-card:hover    { border-color: #66C7C2; }
+[data-theme="pt-dark"] .sub-btn.active     { background: rgba(244,162,97,0.13); color: #F4A261; border-bottom: 2px solid #F4A261; }
+
+/* AD Mörkt — tab-knapp */
+[data-theme="ad-dark"] .tab-btn.active {
+  background: linear-gradient(90deg, #00A19A, #FBBC33);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RESET & BAS
+═══════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HEADER
+═══════════════════════════════════════════════════════════════════ */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Tillbaka-länk */
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+
+/* Brödsmulor */
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+
+/* Tema-toggle */
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* Klar-indikator och -knapp */
+.done-ind {
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--correct);
+  background: rgba(24,163,72,0.12);
+  border: 1px solid rgba(24,163,72,0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  display: none;
+}
+.done-ind.show { display: inline-block; }
+
+.done-hdr-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.done-hdr-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. MODUL-NAVIGATION  (Föregående / Nästa)
+═══════════════════════════════════════════════════════════════════ */
+.module-nav {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.mnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.mnav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface2);
+}
+.mnav-btn.primary {
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  border-color: transparent;
+  color: #fff;
+}
+.mnav-btn.primary:hover { opacity: 0.9; }
+.mnav-btn.primary .mnav-label { color: rgba(255,255,255,0.75); }
+.mnav-btn.primary .mnav-title { color: #fff; }
+
+.mnav-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  display: block;
+}
+.mnav-title  { display: block; }
+.mnav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. GEMENSAMMA UI-KOMPONENTER
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tab-navigation ───────────────────────────────────────────────── */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.tab-btn:hover  { border-color: var(--accent); color: var(--text); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Bråkvisning (fv) ─────────────────────────────────────────────── */
+.fv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  margin: 0 0.22rem;
+  vertical-align: middle;
+  gap: 1px;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.fv .fv-n { font-family: var(--font-b); color: var(--accent); font-weight: 500; }
+.fv .fv-b { width: 100%; min-width: 1em; height: 1.5px; background: currentColor; border-radius: 1px; opacity: 0.6; }
+.fv .fv-d { font-family: var(--font-b); }
+.fv.fv-sm .fv-n, .fv.fv-sm .fv-d { font-size: 0.82em; }
+.fv.fv-md .fv-n, .fv.fv-md .fv-d { font-size: 1.05em; }
+.fv.fv-lg .fv-n, .fv.fv-lg .fv-d { font-size: 1.4em; }
+
+/* ── Segmentstaplar (rektanglar) ──────────────────────────────────── */
+.rect-seg {
+  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-b);
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+.rect-seg:last-child { border-right: none; }
+.rect-seg.on-a  { background: var(--accent); color: #fff; }
+.rect-seg.on-b  { background: var(--hi2);    color: #1a1200; font-weight: 600; }
+.rect-seg.off   { background: var(--surface2); color: var(--muted); }
+.rect-seg.rs-one { background: var(--accent); }
+
+/* ── Förkunskaps-quiz (mq-*) ──────────────────────────────────────── */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.bad,
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.mq-opt:hover       { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok,
+.mq-opt.ok          { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err,
+.mq-opt.err         { border-color: var(--wrong); background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal,
+.mq-opt.reveal      { border-color: var(--correct); color: var(--correct); }
+
+.mq-fb, .ex-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.ok, .ex-fb.ok     { color: var(--correct); }
+.mq-fb.bad, .mq-fb.mq-fb-err,
+.ex-fb.bad               { color: var(--wrong); }
+.mq-fb.show, .ex-fb.show { display: block; }
+
+.mq-next-btn, .mq-next, .quiz-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next-btn.show,
+.mq-next.show,
+.quiz-next.show  { display: inline-block; }
+.mq-next-btn:hover,
+.mq-next:hover,
+.quiz-next:hover { opacity: 0.85; }
+
+/* ── Knappar ──────────────────────────────────────────────────────── */
+.start-btn, .check-main, .ex-next-big {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.start-btn:hover,
+.check-main:hover,
+.ex-next-big:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.check-btn, .row-check {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.check-btn:hover, .row-check:hover { opacity: 0.85; }
+
+/* ── Navigationspunktar (steg-genomgång) ──────────────────────────── */
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot:hover  { border-color: var(--accent); }
+.step-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 18px;
+  border-radius: 4px;
+}
+
+/* ── Framsteg / progress ──────────────────────────────────────────── */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Pills (typ-indikatorer) ──────────────────────────────────────── */
+.pill { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+.pill-pdf    { background: #f5e8ff; color: #600090; border-color: #c080f0; }
+
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+[data-theme="ad-dark"] .pill-pdf,
+[data-theme="pt-dark"] .pill-pdf   { background: #200030; color: #d080ff; border-color: #500080; }
+
+/* ── Programmering & NP badges ────────────────────────────────────── */
+.badge-prog { background: var(--badge-prog); color: var(--badge-prog-t); }
+.badge-np   { background: var(--badge-np);   color: var(--badge-np-t); }
+
+/* ── Kort (card) ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info-ruta ────────────────────────────────────────────────────── */
+.info-box {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* ── Highlight-ruta ───────────────────────────────────────────────── */
+.hl {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+.hl.gold { border-left: 3px solid var(--hi2); }
+.hl.blue { border-left: 3px solid var(--accent); }
+
+/* ── Quiz-komponenter ─────────────────────────────────────────────── */
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--font-b);
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+.quiz-opt:hover   { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.quiz-opt.wrong   { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+
+.quiz-fb {
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  display: none;
+  color: var(--muted);
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok   { color: var(--correct); }
+.quiz-fb.bad  { color: var(--wrong); }
+
+/* ── Lärar-tips (teacher-guide) ───────────────────────────────────── */
+.teacher-guide {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface2);
+  user-select: none;
+  transition: background 0.15s;
+}
+.tg-header:hover         { background: var(--border); }
+.tg-chevron              { margin-left: auto; font-size: 0.7rem; transition: transform 0.25s; }
+.tg-header.open .tg-chevron { transform: rotate(180deg); }
+.tg-body {
+  padding: 0.8rem 1rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tg-body strong { color: var(--text); }
+
+/* ─── 8. RESPONSIV ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .module-nav          { padding: 0.75rem 1rem 2rem; }
+  .mnav-btn            { font-size: 0.75rem; padding: 0.5rem 0.9rem; }
+  .nav-tabs            { padding: 0.5rem 0.75rem; gap: 0.25rem; top: 52px; }
+  .tab-btn             { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+}
+
+/* ══ SIDSPECIFIK CSS ══════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;min-height:100vh;transition:background 0.3s,color 0.3s;}
+
+/* ── Topbar ── */
+.topbar{display:flex;align-items:center;gap:0.7rem;padding:0.55rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.back-btn{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.78rem;color:var(--text3);text-decoration:none;font-family:var(--sans);border:1px solid var(--border2);border-radius:6px;padding:0.2rem 0.6rem;transition:all 0.15s;white-space:nowrap;}
+.back-btn:hover{color:var(--text);border-color:var(--accent);}
+.tb-frac{display:inline-flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:0.85rem;font-weight:500;line-height:1;color:var(--text3);}
+.tb-frac .tbn{color:var(--accent);}
+.tb-frac .tbb{width:100%;height:1.5px;background:var(--text3);border-radius:1px;}
+.topbar-title{font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text2);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
+
+/* ── Theme switcher ── */
+.theme-switcher{display:flex;gap:4px;align-items:center;}
+.theme-dot{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.theme-dot:hover{transform:scale(1.2);}
+.theme-dot.active{border-color:var(--text);transform:scale(1.15);}
+.theme-dot[data-t="pt"]     {background:linear-gradient(135deg,#1a6ef5,#F4A261,#EC6095);border:2px solid #ccc5f0;}
+    <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#0d0d0f 40%,#66C7C2);border:2px solid #333;cursor:pointer;" class="tdot" data-t="pt-dark" onclick="setTheme('pt-dark',this)" title="PT Mörkt"></div>
+
+/* Done badge/btn */
+.done-indicator{display:none;font-size:0.74rem;font-family:var(--mono);color:var(--hi);background:rgba(var(--hi-rgb,240,180,41),0.12);border:1px solid rgba(240,180,41,0.25);border-radius:5px;padding:0.14rem 0.5rem;}
+.done-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text3);border-radius:6px;padding:0.2rem 0.6rem;cursor:pointer;font-size:0.76rem;font-family:var(--sans);transition:all 0.15s;white-space:nowrap;}
+.done-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── Main nav ── */
+.nav-tabs{display:flex;justify-content:center;gap:0.3rem;padding:0.7rem 1rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.tab-btn{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:0.36rem 0.9rem;border-radius:6px;cursor:pointer;font-family:var(--sans);font-size:0.86rem;font-weight:500;transition:all 0.18s;}
+.tab-btn:hover{border-color:var(--accent);color:var(--text);}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* ── Sub-tabs ── */
+.sub-tabs{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:1.2rem;flex-wrap:wrap;}
+.sub-btn{background:transparent;border:none;border-right:1px solid var(--border2);color:var(--text3);padding:0.4rem 1rem;cursor:pointer;font-family:var(--sans);font-size:0.81rem;font-weight:500;transition:all 0.15s;flex:1;white-space:nowrap;}
+.sub-btn:last-child{border-right:none;}
+.sub-btn:hover{background:var(--surface);color:var(--text2);}
+.sub-btn.active{background:rgba(26,110,245,0.10);color:var(--accent);border-bottom:2px solid var(--accent);}
+
+/* ── Layout ── */
+.main{max-width:800px;margin:0 auto;padding:1.75rem 1.5rem 4rem;}
+.section{display:none;}.section.active{display:block;}
+.subpanel{display:none;}.subpanel.active{display:block;}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem 1.75rem;margin-bottom:1.2rem;}
+.card-title{font-family:var(--serif);font-size:1.35rem;font-weight:400;color:var(--text);margin-bottom:0.35rem;}
+.card-lead{color:var(--text2);margin-bottom:1.1rem;font-size:0.93rem;}
+
+/* ── Vertical fraction ── */
+.fv{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1;margin:0 0.22rem;vertical-align:middle;gap:1px;}
+.fv .fv-n{font-family:var(--mono);color:var(--accent);font-weight:500;}
+.fv .fv-b{width:100%;min-width:1ch;height:2px;background:currentColor;border-radius:1px;opacity:0.7;}
+.fv .fv-d{font-family:var(--mono);color:var(--text2);font-weight:500;}
+.fv-sm .fv-n,.fv-sm .fv-d{font-size:0.85rem;}
+.fv-md .fv-n,.fv-md .fv-d{font-size:1.15rem;}
+.fv-lg .fv-n,.fv-lg .fv-d{font-size:1.7rem;}
+.fv-xl .fv-n,.fv-xl .fv-d{font-size:2.5rem;}
+.fv-xl .fv-b{height:3px;}
+
+/* ── Info/highlight boxes ── */
+.info-box{background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:0.85rem 1rem;margin:0.9rem 0;font-size:0.92rem;color:var(--text2);}
+.info-box strong{color:var(--text);}
+.hl{border-radius:10px;padding:0.85rem 1rem;margin:0.9rem 0;font-size:0.92rem;border:1px solid;}
+.hl.blue{background:rgba(79,156,249,0.07);border-color:rgba(79,156,249,0.2);}
+.hl.gold{background:rgba(240,180,41,0.07);border-color:rgba(240,180,41,0.2);}
+.hl.teal{background:rgba(45,212,191,0.07);border-color:rgba(45,212,191,0.2);}
+.hl.green{background:rgba(74,222,128,0.07);border-color:rgba(74,222,128,0.2);}
+
+/* ── Step blocks ── */
+.step-block{display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.9rem;}
+.step-num{background:var(--surface);border:1px solid var(--border2);border-radius:50%;width:33px;height:33px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.83rem;color:var(--accent);flex-shrink:0;font-weight:500;}
+.step-title{font-weight:600;color:var(--text);margin-bottom:0.12rem;font-size:0.93rem;}
+.step-body{font-size:0.88rem;color:var(--text2);}
+
+/* ── Genomgång stepper ── */
+.gstep{display:none;}.gstep.active{display:block;}
+.step-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.4rem;flex-wrap:wrap;}
+.snav-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:0.42rem 1.05rem;cursor:pointer;font-family:var(--sans);font-size:0.87rem;font-weight:500;transition:all 0.18s;}
+.snav-btn:hover{border-color:var(--accent);color:var(--text);}
+.snav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.snav-btn.primary:hover{opacity:0.85;}
+.snav-btn:disabled{opacity:0.28;cursor:default;pointer-events:none;}
+.step-dots{display:flex;gap:5px;align-items:center;}
+.step-dot{width:7px;height:7px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);transition:all 0.2s;cursor:pointer;}
+.step-dot.active{background:var(--accent);border-color:var(--accent);width:18px;border-radius:4px;}
+
+/* ── Controls ── */
+.ctrl-row{display:flex;align-items:center;gap:0.85rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+label{font-size:0.87rem;color:var(--text2);}
+input[type=range]{-webkit-appearance:none;height:4px;background:var(--surface2);border-radius:4px;outline:none;cursor:pointer;flex:1;min-width:80px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer;}
+.vbadge{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:0.16rem 0.5rem;font-family:var(--mono);font-size:0.83rem;color:var(--hi);min-width:2.5rem;text-align:center;}
+
+/* ── Beräkna steg-visualizer ── */
+.calc-visual{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;margin:1.25rem 0;flex-wrap:wrap;}
+.calc-box{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:1rem;text-align:center;}
+.calc-box-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);font-family:var(--mono);margin-bottom:0.4rem;}
+.calc-box-val{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--text);}
+.calc-box-val.accent{color:var(--accent);}
+.calc-box-val.hi{color:var(--hi);}
+.calc-box-val.hi2{color:var(--hi2);}
+.calc-arrow{font-size:1.4rem;color:var(--text3);text-align:center;}
+
+/* ── Bar visualizer ── */
+.bar-track{height:38px;background:var(--surface);border-radius:8px;overflow:hidden;margin:0.75rem 0;position:relative;border:1px solid var(--border2);}
+.bar-fill{height:100%;border-radius:8px 0 0 8px;transition:width 0.4s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;}
+.bar-fill-label{font-size:0.75rem;font-family:var(--mono);font-weight:500;color:#fff;white-space:nowrap;}
+.bar-ticks{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3);font-family:var(--mono);margin-top:0.25rem;}
+
+/* ── Animated calculation lines ── */
+@keyframes slideIn {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.calc-line {
+  opacity:0;
+  font-family:var(--mono);
+  font-size:1rem;
+  color:var(--text2);
+  line-height:1.9;
+  display:flex;
+  align-items:center;
+  gap:0.4rem;
+  flex-wrap:wrap;
+}
+.calc-line.visible { animation: slideIn 0.35s ease forwards; }
+.calc-line .cl-q  { color:var(--text3); }
+.calc-line .cl-hi { color:var(--hi); font-weight:600; }
+.calc-line .cl-hi2{ color:var(--hi2); font-weight:600; }
+.calc-line .cl-acc{ color:var(--accent); font-weight:600; }
+.calc-line .cl-ans{ color:var(--hi); font-size:1.15rem; font-weight:700; }
+
+/* question label above the block */
+.calc-task {
+  font-family:var(--mono);
+  font-size:1rem;
+  color:var(--text);
+  margin-bottom:0.6rem;
+  display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;
+}
+
+.calc-block {
+  background:var(--bg3);
+  border-radius:12px;
+  padding:1.1rem 1.3rem;
+  margin:0.9rem 0;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+
+/* bar segments */
+.seg-row { display:flex; gap:4px; margin:0.6rem 0 0.3rem; }
+.seg {
+  flex:1;
+  height:40px;
+  border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.78rem;font-weight:500;
+  transition:background 0.3s, color 0.3s;
+  border:1px solid transparent;
+}
+.seg.inactive { background:var(--surface2); color:var(--text3); border-color:var(--border); }
+.seg.one      { background:var(--accent);   color:#fff; border-color:rgba(79,156,249,0.4); }
+.seg.selected { background:var(--hi);       color:#1a1200; border-color:rgba(240,180,41,0.4); }
+.seg.rest     { background:var(--surface2); color:var(--text3); border-color:var(--border); }
+
+/* ── Teacher guide ── */
+.teacher-guide {
+  background:rgba(240,180,41,0.06);
+  border:1px solid rgba(240,180,41,0.18);
+  border-radius:12px;
+  margin-top:1.1rem;
+  overflow:hidden;
+}
+.tg-header {
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.65rem 1rem;
+  cursor:pointer;
+  user-select:none;
+  font-size:0.84rem;font-weight:500;color:var(--hi);
+}
+.tg-header:hover { background:rgba(240,180,41,0.05); }
+.tg-icon { font-size:1rem; }
+.tg-chevron { margin-left:auto; font-size:0.7rem; color:var(--text3); transition:transform 0.2s; }
+.tg-chevron.open { transform:rotate(180deg); }
+.tg-body {
+  display:none;
+  padding:0 1rem 1rem;
+  font-size:0.87rem;color:var(--text2);line-height:1.7;
+}
+.tg-body.open { display:block; }
+.tg-body p { margin-bottom:0.5rem; }
+.tg-body strong { color:var(--text); }
+
+/* animate btn */
+.anim-btn {
+  background:var(--surface);border:1px solid var(--border2);color:var(--text2);
+  border-radius:7px;padding:0.3rem 0.8rem;cursor:pointer;
+  font-size:0.8rem;font-family:var(--sans);transition:all 0.15s;
+  margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.35rem;
+}
+.anim-btn:hover{border-color:var(--accent);color:var(--text);}
+/* ── Förkunskapsflik ── */
+.prereq-hero{background:var(--bg3);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;border-left:4px solid var(--accent);}
+.prereq-hero-title{font-family:var(--serif);font-size:1.25rem;color:var(--text);margin-bottom:0.25rem;}
+.prereq-hero-sub{font-size:0.85rem;color:var(--text2);}
+.prereq-sec-title{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--text3);font-family:var(--mono);margin-bottom:0.65rem;display:flex;align-items:center;gap:0.5rem;}
+.prereq-sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.skill-list{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.25rem;}
+.skill-item{display:flex;align-items:flex-start;gap:0.65rem;background:var(--bg3);border-radius:9px;padding:0.65rem 0.85rem;font-size:0.88rem;color:var(--text2);border:1px solid var(--border);}
+.skill-icon{font-size:1rem;flex-shrink:0;margin-top:0.05rem;}
+.skill-item strong{color:var(--text);}
+.mq-q{font-size:0.93rem;color:var(--text);font-weight:500;margin-bottom:0.55rem;line-height:1.6;}
+.mq-opts{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem;}
+.mq-opt{background:var(--bg3);border:1.5px solid var(--border2);border-radius:8px;padding:0.38rem 0.85rem;cursor:pointer;font-family:var(--mono);font-size:0.87rem;color:var(--text2);transition:all 0.15s;}
+.mq-opt:hover{border-color:var(--accent);color:var(--text);}
+.mq-opt.mq-ok{border-color:var(--correct);background:rgba(74,222,128,0.1);color:var(--correct);}
+.mq-opt.mq-err{border-color:var(--wrong);background:rgba(249,112,102,0.08);color:var(--wrong);}
+.mq-opt.mq-reveal{border-color:var(--correct);color:var(--correct);}
+.mq-fb{font-size:0.82rem;min-height:1.2em;margin-bottom:0.9rem;padding:0.5rem 0.75rem;border-radius:7px;display:none;}
+.mq-fb.show{display:block;}
+.mq-fb.ok{background:rgba(74,222,128,0.08);color:var(--correct);border:1px solid rgba(74,222,128,0.2);}
+.mq-fb.bad{background:rgba(249,112,102,0.08);color:var(--wrong);border:1px solid rgba(249,112,102,0.2);}
+.mq-pips{display:flex;gap:4px;margin-bottom:0.75rem;}
+.mq-pip{width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);transition:all 0.2s;}
+.mq-pip.ok{background:var(--correct);border-color:var(--correct);}
+.mq-pip.bad{background:var(--wrong);border-color:var(--wrong);}
+.mq-pip.cur{background:var(--accent);border-color:var(--accent);transform:scale(1.2);}
+.mq-next-btn{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.38rem 1rem;cursor:pointer;font-family:var(--sans);font-size:0.84rem;font-weight:500;display:none;transition:opacity 0.15s;}
+.mq-next-btn.show{display:inline-block;}
+.mq-next-btn:hover{opacity:0.85;}
+.prev-mod-link{display:flex;align-items:center;gap:0.85rem;background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:0.85rem 1.1rem;cursor:pointer;transition:border-color 0.15s;text-decoration:none;color:inherit;}
+.prev-mod-link:hover{border-color:var(--accent);}
+.pml-num{width:38px;height:38px;border-radius:9px;background:var(--surface);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.95rem;color:var(--text3);flex-shrink:0;}
+.pml-title{font-size:0.92rem;color:var(--text);font-weight:500;}
+.pml-desc{font-size:0.79rem;color:var(--text3);}
+.pml-arrow{margin-left:auto;font-size:1.1rem;color:var(--text3);}
+.start-btn{background:var(--accent);border:none;color:#fff;border-radius:9px;padding:0.6rem 1.5rem;cursor:pointer;font-family:var(--sans);font-size:0.92rem;font-weight:600;transition:opacity 0.15s;margin-top:0.5rem;}
+.start-btn:hover{opacity:0.85;}
+
+
+/* ── Level picker ── */
+.level-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:0.5rem 0.9rem;cursor:pointer;font-family:var(--sans);display:flex;flex-direction:column;align-items:flex-start;gap:0.1rem;transition:all 0.18s;min-width:120px;}
+.level-btn:hover{border-color:var(--accent);}
+.level-btn.active{border-color:var(--accent);background:rgba(26,110,245,0.08);}
+.lb-icon{font-size:1.1rem;}
+.lb-label{font-size:0.83rem;font-weight:600;color:var(--text);}
+.lb-desc{font-size:0.71rem;color:var(--text3);font-family:var(--mono);}
+.level-btn.active .lb-label{color:var(--accent);}
+
+/* ── Singapore bar (animated rect) ── */
+@keyframes fillSeg{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
+@keyframes popLabel{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.rect-track{display:flex;height:50px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border2);background:var(--surface);}
+.rect-seg{flex:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.78rem;font-weight:500;border-right:1.5px solid var(--border);transform-origin:left;}
+.rect-seg:last-child{border-right:none;}
+.rect-seg.rs-empty{background:var(--surface);color:var(--text3);}
+.rect-seg.rs-one{background:var(--accent);color:#fff;animation:fillSeg 0.3s ease forwards;}
+.rect-seg.rs-sel{background:var(--hi);color:#1a1200;font-weight:700;}
+.rect-seg.rs-rest{background:var(--surface2);color:var(--text3);}
+.brace-row{display:flex;margin-top:3px;}
+.brace-cell{flex:1;border-bottom:2px solid var(--hi);position:relative;}
+.brace-cell:first-child{border-left:2px solid var(--hi);}
+.brace-cell:last-child{border-right:2px solid var(--hi);}
+.brace-label{text-align:center;font-family:var(--mono);font-size:0.8rem;color:var(--accent);font-weight:600;margin-top:0.2rem;animation:popLabel 0.3s ease 0.2s both;}
+
+/* ── Guided rows ── */
+.guided-row{display:flex;align-items:center;gap:0.45rem;flex-wrap:wrap;background:var(--bg3);border-radius:9px;padding:0.65rem 0.9rem;margin-bottom:0.45rem;font-family:var(--mono);font-size:0.91rem;color:var(--text2);border:1.5px solid var(--border);}
+.guided-row.row-correct{border-color:var(--correct);background:rgba(74,222,128,0.06);}
+.guided-row.row-wrong{border-color:var(--wrong);}
+.gi{background:var(--bg2);border:1.5px solid var(--border2);border-radius:6px;padding:0.22rem 0.45rem;font-family:var(--mono);font-size:0.91rem;color:var(--text);width:70px;text-align:center;outline:none;transition:border-color 0.15s;}
+.gi:focus{border-color:var(--accent);}
+.gi.gi-ok{border-color:var(--correct);background:rgba(74,222,128,0.08);color:var(--correct);}
+.gi.gi-err{border-color:var(--wrong);background:rgba(249,112,102,0.08);}
+.gi.gi-pre{border-color:var(--hi);color:var(--hi);background:rgba(240,180,41,0.06);}
+.row-check{background:var(--accent);border:none;color:#fff;border-radius:6px;padding:0.24rem 0.7rem;cursor:pointer;font-family:var(--sans);font-size:0.8rem;font-weight:500;transition:opacity 0.15s;}
+.row-check:hover{opacity:0.85;}
+.row-check:disabled{opacity:0.28;cursor:default;}
+
+/* ── Free answer ── */
+.free-input{background:var(--bg3);border:1.5px solid var(--border2);border-radius:8px;padding:0.5rem 0.7rem;font-family:var(--mono);font-size:1.1rem;color:var(--text);width:110px;text-align:center;outline:none;transition:border-color 0.18s;}
+.free-input:focus{border-color:var(--accent);}
+.free-input.fi-ok{border-color:var(--correct);background:rgba(74,222,128,0.08);}
+.free-input.fi-err{border-color:var(--wrong);}
+.check-btn-main{background:var(--accent);border:none;color:#fff;border-radius:8px;padding:0.5rem 1.1rem;cursor:pointer;font-family:var(--sans);font-size:0.9rem;font-weight:500;transition:opacity 0.18s;}
+.check-btn-main:hover{opacity:0.85;}
+
+/* ── Solution reveal ── */
+.sol-box{background:var(--bg3);border-radius:10px;padding:0.85rem 1rem;margin-top:0.7rem;font-family:var(--mono);font-size:0.87rem;color:var(--text2);border:1px solid var(--border);display:none;}
+.sol-box.show{display:block;}
+.sol-line{line-height:1.9;}
+.sol-line.sol-ans{color:var(--text);font-weight:600;}
+
+/* ── Next button ── */
+.ex-next-big{background:var(--accent);border:none;color:#fff;border-radius:8px;padding:0.5rem 1.3rem;cursor:pointer;font-family:var(--sans);font-size:0.9rem;font-weight:600;transition:opacity 0.18s;display:none;margin-top:0.7rem;}
+.ex-next-big.show{display:inline-block;}
+.ex-next-big:hover{opacity:0.85;}
+
+.ex-question{font-size:1.05rem;color:var(--text);margin-bottom:1rem;font-weight:500;line-height:1.5;}
+.ex-frac{display:inline-flex;vertical-align:middle;margin:0 0.15rem;}
+.answer-row{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;}
+.answer-input{background:var(--bg3);border:1.5px solid var(--border2);border-radius:8px;padding:0.5rem 0.75rem;font-family:var(--mono);font-size:1.1rem;color:var(--text);width:110px;outline:none;text-align:center;transition:border-color 0.18s;}
+.answer-input:focus{border-color:var(--accent);}
+.answer-input.correct{border-color:var(--correct);background:rgba(74,222,128,0.08);}
+.answer-input.wrong{border-color:var(--wrong);background:rgba(249,112,102,0.08);}
+.check-btn{background:var(--accent);border:none;color:#fff;border-radius:8px;padding:0.5rem 1.1rem;cursor:pointer;font-family:var(--sans);font-size:0.9rem;font-weight:500;transition:opacity 0.18s;}
+.check-btn:hover{opacity:0.85;}
+.next-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:0.5rem 1.1rem;cursor:pointer;font-family:var(--sans);font-size:0.9rem;font-weight:500;transition:all 0.18s;display:none;}
+.next-btn.show{display:inline-block;}
+.next-btn:hover{border-color:var(--accent);color:var(--text);}
+.ex-feedback{padding:0.75rem 1rem;border-radius:8px;font-size:0.9rem;display:none;margin-bottom:0.75rem;}
+.ex-feedback.show{display:block;}
+.ex-feedback.ok{background:rgba(74,222,128,0.1);color:var(--correct);border:1px solid rgba(74,222,128,0.25);}
+.ex-feedback.bad{background:rgba(249,112,102,0.1);color:var(--wrong);border:1px solid rgba(249,112,102,0.25);}
+.ex-steps{background:var(--bg3);border-radius:10px;padding:0.9rem 1.1rem;margin-top:0.5rem;font-size:0.88rem;color:var(--text2);display:none;}
+.ex-steps.show{display:block;}
+.ex-steps .step-line{margin-bottom:0.3rem;}
+.ex-steps .step-line:last-child{margin-bottom:0;color:var(--text);font-weight:600;}
+.ex-progress-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;font-size:0.8rem;color:var(--text3);font-family:var(--mono);}
+.ex-pip{width:9px;height:9px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);transition:all 0.2s;}
+.ex-pip.correct{background:var(--correct);border-color:var(--correct);}
+.ex-pip.wrong{background:var(--wrong);border-color:var(--wrong);}
+.ex-pip.current{background:var(--accent);border-color:var(--accent);transform:scale(1.2);}
+
+/* ── Quiz ── */
+.quiz-q{font-size:0.98rem;color:var(--text);margin-bottom:0.9rem;font-weight:500;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.9rem;}
+.quiz-opt{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:0.6rem 0.9rem;cursor:pointer;font-size:0.88rem;color:var(--text2);font-family:var(--mono);text-align:center;transition:all 0.18s;display:flex;align-items:center;justify-content:center;min-height:44px;}
+.quiz-opt:hover{border-color:var(--accent);color:var(--text);background:var(--surface);}
+.quiz-opt.correct{background:rgba(74,222,128,0.12);border-color:var(--correct);color:var(--correct);}
+.quiz-opt.wrong{background:rgba(249,112,102,0.12);border-color:var(--wrong);color:var(--wrong);}
+.quiz-fb{padding:0.72rem 0.95rem;border-radius:8px;font-size:0.88rem;display:none;margin-bottom:0.7rem;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:rgba(74,222,128,0.1);color:var(--correct);border:1px solid rgba(74,222,128,0.25);}
+.quiz-fb.bad{background:rgba(249,112,102,0.1);color:var(--wrong);border:1px solid rgba(249,112,102,0.25);}
+.quiz-next{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:0.47rem 1.1rem;cursor:pointer;font-family:var(--sans);font-size:0.88rem;font-weight:500;display:none;transition:opacity 0.18s;}
+.quiz-next.show{display:inline-block;}
+.quiz-next:hover{opacity:0.85;}
+.quiz-prog{font-size:0.77rem;color:var(--text3);font-family:var(--mono);margin-bottom:0.7rem;}
+
+/* ── Term grid ── */
+.term-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-top:0.9rem;}
+.term-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.95rem 1.05rem;}
+
+/* ── Context chips ── */
+.context-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.6rem;margin:0.9rem 0;}
+.ctx-chip{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.85rem;text-align:center;cursor:pointer;transition:all 0.18s;}
+.ctx-chip:hover,.ctx-chip.selected{border-color:var(--accent);background:rgba(79,156,249,0.07);}
+.ctx-chip .ctx-emoji{font-size:1.7rem;margin-bottom:0.3rem;}
+.ctx-chip .ctx-label{font-size:0.78rem;color:var(--text2);}
+
+@media(max-width:560px){
+  .calc-visual{grid-template-columns:1fr;}
+  .calc-arrow{transform:rotate(90deg);}
+  .quiz-opts,.term-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <div class="portal-header-left">
+      <a class="portal-back" href="index.html">← Bråk</a>
+      <div class="portal-crumb">
+        <span>7.5 Bråk</span><span class="portal-crumb-sep">/</span><span>Beräkna delen</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <span class="done-ind" id="doneIndicator">✓ Klar</span>
+      <button class="done-hdr-btn" id="doneBtn" onclick="markDone()">Markera som klar</button>
+      <button class="portal-theme-toggle" onclick="cyclePortalTheme()">
+        <span id="portalThemeIcon">🎨</span>
+        <span id="portalThemeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('prereq',this)">📚 Förkunskaper</button>
+  <button class="tab-btn" onclick="showTab('genomgang',this)">Genomgång</button>
+  <button class="tab-btn" onclick="showTab('verktyg',this)">Räkneverktyg</button>
+  <button class="tab-btn" onclick="showTab('ovning',this)">Övning</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">Quiz</button>
+</div>
+
+<div class="main">
+
+<!-- ══ FÖRKUNSKAPER ══ -->
+<div class="section active" id="tab-prereq">
+  <div class="card">
+    <div class="prereq-hero">
+      <div class="prereq-hero-title">Bråk 2 — Beräkna delen</div>
+      <div class="prereq-hero-sub">Kontrollera att du har koll på grunderna från Bråk 1 innan du fortsätter.</div>
+    </div>
+
+    <div class="prereq-sec-title">Färdigheter du bör ha med dig</div>
+    <div class="skill-list">
+      <div class="skill-item"><span class="skill-icon">🔢</span><div><strong>Täljare och nämnare</strong> — du vet vad de heter och vad de berättar. Nämnaren delar helheten, täljaren räknar delarna.</div></div>
+      <div class="skill-item"><span class="skill-icon">➗</span><div><strong>Division</strong> — du kan beräkna t.ex. 100/4 och förstår att division delar upp ett tal i lika stora delar.</div></div>
+      <div class="skill-item"><span class="skill-icon">✖️</span><div><strong>Multiplikation</strong> — du kan multiplicera hela tal, t.ex. 3 × 25, vilket behövs i steg 2 av beräkningen.</div></div>
+      <div class="skill-item"><span class="skill-icon">🍕</span><div><strong>Bråk som delar av en helhet</strong> — du förstår att 3/4 betyder "3 av 4 lika delar" och kan visa det med ett bildstöd.</div></div>
+    </div>
+
+    <div class="prereq-sec-title">Snabbkoll</div>
+    <div class="mq-pips" id="pq2-pips"></div>
+    <div id="pq2-wrap"></div>
+
+    <div class="prereq-sec-title" style="margin-top:1.25rem;">Föregående modul</div>
+    <div class="prev-mod-link" onclick="window.location.href='brak1.html'">
+      <div class="pml-num">1</div>
+      <div><div class="pml-title">Bråk 1 — Vad är ett bråk?</div><div class="pml-desc">Täljare, nämnare och vad ett bråk innebär.</div></div>
+      <span class="pml-arrow">→</span>
+    </div>
+
+    <div style="margin-top:1.5rem;text-align:center;">
+      <button class="start-btn" onclick="document.querySelector('.tab-btn:nth-child(2)').click()">Starta genomgången →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GENOMGÅNG ══ -->
+<div class="section" id="tab-genomgang">
+  <div class="card">
+    <div class="card-title">Beräkna delen — genomgång</div>
+    <p class="card-lead">Gå igenom strategin steg för steg. Tryck på <strong style="color:var(--hi);">▶ Visa beräkning</strong> för att se hur man skriver.</p>
+
+    <div id="gWrap">
+
+      <!-- G0: Introduktion -->
+      <div class="gstep active" id="gstep-0">
+        <div class="info-box"><strong>Steg 1 av 5 — Vad menar vi med "en del av"?</strong></div>
+        <p style="color:var(--text2);margin-bottom:1rem;">Vi vill beräkna hur mycket ett bråk av ett tal är. Till exempel:</p>
+
+        <div class="calc-task">
+          Hur mycket är
+          <span class="fv fv-md"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+          av 200 kr?
+        </div>
+
+        <div style="display:flex;gap:0.9rem;flex-wrap:wrap;margin:1rem 0;">
+          <div style="flex:1;min-width:150px;background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;">
+            <div style="font-size:1.9rem;margin-bottom:0.3rem;">💰</div>
+            <div style="color:var(--text);font-weight:600;font-family:var(--mono);">200 kr</div>
+            <div style="color:var(--text3);font-size:0.78rem;margin-top:0.15rem;">Helheten</div>
+          </div>
+          <div style="flex:1;min-width:150px;background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;">
+            <div style="display:flex;justify-content:center;margin-bottom:0.3rem;"><span class="fv fv-lg"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span></div>
+            <div style="color:var(--text3);font-size:0.78rem;">Bråket</div>
+          </div>
+          <div style="flex:1;min-width:150px;background:var(--bg3);border-radius:10px;padding:1rem;text-align:center;border:1px solid rgba(240,180,41,0.2);">
+            <div style="font-size:1.9rem;margin-bottom:0.3rem;">❓</div>
+            <div style="color:var(--hi);font-weight:600;font-family:var(--mono);">? kr</div>
+            <div style="color:var(--text3);font-size:0.78rem;margin-top:0.15rem;">Delen — vi söker</div>
+          </div>
+        </div>
+
+        <div class="hl gold">Strategin: <strong>hitta en del, multiplicera sedan.</strong> Vi delar alltid upp helheten i lika delar först.</div>
+
+        <div class="teacher-guide">
+          <div class="tg-header" onclick="toggleTG(this)">
+            <span class="tg-icon">💡</span> Tips — vad berättar nämnaren?
+            <span class="tg-chevron">▼</span>
+          </div>
+          <div class="tg-body">
+            <p>Titta på nämnaren — den berättar i hur många <strong>lika stora delar</strong> helheten är uppdelad.</p>
+            <p>I exemplet är nämnaren <strong>4</strong>. Det betyder att 200 kr är delat i 4 lika delar. Fråga dig själv: hur stor är <em>en</em> sådan del?</p>
+            <p>Det är alltid startpunkten — hitta en del först, sedan kan du räkna ut hur många delar du vill ha.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- G1: Hitta en del -->
+      <div class="gstep" id="gstep-1">
+        <div class="info-box"><strong>Steg 2 av 5 — Hitta en del</strong></div>
+        <p style="color:var(--text2);margin-bottom:0.9rem;">Nämnaren <strong style="color:var(--hi2);">4</strong> berättar att helheten är delad i 4 lika delar. Vi hittar <em>en</em> sådan del.</p>
+
+        <div class="calc-task">
+          <span class="fv fv-md"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+          av 200 kr
+        </div>
+
+        <div class="calc-block" id="g1-block">
+          <div class="calc-line" id="g1-l0">
+            <span class="cl-q"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span> av 200 kr =</span>
+          </div>
+          <div class="calc-line" id="g1-l1">
+            <span class="cl-q">200 ·</span>
+            <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d" style="color:var(--hi2);">4</span></span>
+            <span class="cl-q">=</span>
+            <span style="font-family:var(--mono);color:var(--text3);">200 / 4 =</span>
+            <span class="cl-acc">50 kr</span>
+          </div>
+        </div>
+
+        <button class="anim-btn" onclick="animG1()">▶ Visa beräkning</button>
+
+        <div style="margin-top:1rem;">
+          <div style="font-size:0.78rem;color:var(--text3);font-family:var(--mono);margin-bottom:0.35rem;">200 kr delat i 4 lika delar:</div>
+          <div class="seg-row" id="g1-segs">
+            <div class="seg inactive">50 kr</div>
+            <div class="seg inactive">50 kr</div>
+            <div class="seg inactive">50 kr</div>
+            <div class="seg inactive">50 kr</div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text3);font-family:var(--mono);">En del = 50 kr (markeras i nästa steg)</div>
+        </div>
+
+        <div class="teacher-guide">
+          <div class="tg-header" onclick="toggleTG(this)">
+            <span class="tg-icon">✏️</span> Tips — så här skriver du steg 1
+            <span class="tg-chevron">▼</span>
+          </div>
+          <div class="tg-body">
+            <p>Börja alltid med att skriva uppgiften, sedan rad 1 på en ny rad:</p>
+            <p style="font-family:var(--mono);background:var(--bg);padding:0.6rem 0.8rem;border-radius:7px;font-size:0.88rem;line-height:2.1;">
+              3/4 av 200 kr<br>
+              1/4 av 200 kr = 200 · 1/4 = 50 kr
+            </p>
+            <p>Byt täljaren till <strong>1</strong> — du letar ju efter <em>en</em> del. Skriv sedan helheten · bråket. Att multiplicera med <strong>1/4</strong> är samma sak som att dela med 4.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- G2: Multiplicera -->
+      <div class="gstep" id="gstep-2">
+        <div class="info-box"><strong>Steg 3 av 5 — Ta rätt antal delar</strong></div>
+        <p style="color:var(--text2);margin-bottom:0.9rem;">Vi vet nu att en del är 50 kr. Täljaren <strong style="color:var(--hi);">3</strong> säger att vi vill ha 3 sådana delar.</p>
+
+        <div class="calc-task">
+          <span class="fv fv-md"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+          av 200 kr
+        </div>
+
+        <div class="calc-block" id="g2-block">
+          <div class="calc-line" id="g2-l0">
+            <span class="cl-q"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span> av 200 kr = 200 · </span>
+            <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+            <span class="cl-q">= 50 kr</span>
+          </div>
+          <div class="calc-line" id="g2-l1">
+            <span class="cl-q"><span class="fv fv-sm"><span class="fv-n" style="color:var(--hi);">3</span><span class="fv-b"></span><span class="fv-d">4</span></span> av 200 kr → 50 kr ·</span>
+            <span class="cl-hi">3</span>
+            <span class="cl-q">=</span>
+            <span class="cl-ans">150 kr</span>
+          </div>
+        </div>
+
+        <button class="anim-btn" onclick="animG2()">▶ Visa beräkning</button>
+
+        <div style="margin-top:1rem;">
+          <div style="font-size:0.78rem;color:var(--text3);font-family:var(--mono);margin-bottom:0.35rem;">Vi tar 3 av de 4 delarna:</div>
+          <div class="seg-row">
+            <div class="seg selected">50 kr</div>
+            <div class="seg selected">50 kr</div>
+            <div class="seg selected">50 kr</div>
+            <div class="seg rest">50 kr</div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--hi);font-family:var(--mono);">3 · 50 kr = 150 kr</div>
+        </div>
+
+        <div class="hl gold" style="margin-top:1rem;"><strong>Svar:</strong> <span class="fv fv-sm" style="display:inline-flex;vertical-align:middle;"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span> av 200 kr = <strong>150 kr</strong></div>
+
+        <div class="teacher-guide">
+          <div class="tg-header" onclick="toggleTG(this)">
+            <span class="tg-icon">✏️</span> Tips — så skriver du hela lösningen
+            <span class="tg-chevron">▼</span>
+          </div>
+          <div class="tg-body">
+            <p>Tre rader, en beräkning per rad:</p>
+            <p style="font-family:var(--mono);background:var(--bg);padding:0.6rem 0.8rem;border-radius:7px;font-size:0.88rem;line-height:2.1;">
+              3/4 av 200 kr<br>
+              1/4 av 200 kr = 200 · 1/4 = 50 kr<br>
+              3/4 av 200 kr → 50 kr · 3 = 150 kr
+            </p>
+            <p>Pilen <strong>→</strong> på rad 3 visar att du <em>använder</em> svaret från raden ovan. Du tar det du hittade (50 kr) och multiplicerar med täljaren (3).</p>
+            <p>Kom ihåg: <strong>·</strong> för multiplikation, och skriv alltid bråk stående.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- G3: Strategin -->
+      <div class="gstep" id="gstep-3">
+        <div class="info-box"><strong>Steg 4 av 5 — Strategin i korthet</strong></div>
+        <p style="color:var(--text2);margin-bottom:1rem;">Alltid samma uppställning, oavsett bråk och helhet:</p>
+
+        <div style="background:var(--bg3);border-radius:12px;padding:1.1rem 1.3rem;margin-bottom:0.9rem;">
+          <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);font-family:var(--mono);margin-bottom:0.75rem;">Mall</div>
+          <div style="font-family:var(--mono);font-size:0.95rem;color:var(--text2);line-height:2.1;">
+            <span style="color:var(--text3);">t/n av H</span><br>
+            <span style="color:var(--text3);">1/</span><span style="color:var(--hi2);">n</span><span style="color:var(--text3);"> av H = H · 1/</span><span style="color:var(--hi2);">n</span><span style="color:var(--text3);"> = en del</span><br>
+            <span style="color:var(--text3);">t/n av H → en del ·</span> <span style="color:var(--hi);">t</span><span style="color:var(--text3);"> = </span><span style="color:var(--hi);font-weight:600;">svar</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <div style="background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:0.8rem 1rem;">
+            <div style="font-weight:600;color:var(--text);font-size:0.9rem;">Rad 1 — Uppgiften</div>
+            <div style="color:var(--text2);font-size:0.85rem;">Skriv bråket och helheten, t.ex. <span style="font-family:var(--mono);">3/4 av 200 kr</span></div>
+          </div>
+          <div style="background:var(--bg3);border-left:3px solid var(--hi2);border-radius:0 10px 10px 0;padding:0.8rem 1rem;">
+            <div style="font-weight:600;color:var(--text);font-size:0.9rem;">Rad 2 — En del (täljare = 1)</div>
+            <div style="color:var(--text2);font-size:0.85rem;">Byt täljaren till 1 och beräkna. Dela helheten med <span style="color:var(--hi2);">nämnaren</span>.</div>
+          </div>
+          <div style="background:var(--bg3);border-left:3px solid var(--hi);border-radius:0 10px 10px 0;padding:0.8rem 1rem;">
+            <div style="font-weight:600;color:var(--text);font-size:0.9rem;">Rad 3 — Rätt antal delar</div>
+            <div style="color:var(--text2);font-size:0.85rem;">Multiplicera en del med <span style="color:var(--hi);">täljaren</span>. Använd <strong>→</strong> och <strong>·</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- G4: Fler exempel animerade -->
+      <div class="gstep" id="gstep-4">
+        <div class="info-box"><strong>Steg 5 av 5 — Fler exempel</strong></div>
+        <p style="color:var(--text2);margin-bottom:1rem;">Samma uppställning i olika sammanhang. Klicka för att se lösningen rad för rad.</p>
+
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+
+          <!-- Ex 1 -->
+          <div style="background:var(--bg3);border-radius:12px;padding:1.1rem 1.3rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <span style="font-size:1.2rem;">📏</span>
+              <div class="calc-task" style="margin:0;">
+                <span class="fv fv-sm"><span class="fv-n">2</span><span class="fv-b"></span><span class="fv-d">3</span></span>
+                av 90 m
+              </div>
+            </div>
+            <div id="ex1-lines" style="display:flex;flex-direction:column;gap:0;"></div>
+            <button class="anim-btn" onclick="animExample(1)">▶ Visa lösning</button>
+          </div>
+
+          <!-- Ex 2 -->
+          <div style="background:var(--bg3);border-radius:12px;padding:1.1rem 1.3rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <span style="font-size:1.2rem;">⏱️</span>
+              <div class="calc-task" style="margin:0;">
+                <span class="fv fv-sm"><span class="fv-n">5</span><span class="fv-b"></span><span class="fv-d">6</span></span>
+                av 60 min
+              </div>
+            </div>
+            <div id="ex2-lines" style="display:flex;flex-direction:column;gap:0;"></div>
+            <button class="anim-btn" onclick="animExample(2)">▶ Visa lösning</button>
+          </div>
+
+          <!-- Ex 3 -->
+          <div style="background:var(--bg3);border-radius:12px;padding:1.1rem 1.3rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <span style="font-size:1.2rem;">🏆</span>
+              <div class="calc-task" style="margin:0;">
+                <span class="fv fv-sm"><span class="fv-n">7</span><span class="fv-b"></span><span class="fv-d">10</span></span>
+                av 50 p
+              </div>
+            </div>
+            <div id="ex3-lines" style="display:flex;flex-direction:column;gap:0;"></div>
+            <button class="anim-btn" onclick="animExample(3)">▶ Visa lösning</button>
+          </div>
+        </div>
+
+        <div class="hl green" style="margin-top:1rem;">Nu är du redo att öva! Gå till <strong>Räkneverktyget</strong> eller <strong>Övning</strong>.</div>
+      </div>
+
+    </div><!-- /gWrap -->
+
+    <div class="step-nav">
+      <button class="snav-btn" id="gPrev" onclick="gNav(-1)" disabled>← Föregående</button>
+      <div class="step-dots" id="gDots"></div>
+      <button class="snav-btn primary" id="gNext" onclick="gNav(1)">Nästa →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RÄKNEVERKTYG ══ -->
+<div class="section" id="tab-verktyg">
+  <div class="card">
+    <div class="card-title">Räkneverktyg</div>
+    <p class="card-lead">Välj bråk och helhet med glidarna — se hur beräkningen sker steg för steg.</p>
+
+    <div class="ctrl-row">
+      <label style="color:var(--hi);min-width:70px;">Täljare:</label>
+      <input type="range" id="vT" min="1" max="9" value="2" oninput="updateVerktyg()">
+      <span class="vbadge" id="vVT">2</span>
+    </div>
+    <div class="ctrl-row">
+      <label style="color:var(--hi2);min-width:70px;">Nämnare:</label>
+      <input type="range" id="vN" min="2" max="10" value="5" oninput="updateVerktyg()">
+      <span class="vbadge" id="vVN" style="color:var(--hi2);">5</span>
+    </div>
+    <div class="ctrl-row">
+      <label style="color:var(--text2);min-width:70px;">Helhet:</label>
+      <input type="range" id="vH" min="10" max="200" step="10" value="100" oninput="updateVerktyg()">
+      <span class="vbadge" id="vVH" style="color:var(--text);">100</span>
+    </div>
+
+    <!-- Kontextväljare -->
+    <div style="font-size:0.78rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin:1rem 0 0.4rem;font-family:var(--mono);">Kontext</div>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.1rem;" id="ctxPicker">
+      <button class="sub-btn active" style="flex:0 0 auto;border-radius:7px;border:1px solid var(--border2);" onclick="setCtx('kr',this)">💰 Kronor</button>
+      <button class="sub-btn" style="flex:0 0 auto;border-radius:7px;border:1px solid var(--border2);" onclick="setCtx('m',this)">📏 Meter</button>
+      <button class="sub-btn" style="flex:0 0 auto;border-radius:7px;border:1px solid var(--border2);" onclick="setCtx('min',this)">⏱️ Minuter</button>
+      <button class="sub-btn" style="flex:0 0 auto;border-radius:7px;border:1px solid var(--border2);" onclick="setCtx('p',this)">🏆 Poäng</button>
+      <button class="sub-btn" style="flex:0 0 auto;border-radius:7px;border:1px solid var(--border2);" onclick="setCtx('elever',this)">👤 Elever</button>
+    </div>
+
+    <!-- Step-by-step display -->
+    <div style="background:var(--bg3);border-radius:13px;padding:1.25rem;margin-bottom:1rem;">
+      <div style="font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);font-family:var(--mono);margin-bottom:0.9rem;">Beräkning steg för steg</div>
+
+      <!-- Uppgift -->
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;font-size:1rem;color:var(--text2);flex-wrap:wrap;">
+        Hur mycket är
+        <span class="fv fv-md" id="vFrac"><span class="fv-n">2</span><span class="fv-b"></span><span class="fv-d">5</span></span>
+        av <span style="font-family:var(--mono);color:var(--text);margin:0 0.15rem;" id="vHeltLabel">100 kr</span> ?
+      </div>
+
+      <!-- Steg 1 -->
+      <div style="background:var(--bg2);border-radius:9px;padding:0.85rem 1rem;margin-bottom:0.6rem;border:1px solid var(--border);">
+        <div style="font-size:0.75rem;color:var(--accent);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Steg 1 — En del (helhet · 1/nämnare)</div>
+        <div style="font-family:var(--mono);font-size:0.97rem;color:var(--text2);" id="vStep1">
+          1/5 av 100 kr = 100/5 = <strong style="color:var(--hi);">20 kr</strong>
+        </div>
+      </div>
+
+      <!-- Bar step 1 -->
+      <div id="vBar1Wrap" style="margin-bottom:0.9rem;"></div>
+
+      <!-- Steg 2 -->
+      <div style="background:var(--bg2);border-radius:9px;padding:0.85rem 1rem;border:1px solid var(--border);">
+        <div style="font-size:0.75rem;color:var(--hi);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Steg 2 — Rätt antal delar (en del · täljare)</div>
+        <div style="font-family:var(--mono);font-size:0.97rem;color:var(--text2);" id="vStep2">
+          2 × 20 kr = <strong style="color:var(--hi);">40 kr</strong>
+        </div>
+      </div>
+
+      <!-- Bar step 2 -->
+      <div id="vBar2Wrap" style="margin-top:0.9rem;"></div>
+
+      <!-- Svar -->
+      <div style="margin-top:1rem;padding:0.9rem 1.1rem;background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.25);border-radius:10px;text-align:center;">
+        <div style="font-size:0.75rem;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.35rem;">Svar</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;font-size:1rem;color:var(--text2);">
+          <span class="fv fv-md" id="vFrac2"><span class="fv-n">2</span><span class="fv-b"></span><span class="fv-d">5</span></span>
+          av <span id="vHelt2" style="font-family:var(--mono);color:var(--text);margin:0 0.1rem;">100 kr</span> =
+          <span id="vSvar" style="font-family:var(--mono);font-size:1.4rem;font-weight:500;color:var(--hi);margin-left:0.2rem;">40 kr</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ÖVNING ══ -->
+<div class="section" id="tab-ovning">
+
+  <!-- Nivåväljare -->
+  <div class="card" style="padding:1.1rem 1.5rem;">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <span style="font-size:0.8rem;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.07em;">Nivå:</span>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="levelPicker">
+        <button class="level-btn active" data-level="1" onclick="setLevel(1,this)">
+          <span class="lb-icon">🧱</span>
+          <span class="lb-label">Grundnivå</span>
+          <span class="lb-desc">Bildstöd + guided</span>
+        </button>
+        <button class="level-btn" data-level="2" onclick="setLevel(2,this)">
+          <span class="lb-icon">📐</span>
+          <span class="lb-label">Mellannivå</span>
+          <span class="lb-desc">Beräkningar + stöd</span>
+        </button>
+        <button class="level-btn" data-level="3" onclick="setLevel(3,this)">
+          <span class="lb-icon">🚀</span>
+          <span class="lb-label">Självständigt</span>
+          <span class="lb-desc">Bara uppgiften</span>
+        </button>
+      </div>
+      <button class="anim-btn" onclick="initEx()" style="margin:0;margin-left:auto;">🔀 Ny uppgift</button>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card" style="padding:0.9rem 1.5rem;">
+    <div class="ex-progress-row" style="margin:0;">
+      <span>Uppgift <span id="exIdx">1</span> av <span id="exTotal">6</span></span>
+      <div style="display:flex;gap:4px;" id="exPips"></div>
+    </div>
+  </div>
+
+  <!-- Exercise area -->
+  <div class="card" id="exCard">
+    <div id="exWrap"></div>
+  </div>
+
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="section" id="tab-quiz">
+  <div class="card">
+    <div class="card-title">Quiz — Beräkna delen</div>
+    <p class="card-lead">Testa att du hänger med! Välj rätt svar.</p>
+    <div class="quiz-prog" id="quizProg">Fråga 1 av 6</div>
+    <div id="quizWrap"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+
+// ══ FÖRKUNSKAPER ══
+const PQ2 = [
+  { q:'Vad kallas siffran UNDER bråkstrecket?', opts:['Täljare','Nämnare','Kvot','Rest'], ok:1, fb:'Siffran under strecket kallas nämnaren. Den berättar i hur många lika delar helheten är uppdelad.' },
+  { q:'Vad är 80/4?', opts:['16','20','24','18'], ok:1, fb:'80/4 = 20. Division är steg 1 när vi beräknar en bråkdel.' },
+  { q:'I bråket 3/5 — vad berättar 5?', opts:['Vi tar 5 delar','Helheten är delad i 5 lika delar','Svaret är 5','Det finns 5 bråk'], ok:1, fb:'Nämnaren 5 berättar att helheten är uppdelad i 5 lika delar.' },
+  { q:'Vad är 4 × 25?', opts:['80','90','100','75'], ok:2, fb:'4 × 25 = 100. Multiplikation används i steg 2 när vi tar rätt antal delar.' },
+  { q:'En rektangel delas i 6 lika delar. Vi markerar 2 av dem. Vilket bråk visar det?', opts:['2/4','1/3','2/6','3/6'], ok:2, fb:'2 av 6 delar = 2/6. (Notera att 2/6 = 1/3 om vi förkortar, men 2/6 är den direkta tolkningen.)' },
+];
+let pq2I=0, pq2Results=[];
+function initPQ2(){ pq2I=0; pq2Results=Array(PQ2.length).fill(null); renderPQ2(); }
+function renderPQ2(){
+  const q=PQ2[pq2I];
+  document.getElementById('pq2-pips').innerHTML=PQ2.map((_,i)=>{ let c='mq-pip'; if(i===pq2I)c+=' cur'; else if(pq2Results[i]===true)c+=' ok'; else if(pq2Results[i]===false)c+=' bad'; return `<div class="${c}"></div>`; }).join('');
+  document.getElementById('pq2-wrap').innerHTML=`<div class="mq-q">${q.q}</div><div class="mq-opts">${q.opts.map((o,i)=>`<button class="mq-opt" onclick="answerPQ2(${i},this)">${o}</button>`).join('')}</div><div class="mq-fb" id="pq2-fb"></div><button class="mq-next-btn" id="pq2-next" onclick="nextPQ2()">${pq2I<PQ2.length-1?'Nästa fråga →':'Se resultat'}</button>`;
+}
+function answerPQ2(i,btn){
+  const q=PQ2[pq2I]; const ok=i===q.ok; pq2Results[pq2I]=ok;
+  document.querySelectorAll('#pq2-wrap .mq-opt').forEach((b,j)=>{ b.disabled=true; if(b===btn)b.classList.add(ok?'mq-ok':'mq-err'); if(j===q.ok)b.classList.add('mq-reveal'); });
+  const fb=document.getElementById('pq2-fb'); fb.className='mq-fb show '+(ok?'ok':'bad'); fb.textContent=(ok?'✓ ':'✗ ')+q.fb;
+  document.getElementById('pq2-next').classList.add('show');
+  document.getElementById('pq2-pips').innerHTML=PQ2.map((_,i2)=>{ let c='mq-pip'; if(i2===pq2I)c+=' cur'; else if(pq2Results[i2]===true)c+=' ok'; else if(pq2Results[i2]===false)c+=' bad'; return `<div class="${c}"></div>`; }).join('');
+}
+function nextPQ2(){
+  if(pq2I<PQ2.length-1){ pq2I++; renderPQ2(); }
+  else {
+    const correct=pq2Results.filter(r=>r===true).length;
+    document.getElementById('pq2-pips').innerHTML='';
+    document.getElementById('pq2-wrap').innerHTML=`<div style="text-align:center;padding:1rem 0;"><div style="font-size:2rem;margin-bottom:0.4rem;">${correct===PQ2.length?'🎉':correct>=3?'👍':'💪'}</div><div style="font-family:var(--mono);font-size:1.4rem;color:var(--accent);margin-bottom:0.35rem;">${correct} / ${PQ2.length} rätt</div><div style="font-size:0.87rem;color:var(--text2);margin-bottom:1rem;">${correct===PQ2.length?'Perfekt — du är redo!':correct>=3?'Bra grund — kör på!':'Repetera gärna Bråk 1 om något känns oklart.'}</div><button class="start-btn" onclick="document.querySelector('.tab-btn:nth-child(2)').click()">Starta genomgången →</button></div>`;
+  }
+}
+
+// ══ ALLA VARIABLER ÖVERST ══
+const GMAX = 5;
+let gCur = 0;
+let vCtx = 'kr';
+let exercises = [], exCur = 0, exResults = [];
+let qI = 0, qAns = false;
+
+// ══ HELPERS ══
+function gcd(a,b){return b===0?a:gcd(b,a%b);}
+function fvHTML(t,n,cls){
+  const g=gcd(Math.abs(t),Math.abs(n)),st=t/g,sn=n/g,c=cls||'fv-md';
+  if(sn===1)return`<span style="font-family:var(--mono);color:var(--hi);font-weight:500;">${st}</span>`;
+  return`<span class="fv ${c}"><span class="fv-n">${st}</span><span class="fv-b"></span><span class="fv-d">${sn}</span></span>`;
+}
+function niceFrac(t,n){ const g=gcd(t,n); return t/g+'/'+(n/g); }
+
+// ══ THEME ══
+// ══ TAB / SUB ══
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');
+  if(id==='prereq')initPQ2();
+  if(id==='genomgang'){gCur=0;showGStep();}
+  if(id==='verktyg')updateVerktyg();
+  if(id==='ovning')initEx();
+  if(id==='quiz')initQuiz();
+}
+
+// ══ ANIMATIONER & LÄRARGUIDE ══
+function toggleTG(header){
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.tg-chevron');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function showLine(id, delay){
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.add('visible');
+  }, delay);
+}
+
+function animG1(){
+  // Reset
+  ['g1-l0','g1-l1'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('visible');void el.offsetWidth;}
+  });
+  // Highlight first seg
+  const segs=document.querySelectorAll('#g1-segs .seg');
+  segs.forEach((s,i)=>{s.className='seg '+(i===0?'one':'inactive');});
+  showLine('g1-l0', 100);
+  showLine('g1-l1', 550);
+}
+
+function animG2(){
+  ['g2-l0','g2-l1'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('visible');void el.offsetWidth;}
+  });
+  showLine('g2-l0', 100);
+  showLine('g2-l1', 600);
+}
+
+function fvS(t,n,tc,nc){
+  return `<span class="fv fv-sm" style="display:inline-flex;vertical-align:middle;margin:0 0.1rem;">
+    <span class="fv-n" style="color:${tc||'var(--accent)'};">${t}</span>
+    <span class="fv-b"></span>
+    <span class="fv-d" style="color:${nc||'var(--text2)'};">${n}</span>
+  </span>`;
+}
+
+const EXAMPLES = {
+  1: { t:2, n:3, h:90,  unit:'m',   emoji:'📏' },
+  2: { t:5, n:6, h:60,  unit:'min', emoji:'⏱️' },
+  3: { t:7, n:10,h:50,  unit:'p',   emoji:'🏆' },
+};
+
+function animExample(i){
+  const ex = EXAMPLES[i];
+  const oneDel = ex.h / ex.n;
+  const del = ex.t * oneDel;
+  const container = document.getElementById(`ex${i}-lines`);
+  if(!container) return;
+  container.innerHTML = '';
+
+  const lines = [
+    // rad 1 — en del
+    `<div class="calc-line" style="opacity:0;" id="exl${i}-0">
+      ${fvS(1,ex.n,'var(--accent)','var(--hi2)')} av ${ex.h} ${ex.unit} = ${ex.h} · ${fvS(1,ex.n,'var(--accent)','var(--hi2)')} = <span class="cl-acc">${oneDel} ${ex.unit}</span>
+    </div>`,
+    // rad 2 — rätt antal
+    `<div class="calc-line" style="opacity:0;" id="exl${i}-1">
+      ${fvS(ex.t,ex.n,'var(--hi)','var(--text2)')} av ${ex.h} ${ex.unit} → ${oneDel} ${ex.unit} · <span class="cl-hi">${ex.t}</span> = <span class="cl-ans">${del} ${ex.unit}</span>
+    </div>`,
+  ];
+  container.innerHTML = lines.join('');
+
+  setTimeout(()=>{ const el=document.getElementById(`exl${i}-0`); if(el)el.classList.add('visible'); }, 80);
+  setTimeout(()=>{ const el=document.getElementById(`exl${i}-1`); if(el)el.classList.add('visible'); }, 580);
+}
+
+
+function gNav(d){
+  gCur=Math.max(0,Math.min(GMAX-1,gCur+d));
+  showGStep();
+}
+function gJump(i){
+  gCur=i;
+  showGStep();
+}
+function showGStep(){
+  document.querySelectorAll('.gstep').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('gstep-'+gCur);
+  if(el)el.classList.add('active');
+  const prev=document.getElementById('gPrev');
+  const next=document.getElementById('gNext');
+  if(prev)prev.disabled=gCur===0;
+  if(next){next.textContent=gCur===GMAX-1?'🎉 Klar':'Nästa →';next.disabled=gCur===GMAX-1;}
+  renderGDots();
+}
+function renderGDots(){
+  const d=document.getElementById('gDots');
+  if(d)d.innerHTML=Array.from({length:GMAX},(_,i)=>
+    `<div class="step-dot ${i===gCur?'active':''}" onclick="gJump(${i})"></div>`).join('');
+}
+
+// ══ VERKTYG ══
+function setCtx(c,btn){
+  vCtx=c;
+  document.querySelectorAll('#ctxPicker button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  updateVerktyg();
+}
+
+function renderBar(containerId, n, highlighted, label){
+  const wrap=document.getElementById(containerId);if(!wrap)return;
+  let cells='';
+  for(let i=0;i<n;i++){
+    const isHi=i<highlighted;
+    cells+=`<div style="flex:1;height:34px;background:${isHi?'var(--hi)':'var(--surface2)'};border-radius:4px;border:1px solid ${isHi?'rgba(240,180,41,0.4)':'var(--border)'};"></div>`;
+  }
+  wrap.innerHTML=`<div style="display:flex;gap:3px;margin-bottom:3px;">${cells}</div>
+    <div style="font-size:0.72rem;color:var(--text3);font-family:var(--mono);">${label}</div>`;
+}
+
+function updateVerktyg(){
+  const nEl=document.getElementById('vN');if(!nEl)return;
+  const n=parseInt(nEl.value);
+  let t=parseInt(document.getElementById('vT').value);
+  if(t>n){t=n;document.getElementById('vT').value=n;}
+  document.getElementById('vT').max=n;
+  const h=parseInt(document.getElementById('vH').value);
+  const unit=vCtx;
+  document.getElementById('vVT').textContent=t;
+  document.getElementById('vVN').textContent=n;
+  document.getElementById('vVH').textContent=h;
+
+  const oneDel=h/n;
+  const del=t*oneDel;
+  const oneDelStr=Number.isInteger(oneDel)?oneDel:oneDel.toFixed(1);
+  const delStr=Number.isInteger(del)?del:del.toFixed(1);
+
+  ['vFrac','vFrac2'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.innerHTML=
+      `<span class="fv fv-md"><span class="fv-n">${t}</span><span class="fv-b"></span><span class="fv-d">${n}</span></span>`;
+  });
+  document.getElementById('vHeltLabel').textContent=`${h} ${unit}`;
+  document.getElementById('vHelt2').textContent=`${h} ${unit}`;
+  document.getElementById('vStep1').innerHTML=
+    `${h} · <span class="fv fv-sm" style="display:inline-flex;vertical-align:middle;"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d" style="color:var(--hi2);">${n}</span></span> = <strong style="color:var(--hi);">${oneDelStr} ${unit}</strong>`;
+  document.getElementById('vStep2').innerHTML=
+    `${oneDelStr} ${unit} · <strong style="color:var(--hi);">${t}</strong> = <strong style="color:var(--hi);">${delStr} ${unit}</strong>`;
+  document.getElementById('vSvar').textContent=`${delStr} ${unit}`;
+
+  renderBar('vBar1Wrap', n, 1, `En del (1/${n}) = ${oneDelStr} ${unit}`);
+  renderBar('vBar2Wrap', n, t, `${t} delar (${t}/${n}) = ${delStr} ${unit}`);
+}
+
+// ══ ÖVNING — 3 NIVÅER ══
+const CONTEXTS = [
+  {unit:'kr',   emoji:'💰', helhet:[100,200,150,80,120,300,250,160]},
+  {unit:'m',    emoji:'📏', helhet:[60,90,120,150,30,180,45,75]},
+  {unit:'min',  emoji:'⏱️', helhet:[60,30,90,120,45,180,150]},
+  {unit:'p',    emoji:'🏆', helhet:[50,100,80,40,60,120,90,150]},
+  {unit:'elever',emoji:'👤',helhet:[20,25,30,15,24,18,28,32]},
+];
+
+let exLevel = 1;
+let rowStates = {}; // tracks which guided rows are answered
+
+function setLevel(n, btn){
+  exLevel = n;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  initEx();
+}
+
+function genExercises(){
+  const exs=[];
+  const denoms = exLevel===1 ? [2,3,4,5] : exLevel===2 ? [2,3,4,5,6] : [2,3,4,5,6,8,10];
+  const count = 6;
+  for(let i=0;i<count;i++){
+    const ctx=CONTEXTS[Math.floor(Math.random()*CONTEXTS.length)];
+    const n=denoms[Math.floor(Math.random()*denoms.length)];
+    const t=1+Math.floor(Math.random()*(n-1));
+    const h=ctx.helhet[Math.floor(Math.random()*ctx.helhet.length)];
+    const hAdjusted=Math.round(h/n)*n;
+    const oneDel=hAdjusted/n;
+    const del=t*oneDel;
+    exs.push({t,n,h:hAdjusted,unit:ctx.unit,emoji:ctx.emoji,oneDel,del});
+  }
+  return exs;
+}
+
+function initEx(){
+  exercises=genExercises();
+  exCur=0;exResults=Array(exercises.length).fill(null);rowStates={};
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx();
+}
+
+// ── helpers ──
+function fvEl(t,n,tc,nc){
+  return `<span class="fv fv-sm" style="display:inline-flex;vertical-align:middle;margin:0 0.1rem;"><span class="fv-n" style="color:${tc||'var(--accent)'};">${t}</span><span class="fv-b"></span><span class="fv-d" style="color:${nc||'var(--text2)'};">${n}</span></span>`;
+}
+function updatePips(){
+  document.getElementById('exIdx').textContent=exCur+1;
+  document.getElementById('exPips').innerHTML=exercises.map((_,i)=>{
+    let cls='ex-pip';
+    if(i===exCur)cls+=' current';
+    else if(exResults[i]===true)cls+=' correct';
+    else if(exResults[i]===false)cls+=' wrong';
+    return`<div class="${cls}"></div>`;
+  }).join('');
+}
+
+// ── Bar builder ──
+function buildBar(n, highlighted, mode){
+  // mode: 'empty' | 'one' | 'sel'
+  let segs='';
+  for(let i=0;i<n;i++){
+    let cls='rect-seg rs-empty';
+    let label='';
+    if(mode==='one'  && i===0){ cls='rect-seg rs-one'; }
+    if(mode==='sel'  && i<highlighted){ cls='rect-seg rs-sel'; }
+    if(mode==='sel'  && i>=highlighted){ cls='rect-seg rs-rest'; }
+    segs+=`<div class="${cls}" style="animation-delay:${i*60}ms">${label}</div>`;
+  }
+  return `<div class="rect-track" style="margin-bottom:2px;">${segs}</div>`;
+}
+
+function buildBrace(n, start, end, label){
+  // brace spanning cells start..end-1
+  let cells='';
+  for(let i=0;i<n;i++){
+    const inBrace = i>=start && i<end;
+    cells+=`<div class="brace-cell" style="${inBrace?'':'border-bottom:none;border-left:none;border-right:none;'}" ></div>`;
+  }
+  return `<div class="brace-row">${cells}</div><div class="brace-label">${label}</div>`;
+}
+
+// ══ NIVÅ 1 — Guided bildstöd ══
+function renderLevel1(ex){
+  const {t,n,h,unit,emoji,oneDel,del} = ex;
+  rowStates = {r1:false, r2:false};
+  return `
+    <div class="ex-question">${emoji} Hur mycket är ${fvEl(t,n)} av ${h} ${unit}?</div>
+
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:0.78rem;color:var(--text3);font-family:var(--mono);margin-bottom:0.4rem;">Dela upp helheten i ${n} lika delar:</div>
+      ${buildBar(n,0,'empty')}
+      <div style="font-size:0.75rem;color:var(--text3);font-family:var(--mono);text-align:center;margin-top:0.25rem;">${h} ${unit} / ${n} delar</div>
+    </div>
+
+    <div style="font-size:0.82rem;color:var(--text2);margin-bottom:0.6rem;">
+      <strong style="color:var(--hi2);">Steg 1</strong> — Hitta vad en del är värd:
+    </div>
+    <div class="guided-row" id="ex-r1">
+      ${fvEl(1,n,'var(--accent)','var(--hi2)')} av ${h} ${unit} = ${h} · ${fvEl(1,n,'var(--accent)','var(--hi2)')} =
+      <input class="gi" id="gi-onedel" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkRow1()">
+      <span style="color:var(--text2);">${unit}</span>
+      <button class="row-check" onclick="checkRow1()">✓</button>
+    </div>
+    <div id="bar1-wrap" style="margin-bottom:1rem;"></div>
+
+    <div style="font-size:0.82rem;color:var(--text2);margin-bottom:0.6rem;" id="step2-label" style="display:none;">
+      <strong style="color:var(--hi);">Steg 2</strong> — Ta ${t} sådana delar:
+    </div>
+    <div class="guided-row" id="ex-r2" style="opacity:0.3;pointer-events:none;">
+      ${fvEl(t,n,'var(--hi)','var(--text2)')} av ${h} ${unit} → <span id="gi-onedel-echo" style="font-family:var(--mono);color:var(--text3);">?</span> ${unit} · ${t} =
+      <input class="gi" id="gi-del" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkRow2()">
+      <span style="color:var(--text2);">${unit}</span>
+      <button class="row-check" id="btn-r2" onclick="checkRow2()" disabled>✓</button>
+    </div>
+    <div id="bar2-wrap" style="margin-bottom:0.5rem;"></div>
+
+    <div class="ex-feedback" id="exFb"></div>
+    <button class="ex-next-big" id="exNext" onclick="nextEx()">Nästa uppgift →</button>
+  `;
+}
+
+function checkRow1(){
+  const ex=exercises[exCur];
+  const val=parseFloat(document.getElementById('gi-onedel').value);
+  const ok = Math.abs(val-ex.oneDel)<0.05;
+  const inp=document.getElementById('gi-onedel');
+  inp.classList.add(ok?'gi-ok':'gi-err');inp.disabled=true;
+  document.getElementById('ex-r1').classList.add(ok?'row-correct':'row-wrong');
+  document.querySelector('#ex-r1 .row-check').disabled=true;
+
+  if(ok){
+    rowStates.r1=true;
+    // animate bar showing one segment
+    let segs='';
+    for(let i=0;i<ex.n;i++){
+      const cls=i===0?'rect-seg rs-one':'rect-seg rs-empty';
+      segs+=`<div class="${cls}" style="animation-delay:${i*55}ms"></div>`;
+    }
+    let braceHtml=buildBrace(ex.n,0,1,`${ex.oneDel} ${ex.unit}`);
+    document.getElementById('bar1-wrap').innerHTML=`<div class="rect-track">${segs}</div>${braceHtml}`;
+    // unlock step 2
+    const r2=document.getElementById('ex-r2');
+    r2.style.opacity='1';r2.style.pointerEvents='auto';
+    document.getElementById('gi-onedel-echo').textContent=ex.oneDel;
+    document.getElementById('gi-onedel-echo').style.color='var(--accent)';
+    document.getElementById('btn-r2').disabled=false;
+    document.getElementById('gi-del').focus();
+  } else {
+    const fb=document.getElementById('exFb');
+    fb.className='ex-feedback show bad';
+    fb.innerHTML=`En del = ${ex.h} · ${fvEl(1,ex.n)} = <strong>${ex.oneDel} ${ex.unit}</strong> — försök igen eller gå vidare.`;
+    setTimeout(()=>{
+      inp.classList.remove('gi-err');inp.classList.add('gi-pre');
+      inp.value=ex.oneDel;inp.disabled=false;
+      document.getElementById('ex-r1').classList.remove('row-wrong');
+      document.getElementById('ex-r1').classList.add('row-correct');
+      document.querySelector('#ex-r1 .row-check').disabled=false;
+    },1600);
+  }
+}
+
+function checkRow2(){
+  const ex=exercises[exCur];
+  if(!rowStates.r1) return;
+  const val=parseFloat(document.getElementById('gi-del').value);
+  const ok = Math.abs(val-ex.del)<0.05;
+  const inp=document.getElementById('gi-del');
+  inp.classList.add(ok?'gi-ok':'gi-err');inp.disabled=true;
+  document.getElementById('ex-r2').classList.add(ok?'row-correct':'row-wrong');
+  document.getElementById('btn-r2').disabled=true;
+  exResults[exCur]=ok;
+  updatePips();
+
+  // animate bar with selection
+  let segs='';
+  for(let i=0;i<ex.n;i++){
+    const cls=i<ex.t?'rect-seg rs-sel':'rect-seg rs-rest';
+    segs+=`<div class="${cls}" style="animation-delay:${i*55}ms"></div>`;
+  }
+  let braceHtml=buildBrace(ex.n,0,ex.t,`${ex.del} ${ex.unit}`);
+  document.getElementById('bar2-wrap').innerHTML=`<div class="rect-track">${segs}</div>${braceHtml}`;
+
+  const fb=document.getElementById('exFb');
+  if(ok){
+    fb.className='ex-feedback show ok';
+    fb.innerHTML=`✓ Rätt! ${fvEl(ex.t,ex.n)} av ${ex.h} ${ex.unit} = <strong>${ex.del} ${ex.unit}</strong>`;
+  } else {
+    fb.className='ex-feedback show bad';
+    fb.innerHTML=`✗ Svar: ${ex.t} · ${ex.oneDel} ${ex.unit} = <strong>${ex.del} ${ex.unit}</strong>`;
+    setTimeout(()=>{
+      inp.classList.remove('gi-err');inp.classList.add('gi-pre');
+      inp.value=ex.del;inp.disabled=false;
+      document.getElementById('ex-r2').classList.remove('row-wrong');
+      document.getElementById('ex-r2').classList.add('row-correct');
+    },1600);
+  }
+  document.getElementById('exNext').classList.add('show');
+  document.getElementById('exNext').textContent=exCur<exercises.length-1?'Nästa uppgift →':'Se resultat';
+}
+
+// ══ NIVÅ 2 — Beräkningar med stöd ══
+function renderLevel2(ex){
+  const {t,n,h,unit,emoji,oneDel,del}=ex;
+  return `
+    <div class="ex-question">${emoji} Hur mycket är ${fvEl(t,n)} av ${h} ${unit}?</div>
+
+    <div style="font-size:0.82rem;color:var(--text2);margin-bottom:0.5rem;"><strong style="color:var(--hi2);">Steg 1</strong> — En del:</div>
+    <div class="guided-row" id="ex-r1">
+      ${fvEl(1,n,'var(--accent)','var(--hi2)')} av ${h} ${unit} = ${h} · ${fvEl(1,n,'var(--accent)','var(--hi2)')} =
+      <input class="gi" id="gi-onedel" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkRow1()">
+      <span>${unit}</span>
+      <button class="row-check" onclick="checkRow1()">✓</button>
+    </div>
+
+    <div style="font-size:0.82rem;color:var(--text2);margin-bottom:0.5rem;" id="step2-lbl"><strong style="color:var(--hi);">Steg 2</strong> — Rätt antal delar:</div>
+    <div class="guided-row" id="ex-r2" style="opacity:0.3;pointer-events:none;">
+      ${fvEl(t,n,'var(--hi)','var(--text2)')} av ${h} ${unit} → <span id="gi-onedel-echo" style="font-family:var(--mono);color:var(--text3);">?</span> ${unit} · <strong style="color:var(--hi);">${t}</strong> =
+      <input class="gi" id="gi-del" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkRow2()">
+      <span>${unit}</span>
+      <button class="row-check" id="btn-r2" onclick="checkRow2()" disabled>✓</button>
+    </div>
+
+    <div class="ex-feedback" id="exFb"></div>
+    <button class="ex-next-big" id="exNext" onclick="nextEx()">Nästa uppgift →</button>
+  `;
+}
+
+// ══ NIVÅ 3 — Självständigt ══
+function renderLevel3(ex){
+  const {t,n,h,unit,emoji,oneDel,del}=ex;
+  return `
+    <div class="ex-question">${emoji} Hur mycket är ${fvEl(t,n)} av ${h} ${unit}?</div>
+
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin:1rem 0;">
+      <input class="free-input" id="gi-del" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkFree()">
+      <span style="font-size:0.9rem;color:var(--text2);">${unit}</span>
+      <button class="check-btn-main" onclick="checkFree()">Kontrollera</button>
+    </div>
+
+    <div class="ex-feedback" id="exFb"></div>
+    <div class="sol-box" id="solBox">
+      <div class="sol-line">${fvEl(1,n,'var(--accent)','var(--hi2)')} av ${h} ${unit} = ${h} · ${fvEl(1,n)} = ${oneDel} ${unit}</div>
+      <div class="sol-line">${fvEl(t,n,'var(--hi)','var(--text2)')} av ${h} ${unit} → ${oneDel} ${unit} · <strong style="color:var(--hi);">${t}</strong> = <strong>${del} ${unit}</strong></div>
+    </div>
+    <button class="ex-next-big" id="exNext" onclick="nextEx()">Nästa uppgift →</button>
+  `;
+}
+
+function checkFree(){
+  const ex=exercises[exCur];
+  const val=parseFloat(document.getElementById('gi-del').value);
+  const ok=Math.abs(val-ex.del)<0.05;
+  const inp=document.getElementById('gi-del');
+  inp.classList.add(ok?'fi-ok':'fi-err');inp.disabled=true;
+  exResults[exCur]=ok;updatePips();
+  const fb=document.getElementById('exFb');
+  fb.className='ex-feedback show '+(ok?'ok':'bad');
+  fb.innerHTML=ok?`✓ Rätt! ${fvEl(ex.t,ex.n)} av ${ex.h} ${ex.unit} = <strong>${ex.del} ${ex.unit}</strong>`
+    :`✗ Inte riktigt — lösningen visas nedan.`;
+  document.getElementById('solBox').classList.add('show');
+  document.getElementById('exNext').classList.add('show');
+  document.getElementById('exNext').textContent=exCur<exercises.length-1?'Nästa uppgift →':'Se resultat';
+}
+
+function renderEx(){
+  const ex=exercises[exCur];
+  rowStates={r1:false,r2:false};
+  updatePips();
+  let html='';
+  if(exLevel===1) html=renderLevel1(ex);
+  else if(exLevel===2) html=renderLevel2(ex);
+  else html=renderLevel3(ex);
+  document.getElementById('exWrap').innerHTML=html;
+  const first=document.getElementById('gi-onedel')||document.getElementById('gi-del');
+  if(first)first.focus();
+}
+
+function nextEx(){
+  if(exCur<exercises.length-1){exCur++;renderEx();}
+  else{showExResult();}
+}
+function showExResult(){
+  const correct=exResults.filter(r=>r===true).length;
+  const total=exercises.length;
+  document.getElementById('exWrap').innerHTML=`
+    <div style="text-align:center;padding:1.5rem 0;">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem;">${correct===total?'🎉':correct>=total*0.75?'💪':'📚'}</div>
+      <div style="font-family:var(--mono);font-size:1.8rem;color:var(--hi);margin-bottom:0.4rem;">${correct} / ${total}</div>
+      <div style="color:var(--text2);font-size:0.93rem;margin-bottom:1.25rem;">
+        ${correct===total?'Perfekt! Du behärskar strategin!':correct>=total*0.75?'Bra jobbat! En uppgift till så sitter det.':'Fortsätt träna — prova grundnivån om du vill ha mer stöd.'}
+      </div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+        <button class="check-btn-main" onclick="initEx()">🔀 Ny omgång</button>
+        ${exLevel>1?`<button class="anim-btn" onclick="setLevel(${exLevel-1},document.querySelector('.level-btn[data-level=\\'${exLevel-1}\\']'))">← Lättare nivå</button>`:''}
+        ${exLevel<3?`<button class="anim-btn" onclick="setLevel(${exLevel+1},document.querySelector('.level-btn[data-level=\\'${exLevel+1}\\']'))">Svårare nivå →</button>`:''}
+      </div>
+    </div>`;
+}
+
+// ══ QUIZ ══
+function fvO(t,n){return`<span class="fv fv-md"><span class="fv-n">${t}</span><span class="fv-b"></span><span class="fv-d">${n}</span></span>`;}
+const QD=[
+  {q:`Vad är första steget när vi beräknar ${fvO(3,4)} av 80 kr?`,
+   opts:['80 × 3 = 240 kr','80/4 = 20 kr','4/80 = 0,05','3 + 4 = 7'],
+   ok:1,fb:'Steg 1 är alltid att hitta en del: helhet/nämnare = 80/4 = 20 kr.'},
+  {q:`Hur mycket är ${fvO(1,5)} av 100 kr?`,
+   opts:['5 kr','50 kr','20 kr','25 kr'],
+   ok:2,fb:'En del = 100/5 = 20 kr. Täljaren är 1, så vi tar 1 × 20 = 20 kr.'},
+  {q:`Hur mycket är ${fvO(3,4)} av 80 kr?`,
+   opts:['30 kr','40 kr','60 kr','20 kr'],
+   ok:2,fb:'Steg 1: 80/4 = 20 kr. Steg 2: 3 × 20 = 60 kr.'},
+  {q:`Vad är ${fvO(2,3)} av 90 m?`,
+   opts:['45 m','60 m','30 m','180 m'],
+   ok:1,fb:'Steg 1: 90/3 = 30 m. Steg 2: 2 × 30 = 60 m.'},
+  {q:`Vad är ${fvO(5,6)} av 60 minuter?`,
+   opts:['50 min','30 min','10 min','45 min'],
+   ok:0,fb:'Steg 1: 60/6 = 10 min. Steg 2: 5 × 10 = 50 min.'},
+  {q:`En klass har 30 elever. ${fvO(7,10)} är närvarande. Hur många?`,
+   opts:['7 elever','21 elever','28 elever','14 elever'],
+   ok:1,fb:'Steg 1: 30/10 = 3 elever. Steg 2: 7 × 3 = 21 elever.'},
+];
+function initQuiz(){qI=0;renderQ();}
+function renderQ(){
+  const q=QD[qI];qAns=false;
+  document.getElementById('quizProg').textContent=`Fråga ${qI+1} av ${QD.length}`;
+  document.getElementById('quizWrap').innerHTML=`
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="ansQ(${i})">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="qFb"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQ()">${qI<QD.length-1?'Nästa fråga →':'Börja om 🔄'}</button>`;
+}
+function ansQ(i){
+  if(qAns)return;qAns=true;const q=QD[qI];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts[i].classList.add(i===q.ok?'correct':'wrong');opts[q.ok].classList.add('correct');
+  opts.forEach(o=>o.disabled=true);
+  const fb=document.getElementById('qFb');fb.innerHTML=(i===q.ok?'✓ Rätt! ':'✗ Inte riktigt. ')+q.fb;
+  fb.className='quiz-fb show '+(i===q.ok?'ok':'bad');
+  document.getElementById('qNext').classList.add('show');
+}
+function nextQ(){qI=(qI+1)%QD.length;renderQ();}
+
+// ══ MODUL-FRAMSTEG ══
+function markDone(){
+  const ind = document.getElementById('doneIndicator');
+  const btn = document.getElementById('doneBtn');
+  if(ind){ ind.classList.add('show'); }
+  if(btn){ btn.textContent='✓ Klar'; btn.disabled=true; btn.style.opacity='0.6'; }
+  try {
+    const p = JSON.parse(localStorage.getItem('brak-progress')||'{}');
+    const n = {'brak1.html':1,'brak2.html':2,'brak3.html':3}[location.pathname.split('/').pop()] || 1;
+    p[n]='done'; localStorage.setItem('brak-progress',JSON.stringify(p));
+  } catch(e){}
+}
+
+// ══ INIT (körs sist, alla variabler är nu deklarerade) ══
+// ══ INIT ══
+(function(){
+  try{
+    const p=JSON.parse(localStorage.getItem('brak-progress')||'{}');
+    if(!p[2]||p[2]==='not-started'){p[2]='in-progress';localStorage.setItem('brak-progress',JSON.stringify(p));}
+    if(p[2]==='done'){
+      const ind=document.getElementById('doneIndicator');
+      const btn=document.getElementById('doneBtn');
+      if(ind)ind.classList.add('show');
+      if(btn){btn.textContent='✓ Klar';btn.disabled=true;btn.style.opacity='0.6';}
+    }
+  }catch(e){}
+  showGStep();
+  initEx();
+  initQuiz();
+  initPQ2();
+})();
+
+// ── PORTALTEMA ──────────────────────────────────────────────────
+const PORTAL_THEMES = [
+  { id:'pt-light', label:'PT Ljust',  icon:'☀️' },
+  { id:'pt-dark',  label:'PT Mörkt',  icon:'🌙' },
+  { id:'ad-light', label:'AD Ljust',  icon:'🌿' },
+  { id:'ad-dark',  label:'AD Mörkt',  icon:'🌑' },
+];
+let portalThemeIdx = 0;
+function applyPortalTheme(idx) {
+  const t = PORTAL_THEMES[idx];
+  document.documentElement.setAttribute('data-theme', t.id);
+  const lbl = document.getElementById('portalThemeLabel');
+  const ico = document.getElementById('portalThemeIcon');
+  if(lbl) lbl.textContent = t.label;
+  if(ico) ico.textContent = t.icon;
+  localStorage.setItem('math-portal-theme', t.id);
+}
+function cyclePortalTheme() {
+  portalThemeIdx = (portalThemeIdx + 1) % PORTAL_THEMES.length;
+  applyPortalTheme(portalThemeIdx);
+}
+(function(){
+  const saved = localStorage.getItem('math-portal-theme');
+  const legacyMap = {'pt':'pt-light','pt-dark':'pt-dark','blue':'pt-light'};
+  const resolved = legacyMap[saved] || saved;
+  const VALID = PORTAL_THEMES.map(t=>t.id);
+  if(resolved && VALID.includes(resolved))
+    portalThemeIdx = PORTAL_THEMES.findIndex(t=>t.id===resolved);
+  applyPortalTheme(portalThemeIdx);
+})();
+
+
+// Restore done state
+(function(){
+  try {
+    const n = {'brak1.html':1,'brak2.html':2,'brak3.html':3}[location.pathname.split('/').pop()] || 1;
+    const p = JSON.parse(localStorage.getItem('brak-progress')||'{}');
+    if(p[n]==='done'){
+      const ind=document.getElementById('doneIndicator');
+      const btn=document.getElementById('doneBtn');
+      if(ind) ind.classList.add('show');
+      if(btn){ btn.textContent='✓ Klar'; btn.disabled=true; btn.style.opacity='0.6'; }
+    }
+  } catch(e){}
+})();
+</script>
+<nav class="module-nav">
+  <a class="mnav-btn" href="brak1.html"><span>←</span><div><span class="mnav-label">Föregående</span><span class="mnav-title">Vad är ett bråk?</span></div></a>
+  <span class="mnav-spacer"></span>
+  <a class="mnav-btn primary" href="brak3.html"><div style="text-align:right"><span class="mnav-label">Nästa</span><span class="mnav-title">Jämföra bråk</span></div><span>→</span></a>
+</nav>
+</body>
+</html>

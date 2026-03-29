@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.3 Geometri — AD Matematik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  portal.css  —  PT Matematik · Alfred Dalinskolan
+ *  Patrick Tegnefur · Förstelärare & IT-pedagog
+ *
+ *  Importeras av alla sidor på portalen via:
+ *    <link rel="stylesheet" href="[relativ sökväg]/portal.css">
+ *
+ *  STRUKTUR:
+ *   1. Google Fonts-import
+ *   2. Globala tokens (:root)
+ *   3. Teman  — AD Ljust / AD Mörkt / PT Ljust / PT Mörkt
+ *   4. Reset & bas
+ *   5. Header  (portal-header, portal-back, portal-crumb, tema-toggle)
+ *   6. Modul-navigation  (module-nav, mnav-btn)
+ *   7. Gemensamma UI-komponenter
+ *      — Knappar (tab-btn, start-btn, check-btn m.fl.)
+ *      — Bråkvisning (fv)
+ *      — Förkunskaps-quiz (mq-*)
+ *      — Framstegsindikatorer (mq-pip, step-dot)
+ *      — Färg-badges (pill-video, pill-sim m.fl.)
+ *   8. Responsiv  (max-width: 600px)
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. TYPSNITT ──────────────────────────────────────────────────── */
+/* ── 2. GLOBALA TOKENS ────────────────────────────────────────────── */
+:root {
+  --radius:  14px;
+  --trans:   0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. TEMAN
+   Varje tema definierar ALLA variabler fullständigt.
+   Åk 7 = Blå · Åk 8 = Grön · Åk 9 = Röd/Rosa
+
+   AD-färger:  Blågrön #00A19A · Guld #FBBC33 · Rosa #EC6095
+               Grön #A2C617   · Gul #FFDE14
+   PT-färger:  Blå #306BF0 · Röd #F03048 · Orange #FF8837
+               Grön #39C762 · Klarblå #7179E8
+   PT-gradient: #66C7C2 → #F4A261 → #EC6095
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── AD LJUST ─────────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #006a64;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  /* Kolumn-gradienter */
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  /* Badges */
+  --b7: #d8eaff; --b7t: #1040a0;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── AD MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #0a2048; --b7t: #7ab0ff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* ── PT LJUST ─────────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #306BF0;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #dce8fe; --b7t: #1a4ecc;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── PT MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #16204a; --b7t: #80aaff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* PT Mörkt — gradient-accenter på aktiva element */
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .check-btn-main,
+[data-theme="pt-dark"] .check-main,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .mq-next-btn,
+[data-theme="pt-dark"] .ex-next-big,
+[data-theme="pt-dark"] .snav-btn.primary,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .row-check,
+[data-theme="pt-dark"] .level-btn.active {
+  background: #EC6095 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-theme="pt-dark"] .progress-fill {
+  background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+}
+[data-theme="pt-dark"] .fv .fv-n  { color: #F4A261; }
+[data-theme="pt-dark"] .fv .fv-b  { opacity: 0.5; }
+[data-theme="pt-dark"] .rect-seg.on-a   { background: #66C7C2; color: #12101c; }
+[data-theme="pt-dark"] .rect-seg.rs-one { background: #66C7C2; }
+[data-theme="pt-dark"] .frac-card.fc-ok    { border-color: #39C762; background: rgba(57,199,98,0.1); }
+[data-theme="pt-dark"] .frac-card:hover    { border-color: #66C7C2; }
+[data-theme="pt-dark"] .sub-btn.active     { background: rgba(244,162,97,0.13); color: #F4A261; border-bottom: 2px solid #F4A261; }
+
+/* AD Mörkt — tab-knapp */
+[data-theme="ad-dark"] .tab-btn.active {
+  background: linear-gradient(90deg, #00A19A, #FBBC33);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RESET & BAS
+═══════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HEADER
+═══════════════════════════════════════════════════════════════════ */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Tillbaka-länk */
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+
+/* Brödsmulor */
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+
+/* Tema-toggle */
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* Klar-indikator och -knapp */
+.done-ind {
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--correct);
+  background: rgba(24,163,72,0.12);
+  border: 1px solid rgba(24,163,72,0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  display: none;
+}
+.done-ind.show { display: inline-block; }
+
+.done-hdr-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.done-hdr-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. MODUL-NAVIGATION  (Föregående / Nästa)
+═══════════════════════════════════════════════════════════════════ */
+.module-nav {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.mnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.mnav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface2);
+}
+.mnav-btn.primary {
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  border-color: transparent;
+  color: #fff;
+}
+.mnav-btn.primary:hover { opacity: 0.9; }
+.mnav-btn.primary .mnav-label { color: rgba(255,255,255,0.75); }
+.mnav-btn.primary .mnav-title { color: #fff; }
+
+.mnav-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  display: block;
+}
+.mnav-title  { display: block; }
+.mnav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. GEMENSAMMA UI-KOMPONENTER
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tab-navigation ───────────────────────────────────────────────── */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.tab-btn:hover  { border-color: var(--accent); color: var(--text); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Bråkvisning (fv) ─────────────────────────────────────────────── */
+.fv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  margin: 0 0.22rem;
+  vertical-align: middle;
+  gap: 1px;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.fv .fv-n { font-family: var(--font-b); color: var(--accent); font-weight: 500; }
+.fv .fv-b { width: 100%; min-width: 1em; height: 1.5px; background: currentColor; border-radius: 1px; opacity: 0.6; }
+.fv .fv-d { font-family: var(--font-b); }
+.fv.fv-sm .fv-n, .fv.fv-sm .fv-d { font-size: 0.82em; }
+.fv.fv-md .fv-n, .fv.fv-md .fv-d { font-size: 1.05em; }
+.fv.fv-lg .fv-n, .fv.fv-lg .fv-d { font-size: 1.4em; }
+
+/* ── Segmentstaplar (rektanglar) ──────────────────────────────────── */
+.rect-seg {
+  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-b);
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+.rect-seg:last-child { border-right: none; }
+.rect-seg.on-a  { background: var(--accent); color: #fff; }
+.rect-seg.on-b  { background: var(--hi2);    color: #1a1200; font-weight: 600; }
+.rect-seg.off   { background: var(--surface2); color: var(--muted); }
+.rect-seg.rs-one { background: var(--accent); }
+
+/* ── Förkunskaps-quiz (mq-*) ──────────────────────────────────────── */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.bad,
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.mq-opt:hover       { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok,
+.mq-opt.ok          { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err,
+.mq-opt.err         { border-color: var(--wrong); background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal,
+.mq-opt.reveal      { border-color: var(--correct); color: var(--correct); }
+
+.mq-fb, .ex-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.ok, .ex-fb.ok     { color: var(--correct); }
+.mq-fb.bad, .mq-fb.mq-fb-err,
+.ex-fb.bad               { color: var(--wrong); }
+.mq-fb.show, .ex-fb.show { display: block; }
+
+.mq-next-btn, .mq-next, .quiz-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next-btn.show,
+.mq-next.show,
+.quiz-next.show  { display: inline-block; }
+.mq-next-btn:hover,
+.mq-next:hover,
+.quiz-next:hover { opacity: 0.85; }
+
+/* ── Knappar ──────────────────────────────────────────────────────── */
+.start-btn, .check-main, .ex-next-big {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.start-btn:hover,
+.check-main:hover,
+.ex-next-big:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.check-btn, .row-check {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.check-btn:hover, .row-check:hover { opacity: 0.85; }
+
+/* ── Navigationspunktar (steg-genomgång) ──────────────────────────── */
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot:hover  { border-color: var(--accent); }
+.step-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 18px;
+  border-radius: 4px;
+}
+
+/* ── Framsteg / progress ──────────────────────────────────────────── */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Pills (typ-indikatorer) ──────────────────────────────────────── */
+.pill { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+.pill-pdf    { background: #f5e8ff; color: #600090; border-color: #c080f0; }
+
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+[data-theme="ad-dark"] .pill-pdf,
+[data-theme="pt-dark"] .pill-pdf   { background: #200030; color: #d080ff; border-color: #500080; }
+
+/* ── Programmering & NP badges ────────────────────────────────────── */
+.badge-prog { background: var(--badge-prog); color: var(--badge-prog-t); }
+.badge-np   { background: var(--badge-np);   color: var(--badge-np-t); }
+
+/* ── Kort (card) ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info-ruta ────────────────────────────────────────────────────── */
+.info-box {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* ── Highlight-ruta ───────────────────────────────────────────────── */
+.hl {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+.hl.gold { border-left: 3px solid var(--hi2); }
+.hl.blue { border-left: 3px solid var(--accent); }
+
+/* ── Quiz-komponenter ─────────────────────────────────────────────── */
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--font-b);
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+.quiz-opt:hover   { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.quiz-opt.wrong   { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+
+.quiz-fb {
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  display: none;
+  color: var(--muted);
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok   { color: var(--correct); }
+.quiz-fb.bad  { color: var(--wrong); }
+
+/* ── Lärar-tips (teacher-guide) ───────────────────────────────────── */
+.teacher-guide {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface2);
+  user-select: none;
+  transition: background 0.15s;
+}
+.tg-header:hover         { background: var(--border); }
+.tg-chevron              { margin-left: auto; font-size: 0.7rem; transition: transform 0.25s; }
+.tg-header.open .tg-chevron { transform: rotate(180deg); }
+.tg-body {
+  padding: 0.8rem 1rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tg-body strong { color: var(--text); }
+
+/* ─── 8. RESPONSIV ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .module-nav          { padding: 0.75rem 1rem 2rem; }
+  .mnav-btn            { font-size: 0.75rem; padding: 0.5rem 0.9rem; }
+  .nav-tabs            { padding: 0.5rem 0.75rem; gap: 0.25rem; top: 52px; }
+  .tab-btn             { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <a class="back-btn" href="../../index.html">← Tillbaka</a>
+        <div class="header-crumb">
+          <span>Åk 7</span>
+          <span class="crumb-sep">/</span>
+          <span>7.3 Geometri</span>
+        </div>
+      </div>
+      <button class="theme-toggle" onclick="cycleTheme()">
+        <span id="themeIcon">🎨</span>
+        <span id="themeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="chapter-hero">
+    <div class="chapter-badge">7.3</div>
+    <div class="chapter-intro">
+      <p class="chapter-label">Årskurs 7</p>
+      <h1 class="chapter-title">Geometri</h1>
+      <p class="chapter-desc">
+        Geometri handlar om former, mått och rum. Här lär du dig att beskriva och beräkna
+        egenskaper hos figurer och kroppar — från enkla vinklar till tredimensionella volymer.
+      </p>
+    </div>
+  </div>
+
+  <!-- KUNSKAPSMÅL -->
+  <div class="goals-section">
+    <div class="goals-card">
+      <div class="goals-header" onclick="toggleGoals(this)">
+        <div class="goals-header-left">
+          <span class="goals-icon">🎯</span>
+          <span class="goals-title">Du ska kunna...</span>
+        </div>
+        <span class="goals-chevron">▼</span>
+      </div>
+      <div class="goals-body">
+        <ul class="goals-list">
+          <li>Beskriva olika månghörningar och kroppar med korrekta begrepp och enheter.</li>
+          <li>Beskriva, mäta, rita och beräkna olika vinklar.</li>
+          <li>Beskriva, mäta och rita olika månghörningar.</li>
+          <li>Beräkna omkrets och area av olika månghörningar och göra enhetsbyten i samband med dessa.</li>
+          <li>Beräkna volym av olika prismor och göra enhetsbyten i samband med dessa.</li>
+          <li>Beräkna arean av begränsningsytor.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAGGFILTER -->
+  <div class="filter-section">
+    <p class="filter-label">🔍 Filtrera på ämne</p>
+    <div class="filter-tags" id="tagBar">
+      <button class="tag-btn active" data-tag="alla"    onclick="filterTag('alla')">Alla</button>
+      <button class="tag-btn"        data-tag="begrepp" onclick="filterTag('begrepp')">Begrepp</button>
+      <button class="tag-btn"        data-tag="vinklar" onclick="filterTag('vinklar')">Vinklar</button>
+      <button class="tag-btn"        data-tag="omkrets" onclick="filterTag('omkrets')">Omkrets</button>
+      <button class="tag-btn"        data-tag="area"    onclick="filterTag('area')">Area</button>
+      <button class="tag-btn"        data-tag="volym"   onclick="filterTag('volym')">Volym</button>
+      <button class="tag-btn"        data-tag="3d"      onclick="filterTag('3d')">3D-figurer</button>
+    </div>
+  </div>
+
+  <!-- KLUSTER -->
+  <div class="clusters" id="clusters">
+
+    <!-- KLUSTER 1: Grunder -->
+    <div class="cluster" data-tags="begrepp vinklar">
+      <div class="cluster-label">📐 Grundläggande begrepp och vinklar</div>
+
+      <div class="topic-panel" data-tags="begrepp">
+        <a class="topic-panel-link" href="geo1.html">
+          <span class="panel-num">[1]</span>
+          <div class="panel-text">
+            <div class="panel-title">Geometriska begrepp</div>
+            <div class="panel-pills">
+              <span class="pill pill-video">▶ Video</span>
+              <span class="pill pill-drill">⚡ Övningar</span>
+            </div>
+          </div>
+          <span class="panel-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="topic-panel" data-tags="vinklar">
+        <a class="topic-panel-link" href="geo2.html">
+          <span class="panel-num">[2]</span>
+          <div class="panel-text">
+            <div class="panel-title">Vinklar och vinkelsummor</div>
+            <div class="panel-pills">
+              <span class="pill pill-video">▶ Video</span>
+              <span class="pill pill-sim">◈ Simulering</span>
+              <span class="pill pill-drill">⚡ Övningar</span>
+            </div>
+          </div>
+          <span class="panel-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- KLUSTER 2: Omkrets & area -->
+    <div class="cluster" data-tags="omkrets area">
+      <div class="cluster-label">📏 Omkrets och area</div>
+
+      <div class="topic-panel" data-tags="omkrets">
+        <a class="topic-panel-link" href="geo3.html">
+          <span class="panel-num">[3]</span>
+          <div class="panel-text">
+            <div class="panel-title">Omkrets</div>
+            <div class="panel-pills">
+              <span class="pill pill-video">▶ Video</span>
+              <span class="pill pill-drill">⚡ Övningar</span>
+              <span class="pill pill-pdf">📄 PDF</span>
+            </div>
+          </div>
+          <span class="panel-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="topic-panel" data-tags="area">
+        <a class="topic-panel-link" href="geo4.html">
+          <span class="panel-num">[4]</span>
+          <div class="panel-text">
+            <div class="panel-title">Area</div>
+            <div class="panel-pills">
+              <span class="pill pill-video">▶ Video</span>
+              <span class="pill pill-sim">◈ Simulering</span>
+              <span class="pill pill-drill">⚡ Övningar</span>
+              <span class="pill pill-pdf">📄 PDF</span>
+            </div>
+          </div>
+          <span class="panel-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- KLUSTER 3: Volym & 3D -->
+    <div class="cluster" data-tags="volym 3d">
+      <div class="cluster-label">🧊 Volym och rymdgeometri</div>
+
+      <div class="topic-panel" data-tags="volym 3d">
+        <a class="topic-panel-link" href="geo5.html">
+          <span class="panel-num">[5]</span>
+          <div class="panel-text">
+            <div class="panel-title">Volym</div>
+            <div class="panel-pills">
+              <span class="pill pill-video">▶ Video</span>
+              <span class="pill pill-sim">◈ Simulering</span>
+              <span class="pill pill-drill">⚡ Övningar</span>
+            </div>
+          </div>
+          <span class="panel-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="topic-panel" data-tags="3d area volym">
+        <a class="topic-panel-link" href="geo6.html">
+          <span class="panel-num">[6]</span>
+          <div class="panel-text">
+            <div class="panel-title">Begränsningsyta</div>
+            <div class="panel-pills">
+              <span class="pill pill-video">▶ Video</span>
+              <span class="pill pill-drill">⚡ Övningar</span>
+              <span class="pill pill-pdf">📄 PDF</span>
+            </div>
+          </div>
+          <span class="panel-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="no-results" id="noResults">Inga delkapitel matchar den valda taggen.</p>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© <span id="yr"></span> Patrick Tegnefur &nbsp;·&nbsp; Förstelärare och IT-pedagog &nbsp;·&nbsp; Alfred Dalinskolan, Huskvarna</p>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // ── Tema (synkat med portalen via localStorage) ─────────────
+    const THEMES = [
+      { id: 'pt-light', label: 'PT Ljust',  icon: '☀️' },
+      { id: 'pt-dark',  label: 'PT Mörkt',  icon: '🌙' },
+      { id: 'ad-light', label: 'AD Ljust',  icon: '🌿' },
+      { id: 'ad-dark',  label: 'AD Mörkt',  icon: '🌑' },
+    ];
+    let currentIdx = 0;
+
+    function applyTheme(idx) {
+      const t = THEMES[idx];
+      document.documentElement.setAttribute('data-theme', t.id);
+      document.getElementById('themeLabel').textContent = t.label;
+      document.getElementById('themeIcon').textContent  = t.icon;
+      localStorage.setItem('math-portal-theme', t.id);
+    }
+
+    function cycleTheme() {
+      currentIdx = (currentIdx + 1) % THEMES.length;
+      applyTheme(currentIdx);
+    }
+
+    const saved = localStorage.getItem('math-portal-theme');
+    const VALID = THEMES.map(t => t.id);
+    if (saved && VALID.includes(saved)) {
+      currentIdx = THEMES.findIndex(t => t.id === saved);
+    }
+    applyTheme(currentIdx);
+
+    // ── Kunskapsmål toggle ────────────────────────────────────────
+    function toggleGoals(header) {
+      const body = header.nextElementSibling;
+      const open = header.classList.toggle('open');
+      body.classList.toggle('open', open);
+      body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+    }
+
+    // Öppna målen automatiskt
+    const goalsHeader = document.querySelector('.goals-header');
+    toggleGoals(goalsHeader);
+
+    // ── Tagg-filter ───────────────────────────────────────────────
+    function filterTag(tag) {
+      // Uppdatera aktiv knapp
+      document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tag === tag);
+      });
+
+      const panels   = document.querySelectorAll('.topic-panel');
+      const clusters = document.querySelectorAll('.cluster');
+
+      panels.forEach(panel => {
+        const panelTags = (panel.dataset.tags || '').split(' ');
+        const show = tag === 'alla' || panelTags.includes(tag);
+        panel.classList.toggle('hidden', !show);
+      });
+
+      // Dölj kluster om alla deras paneler är dolda
+      clusters.forEach(cluster => {
+        const visiblePanels = cluster.querySelectorAll('.topic-panel:not(.hidden)');
+        cluster.classList.toggle('all-hidden', visiblePanels.length === 0);
+      });
+
+      // Visa "ingen träff" om allting är dolt
+      const anyVisible = document.querySelectorAll('.topic-panel:not(.hidden)').length > 0;
+      document.getElementById('noResults').classList.toggle('visible', !anyVisible);
+    }
+  </script>
+</body>
+</html>

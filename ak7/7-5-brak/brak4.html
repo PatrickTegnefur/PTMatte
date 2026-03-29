@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bråk 4 — Addera och subtrahera bråk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+
+
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  portal.css  —  PT Matematik · Alfred Dalinskolan
+ *  Patrick Tegnefur · Förstelärare & IT-pedagog
+ *
+ *  Importeras av alla sidor på portalen via:
+ *    <link rel="stylesheet" href="[relativ sökväg]/portal.css">
+ *
+ *  STRUKTUR:
+ *   1. Google Fonts-import
+ *   2. Globala tokens (:root)
+ *   3. Teman  — AD Ljust / AD Mörkt / PT Ljust / PT Mörkt
+ *   4. Reset & bas
+ *   5. Header  (portal-header, portal-back, portal-crumb, tema-toggle)
+ *   6. Modul-navigation  (module-nav, mnav-btn)
+ *   7. Gemensamma UI-komponenter
+ *      — Knappar (tab-btn, start-btn, check-btn m.fl.)
+ *      — Bråkvisning (fv)
+ *      — Förkunskaps-quiz (mq-*)
+ *      — Framstegsindikatorer (mq-pip, step-dot)
+ *      — Färg-badges (pill-video, pill-sim m.fl.)
+ *   8. Responsiv  (max-width: 600px)
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. TYPSNITT ──────────────────────────────────────────────────── */
+/* ── 2. GLOBALA TOKENS ────────────────────────────────────────────── */
+:root {
+  --radius:  14px;
+  --trans:   0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. TEMAN
+   Varje tema definierar ALLA variabler fullständigt.
+   Åk 7 = Blå · Åk 8 = Grön · Åk 9 = Röd/Rosa
+
+   AD-färger:  Blågrön #00A19A · Guld #FBBC33 · Rosa #EC6095
+               Grön #A2C617   · Gul #FFDE14
+   PT-färger:  Blå #306BF0 · Röd #F03048 · Orange #FF8837
+               Grön #39C762 · Klarblå #7179E8
+   PT-gradient: #66C7C2 → #F4A261 → #EC6095
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── AD LJUST ─────────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #006a64;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  /* Kolumn-gradienter */
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  /* Badges */
+  --b7: #d8eaff; --b7t: #1040a0;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── AD MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #0a2048; --b7t: #7ab0ff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* ── PT LJUST ─────────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #306BF0;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #dce8fe; --b7t: #1a4ecc;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── PT MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #16204a; --b7t: #80aaff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* PT Mörkt — gradient-accenter på aktiva element */
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .check-btn-main,
+[data-theme="pt-dark"] .check-main,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .mq-next-btn,
+[data-theme="pt-dark"] .ex-next-big,
+[data-theme="pt-dark"] .snav-btn.primary,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .row-check,
+[data-theme="pt-dark"] .level-btn.active {
+  background: #EC6095 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-theme="pt-dark"] .progress-fill {
+  background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+}
+[data-theme="pt-dark"] .fv .fv-n  { color: #F4A261; }
+[data-theme="pt-dark"] .fv .fv-b  { opacity: 0.5; }
+[data-theme="pt-dark"] .rect-seg.on-a   { background: #66C7C2; color: #12101c; }
+[data-theme="pt-dark"] .rect-seg.rs-one { background: #66C7C2; }
+[data-theme="pt-dark"] .frac-card.fc-ok    { border-color: #39C762; background: rgba(57,199,98,0.1); }
+[data-theme="pt-dark"] .frac-card:hover    { border-color: #66C7C2; }
+[data-theme="pt-dark"] .sub-btn.active     { background: rgba(244,162,97,0.13); color: #F4A261; border-bottom: 2px solid #F4A261; }
+
+/* AD Mörkt — tab-knapp */
+[data-theme="ad-dark"] .tab-btn.active {
+  background: linear-gradient(90deg, #00A19A, #FBBC33);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RESET & BAS
+═══════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HEADER
+═══════════════════════════════════════════════════════════════════ */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Tillbaka-länk */
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size:0.75rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+
+/* Brödsmulor */
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+
+/* Tema-toggle */
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size:0.75rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* Klar-indikator och -knapp */
+.done-ind {
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--correct);
+  background: rgba(24,163,72,0.12);
+  border: 1px solid rgba(24,163,72,0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  display: none;
+}
+.done-ind.show { display: inline-block; }
+
+.done-hdr-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  font-size:0.75rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.done-hdr-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. MODUL-NAVIGATION  (Föregående / Nästa)
+═══════════════════════════════════════════════════════════════════ */
+.module-nav {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.mnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.mnav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface2);
+}
+.mnav-btn.primary {
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  border-color: transparent;
+  color: #fff;
+}
+.mnav-btn.primary:hover { opacity: 0.9; }
+.mnav-btn.primary .mnav-label { color: rgba(255,255,255,0.75); }
+.mnav-btn.primary .mnav-title { color: #fff; }
+
+.mnav-label {
+  font-size:0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  display: block;
+}
+.mnav-title  { display: block; }
+.mnav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. GEMENSAMMA UI-KOMPONENTER
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tab-navigation ───────────────────────────────────────────────── */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.tab-btn:hover  { border-color: var(--accent); color: var(--text); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Bråkvisning (fv) ─────────────────────────────────────────────── */
+.fv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  margin: 0 0.22rem;
+  vertical-align: middle;
+  gap: 1px;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.fv .fv-n { font-family: var(--font-b); color: var(--accent); font-weight: 500; }
+.fv .fv-b { width: 100%; min-width: 1em; height: 1.5px; background: currentColor; border-radius: 1px; opacity: 0.6; }
+.fv .fv-d { font-family: var(--font-b); }
+.fv.fv-sm .fv-n, .fv.fv-sm .fv-d { font-size: 0.82em; }
+.fv.fv-md .fv-n, .fv.fv-md .fv-d { font-size: 1.05em; }
+.fv.fv-lg .fv-n, .fv.fv-lg .fv-d { font-size: 1.4em; }
+
+/* ── Segmentstaplar (rektanglar) ──────────────────────────────────── */
+.rect-seg {
+  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-b);
+  font-size:0.75rem;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+.rect-seg:last-child { border-right: none; }
+.rect-seg.on-a  { background: var(--accent); color: #fff; }
+.rect-seg.on-b  { background: var(--hi2);    color: #1a1200; font-weight: 600; }
+.rect-seg.off   { background: var(--surface2); color: var(--muted); }
+.rect-seg.rs-one { background: var(--accent); }
+
+/* ── Förkunskaps-quiz (mq-*) ──────────────────────────────────────── */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.bad,
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+
+.mq-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  transition: all 0.15s;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+.mq-opt:hover       { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok,
+.mq-opt.ok          { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err,
+.mq-opt.err         { border-color: var(--wrong); background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal,
+.mq-opt.reveal      { border-color: var(--correct); color: var(--correct); }
+
+.mq-fb, .ex-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.ok, .ex-fb.ok     { color: var(--correct); }
+.mq-fb.bad, .mq-fb.mq-fb-err,
+.ex-fb.bad               { color: var(--wrong); }
+.mq-fb.show, .ex-fb.show { display: block; }
+
+.mq-next-btn, .mq-next, .quiz-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next-btn.show,
+.mq-next.show,
+.quiz-next.show  { display: inline-block; }
+.mq-next-btn:hover,
+.mq-next:hover,
+.quiz-next:hover { opacity: 0.85; }
+
+/* ── Knappar ──────────────────────────────────────────────────────── */
+.start-btn, .check-main, .ex-next-big {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.start-btn:hover,
+.check-main:hover,
+.ex-next-big:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.check-btn, .row-check {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.check-btn:hover, .row-check:hover { opacity: 0.85; }
+
+/* ── Navigationspunktar (steg-genomgång) ──────────────────────────── */
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot:hover  { border-color: var(--accent); }
+.step-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 18px;
+  border-radius: 4px;
+}
+
+/* ── Framsteg / progress ──────────────────────────────────────────── */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Pills (typ-indikatorer) ──────────────────────────────────────── */
+.pill { font-size:0.72rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+.pill-pdf    { background: #f5e8ff; color: #600090; border-color: #c080f0; }
+
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+[data-theme="ad-dark"] .pill-pdf,
+[data-theme="pt-dark"] .pill-pdf   { background: #200030; color: #d080ff; border-color: #500080; }
+
+/* ── Programmering & NP badges ────────────────────────────────────── */
+.badge-prog { background: var(--badge-prog); color: var(--badge-prog-t); }
+.badge-np   { background: var(--badge-np);   color: var(--badge-np-t); }
+
+/* ── Kort (card) ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info-ruta ────────────────────────────────────────────────────── */
+.info-box {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* ── Highlight-ruta ───────────────────────────────────────────────── */
+.hl {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+.hl.gold { border-left: 3px solid var(--hi2); }
+.hl.blue { border-left: 3px solid var(--accent); }
+
+/* ── Quiz-komponenter ─────────────────────────────────────────────── */
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--font-b);
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+.quiz-opt:hover   { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.quiz-opt.wrong   { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+
+.quiz-fb {
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  display: none;
+  color: var(--muted);
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok   { color: var(--correct); }
+.quiz-fb.bad  { color: var(--wrong); }
+
+/* ── Lärar-tips (teacher-guide) ───────────────────────────────────── */
+.teacher-guide {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface2);
+  user-select: none;
+  transition: background 0.15s;
+}
+.tg-header:hover         { background: var(--border); }
+.tg-chevron              { margin-left: auto; font-size:0.75rem; transition: transform 0.25s; }
+.tg-header.open .tg-chevron { transform: rotate(180deg); }
+.tg-body {
+  padding: 0.8rem 1rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tg-body strong { color: var(--text); }
+
+/* ─── 8. RESPONSIV ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .module-nav          { padding: 0.75rem 1rem 2rem; }
+  .mnav-btn            { font-size: 0.75rem; padding: 0.5rem 0.9rem; }
+  .nav-tabs            { padding: 0.5rem 0.75rem; gap: 0.25rem; top: 52px; }
+  .tab-btn             { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+}
+
+
+/* ══ SIDSPECIFIK CSS — Bråk 4 ══════════════════════════════════ */
+
+/* Stapelvisualisering */
+.fracbar-wrap{margin:0.9rem 0;}
+.fracbar-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.55rem;}
+.fracbar-lbl{width:3.5rem;text-align:right;flex-shrink:0;font-size:0.88rem;}
+.fracbar{flex:1;display:flex;height:40px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);}
+.fracbar-seg{flex:1;border-right:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-b);transition:background 0.3s;}
+.fracbar-seg:last-child{border-right:none;}
+.fracbar-seg.filled-a  {background:var(--accent);color:#fff;}
+.fracbar-seg.filled-b  {background:var(--hi2);color:#1a1200;}
+.fracbar-seg.filled-sum{background:var(--correct);color:#fff;}
+.fracbar-seg.empty     {background:var(--surface2);color:var(--muted);}
+.fracbar-seg.wrong-fill{background:var(--wrong);color:#fff;}
+
+/* Hybrid-visualisering */
+.hybrid-wrap{display:flex;gap:0.8rem;align-items:flex-start;flex-wrap:wrap;margin:0.9rem 0;}
+.hybrid-col{flex:1;min-width:110px;}
+.hybrid-col-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.35rem;font-weight:600;}
+.hybrid-bar{display:flex;height:34px;border-radius:6px;overflow:hidden;border:1.5px solid var(--border);}
+.hybrid-seg{flex:1;}
+.arrow-col{display:flex;align-items:center;padding-top:1.3rem;color:var(--muted);font-size:1.1rem;flex-shrink:0;}
+
+/* Ekvationsrad */
+.eq-row{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;padding:0.6rem 0.9rem;background:var(--surface2);border-radius:9px;margin:0.6rem 0;}
+.eq-op{color:var(--muted);font-weight:300;font-size:1.1rem;}
+.eq-note{font-size:0.88rem;color:var(--muted);font-style:italic;}
+
+/* Förlängnings-display */
+.extend-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem;flex-wrap:wrap;font-size:0.88rem;}
+
+/* Inmatning */
+.ans-wrap{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin:0.5rem 0;}
+.ans-frac{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.ans-input{width:52px;height:38px;border:2px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font-family:var(--font-b);font-size:1rem;font-weight:600;text-align:center;transition:border-color 0.15s;outline:none;}
+.ans-input:focus{border-color:var(--accent);}
+.ans-input.ok {border-color:var(--correct);background:rgba(24,163,72,0.07);}
+.ans-input.bad{border-color:var(--wrong);background:rgba(224,32,32,0.07);}
+.ans-bar{width:52px;height:2px;background:var(--muted);border-radius:1px;}
+.check-btn{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.42rem 1.1rem;cursor:pointer;font-family:var(--font-b);font-size:0.85rem;font-weight:600;transition:opacity 0.15s;}
+.check-btn:hover{opacity:0.85;}
+
+/* Genomgång */
+.gstep{display:none;}
+.gstep.active{display:block;}
+.step-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.4rem;flex-wrap:wrap;}
+.step-dots{display:flex;flex-direction:row;align-items:center;gap:5px;flex-shrink:0;}
+.snav-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;color:var(--muted);transition:all 0.18s;}
+.snav-btn:hover{border-color:var(--accent);color:var(--text);}
+.snav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.snav-btn.primary:hover{opacity:0.88;}
+.info-box{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:0.65rem 1rem;font-size:0.88rem;color:var(--text);margin-bottom:0.9rem;font-weight:500;}
+
+/* Förkunskaper */
+.prereq-hero{background:var(--surface2);border-radius:12px;padding:1.1rem 1.4rem;margin-bottom:1.2rem;border-left:4px solid var(--accent);}
+.prereq-hero-title{font-family:var(--font-d);font-size:1.15rem;color:var(--text);margin-bottom:0.2rem;}
+.prereq-hero-sub{font-size:0.9rem;color:var(--muted);}
+.prereq-sec-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);font-weight:700;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;}
+.prereq-sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.skill-list{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.2rem;}
+.skill-item{display:flex;align-items:flex-start;gap:0.65rem;background:var(--surface2);border-radius:9px;padding:0.65rem 0.85rem;font-size:0.87rem;color:var(--muted);border:1px solid var(--border);}
+.skill-item strong{color:var(--text);}
+
+/* Övningar */
+.level-btn{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-family:var(--font-b);font-size:0.8rem;color:var(--muted);transition:all 0.18s;}
+.level-btn:hover{border-color:var(--accent);color:var(--text);}
+.level-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.lb-icon{font-size:0.95rem;}
+.lb-label{font-weight:600;}
+.lb-desc{font-size:0.75rem;opacity:0.75;}
+.ex-pip{width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);}
+.ex-pip.ok{background:var(--correct);border-color:var(--correct);}
+.ex-pip.bad{background:var(--wrong);border-color:var(--wrong);}
+.ex-pip.cur{background:var(--accent);border-color:var(--accent);transform:scale(1.15);}
+.ex-fb{font-size:0.85rem;margin-top:0.55rem;padding:0.4rem 0.6rem;border-radius:6px;display:none;color:var(--muted);}
+.ex-fb.show{display:block;}
+.ex-fb.ok{color:var(--correct);}
+.ex-fb.bad{color:var(--wrong);}
+.ex-next-big{background:var(--accent);border:none;color:#fff;border-radius:9px;padding:0.55rem 1.3rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;font-weight:600;display:none;margin-top:0.75rem;transition:opacity 0.15s;}
+.ex-next-big.show{display:inline-block;}
+.ex-next-big:hover{opacity:0.88;}
+
+/* Lärar-tips */
+.teacher-guide{margin-top:1rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.tg-header{display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.9rem;cursor:pointer;font-size:0.88rem;color:var(--muted);background:var(--surface2);user-select:none;transition:background 0.15s;}
+.tg-header:hover{background:var(--border);}
+.tg-chevron{margin-left:auto;font-size:0.75rem;transition:transform 0.25s;}
+.tg-header.open .tg-chevron{transform:rotate(180deg);}
+.tg-body{padding:0.8rem 1rem;font-size:0.9rem;color:var(--muted);line-height:1.65;display:none;flex-direction:column;gap:0.5rem;border-top:1px solid var(--border);}
+.tg-body strong{color:var(--text);}
+
+/* Quiz */
+.quiz-prog{font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;}
+.quiz-q{font-size:0.95rem;color:var(--text);margin-bottom:0.8rem;line-height:1.6;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-bottom:0.75rem;}
+.quiz-opt{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:0.55rem 0.9rem;cursor:pointer;font-family:var(--font-b);font-size:0.87rem;color:var(--muted);text-align:center;transition:all 0.15s;display:flex;align-items:center;justify-content:center;min-height:44px;}
+.quiz-opt:hover{border-color:var(--accent);color:var(--text);}
+.quiz-opt.correct{border-color:var(--correct);background:rgba(24,163,72,0.10);color:var(--correct);}
+.quiz-opt.wrong{border-color:var(--wrong);background:rgba(224,32,32,0.10);color:var(--wrong);}
+.quiz-fb{font-size:0.9rem;margin-top:0.5rem;padding:0.4rem 0.6rem;border-radius:6px;display:none;color:var(--muted);}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{color:var(--correct);}
+.quiz-fb.bad{color:var(--wrong);}
+.quiz-next{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;font-weight:600;margin-top:0.5rem;}
+
+/* Layout */
+.main{max-width:760px;margin:0 auto;padding:1.5rem 1.5rem 2rem;}
+.section{display:none;}
+.section.active{display:block;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.card-title{font-family:var(--font-d);font-size:1.2rem;color:var(--text);margin-bottom:0.3rem;}
+.card-lead{font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;}
+
+@media(max-width:600px){
+  .hybrid-wrap{gap:0.4rem;}
+  .quiz-opts{grid-template-columns:1fr;}
+}
+
+</style>
+</head>
+<body>
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <div class="portal-header-left">
+      <a class="portal-back" href="index.html">← Bråk</a>
+      <div class="portal-crumb">
+        <span>7.5 Bråk</span><span class="portal-crumb-sep">/</span><span>Addera och subtrahera bråk</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <span class="done-ind" id="doneIndicator">✓ Klar</span>
+      <button class="done-hdr-btn" id="doneBtn" onclick="markDone()">Markera som klar</button>
+      <button class="portal-theme-toggle" onclick="cyclePortalTheme()">
+        <span id="portalThemeIcon">🎨</span>
+        <span id="portalThemeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('prereq',this)">📚 Förkunskaper</button>
+  <button class="tab-btn" onclick="showTab('genomgang',this)">Genomgång</button>
+  <button class="tab-btn" onclick="showTab('verktyg',this)">Räkneverktyg</button>
+  <button class="tab-btn" onclick="showTab('ovning',this)">Övning</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">Quiz</button>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════ FÖRKUNSKAPER ═══════════════ -->
+<div class="section active" id="tab-prereq">
+  <div class="card">
+    <div class="prereq-hero">
+      <div class="prereq-hero-title">Bråk 4 — Addera och subtrahera bråk</div>
+      <div class="prereq-hero-sub">Se till att du har koll på det här innan du börjar.</div>
+    </div>
+
+    <div class="prereq-sec-title">Färdigheter du bör ha med dig</div>
+    <div class="skill-list">
+      <div class="skill-item"><span>➗</span><div><strong>Täljare och nämnare</strong> — du vet vad de heter och vad de berättar om ett bråk.</div></div>
+      <div class="skill-item"><span>✖️</span><div><strong>Förlänga bråk</strong> — du kan multiplicera täljare och nämnare med samma tal, t.ex. 2/3 × 4/4 = 8/12.</div></div>
+      <div class="skill-item"><span>✂️</span><div><strong>Förkorta bråk</strong> — du kan dela täljare och nämnare med samma tal, t.ex. 6/9 = 2/3.</div></div>
+      <div class="skill-item"><span>🔢</span><div><strong>Gemensamma faktorer</strong> — du kan hitta ett tal som delar både täljare och nämnare jämnt.</div></div>
+    </div>
+
+    <div class="prereq-sec-title">Snabbkoll</div>
+    <div class="mq-pips" id="pq4-pips"></div>
+    <div id="pq4-wrap"></div>
+
+    <div class="prereq-sec-title" style="margin-top:1.2rem;">Föregående modul</div>
+    <div style="display:flex;align-items:center;gap:0.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;cursor:pointer;" onclick="window.location.href='brak3.html'">
+      <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--c7a),var(--c7b));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-d);font-size:0.9rem;flex-shrink:0;">3</div>
+      <div>
+        <div style="font-size:0.92rem;color:var(--text);font-weight:500;">Bråk 3 — Jämföra bråk</div>
+        <div style="font-size:0.84rem;color:var(--muted);">Förlänga, förkorta och jämföra bråk.</div>
+      </div>
+      <span style="margin-left:auto;color:var(--muted);">→</span>
+    </div>
+
+    <div style="margin-top:1.5rem;text-align:center;">
+      <button class="start-btn" onclick="document.querySelectorAll('.tab-btn')[1].click()">Starta genomgången →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ GENOMGÅNG ═══════════════ -->
+<div class="section" id="tab-genomgang">
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.25rem;">
+      <div class="card-title" style="margin:0;">Genomgång — steg för steg</div>
+      <span id="gStepLabel" style="font-size:0.84rem;color:var(--muted);">Steg 1 av 6</span>
+    </div>
+    <p class="card-lead">Bläddra i din egen takt med pilarna nedan.</p>
+
+    <!-- Steg 1 -->
+    <div class="gstep active" id="gstep-0">
+      <div class="info-box">Steg 1 av 6 — Nämnaren är en enhet</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        I matematik kan du bara addera saker med <strong>samma enhet</strong>.<br>
+        3 äpplen + 2 äpplen = 5 äpplen — men 3 äpplen + 2 päron är inte 5 äpplen.<br><br>
+        Med bråk fungerar det exakt likadant. <strong>Nämnaren är enheten.</strong><br>
+        Du kan bara addera bråk som har <strong>samma nämnare</strong>.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.6rem;">Exempel — "femtedelar" som enhet</div>
+        <div class="eq-row">
+          <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--accent);">1</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+          <span class="eq-op">+</span>
+          <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--hi2);">2</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+          <span style="color:var(--muted);font-size:1.1rem;">=</span>
+          <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--correct);">3</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+          <span class="eq-note">"en + två femtedelar = tre femtedelar"</span>
+        </div>
+      </div>
+      <div class="fracbar-wrap" id="g0-bars"></div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>✏️</span> Varför fungerar det? <span class="tg-chevron">▼</span></div>
+        <div class="tg-body"><p>Täljaren räknar <em>hur många delar</em>. Nämnaren säger <em>hur stor varje del är</em>. Så länge nämnaren är densamma adderar du bara täljarna — precis som äpplen.</p></div>
+      </div>
+    </div>
+
+    <!-- Steg 2 -->
+    <div class="gstep" id="gstep-1">
+      <div class="info-box">Steg 2 av 6 — Det vanligaste misstaget</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Många försöker addera täljare <em>och</em> nämnare var för sig. Bildstödet visar varför det är fel.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.65rem;">Vilket svar är rätt?</div>
+        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.75rem;color:var(--correct);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">✓ Rätt</div>
+            <div style="display:flex;align-items:center;gap:0.4rem;">
+              <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n">1</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+              <span style="color:var(--muted);">+</span>
+              <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--hi2);">2</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+              <span style="color:var(--muted);">=</span>
+              <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--correct);">3</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+            </div>
+          </div>
+          <div style="opacity:0.85;">
+            <div style="font-size:0.75rem;color:var(--wrong);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">✗ Fel</div>
+            <div style="display:flex;align-items:center;gap:0.4rem;">
+              <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n">1</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+              <span style="color:var(--muted);">+</span>
+              <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--hi2);">2</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">5</span></span>
+              <span style="color:var(--muted);">≠</span>
+              <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--wrong);">3</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">10</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fracbar-wrap" id="g1-bars"></div>
+      <p style="font-size:0.84rem;color:var(--muted);margin-top:0.7rem;line-height:1.6;">
+        Den röda stapeln visar 3/10 — bara tre tiondelar, mycket mindre än 3/5. Bildstödet avslöjar felet direkt.
+      </p>
+    </div>
+
+    <!-- Steg 3 -->
+    <div class="gstep" id="gstep-2">
+      <div class="info-box">Steg 3 av 6 — Subtraktion med samma nämnare</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Subtraktion fungerar på exakt samma sätt — nämnaren är enheten, du subtraherar bara täljarna.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.6rem;">Exempel</div>
+        <div class="eq-row">
+          <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--accent);">5</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">8</span></span>
+          <span class="eq-op">−</span>
+          <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--hi2);">2</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">8</span></span>
+          <span style="color:var(--muted);">=</span>
+          <span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;"><span class="fv-n" style="color:var(--correct);">3</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;"></span><span class="fv-d">8</span></span>
+          <span class="eq-note">"fem minus två åttondelar = tre åttondelar"</span>
+        </div>
+      </div>
+      <div class="fracbar-wrap" id="g2-bars"></div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>✏️</span> Sammanfattning hittills <span class="tg-chevron">▼</span></div>
+        <div class="tg-body"><p><strong>Samma nämnare → addera eller subtrahera täljarna. Nämnaren ändras inte.</strong> Utmaningen kommer när nämnarna är <em>olika</em>.</p></div>
+      </div>
+    </div>
+
+    <!-- Steg 4 -->
+    <div class="gstep" id="gstep-3">
+      <div class="info-box">Steg 4 av 6 — Olika nämnare: ärv varandras uppdelningar</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Om nämnarna är olika har vi olika stora delar — vi kan inte addera direkt. Lösningen: <strong>förläng varje bråk med den andres nämnare</strong>. Då ärver varje helhet den andras uppdelning.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.65rem;">Före förlängning</div>
+        <div class="fracbar-wrap" id="g3-bars"></div>
+        <div style="margin:1rem 0 0.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+          <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);" id="g3-anim-label">Tryck ▶ för att se förlängningen</div>
+          <div style="display:flex;gap:0.4rem;align-items:center;">
+            <button onclick="g3AnimStep(-1)" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:0.82rem;">◀</button>
+            <button onclick="g3AnimPlay()" id="g3PlayBtn" style="background:var(--accent);border:none;color:#fff;border-radius:6px;padding:3px 12px;cursor:pointer;font-size:0.82rem;font-weight:600;">▶ Visa</button>
+            <button onclick="g3AnimStep(1)" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:0.82rem;">▶</button>
+          </div>
+        </div>
+        <div id="g3-anim" style="min-height:140px;"></div>
+      </div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>✏️</span> Vad händer egentligen? <span class="tg-chevron">▼</span></div>
+        <div class="tg-body">
+          <p>Vi förlänger
+          <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 0.15rem;gap:1px;"><span style="color:var(--accent);font-weight:700;font-size:0.9em;">1</span><span style="width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.5;"></span><span style="font-size:0.9em;">3</span></span>
+          med <strong style="color:var(--hi2);">4</strong> → varje tredjedel delas i 4 bitar →
+          <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 0.15rem;gap:1px;"><span style="color:var(--accent);font-weight:700;font-size:0.9em;">4</span><span style="width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.5;"></span><span style="font-size:0.9em;">12</span></span>.<br>
+          Vi förlänger
+          <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 0.15rem;gap:1px;"><span style="color:var(--hi2);font-weight:700;font-size:0.9em;">1</span><span style="width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.5;"></span><span style="font-size:0.9em;">4</span></span>
+          med <strong style="color:var(--accent);">3</strong> → varje fjärdedel delas i 3 bitar →
+          <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 0.15rem;gap:1px;"><span style="color:var(--hi2);font-weight:700;font-size:0.9em;">3</span><span style="width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.5;"></span><span style="font-size:0.9em;">12</span></span>.<br>
+          Nu är alla bitar lika stora: <strong>tolftedelar</strong>. Då kan vi addera!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steg 5 -->
+    <div class="gstep" id="gstep-4">
+      <div class="info-box">Steg 5 av 6 — Addition med olika nämnare</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Tre steg: <strong>förläng → addera → förkorta</strong>.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.65rem;">Beräkna 2/3 + 3/4</div>
+        <div id="g4-steps"></div>
+      </div>
+      <div style="background:var(--surface2);border-left:3px solid var(--hi2);border-radius:0 10px 10px 0;padding:0.65rem 1rem;font-size:0.84rem;color:var(--muted);line-height:1.6;">
+        💡 <strong style="color:var(--text);">Minsta gemensamma nämnare?</strong> Behövs inte — förläng med varandras nämnare, det ger alltid en gemensam nämnare. <strong>Förkorta sedan svaret.</strong>
+      </div>
+    </div>
+
+    <!-- Steg 6 -->
+    <div class="gstep" id="gstep-5">
+      <div class="info-box">Steg 6 av 6 — Subtraktion med olika nämnare</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Samma strategi — <strong>förläng → subtrahera → förkorta</strong>. Ingenting nytt!
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.65rem;">Beräkna 3/4 − 1/3</div>
+        <div id="g5-steps"></div>
+      </div>
+      <div style="margin-top:1.2rem;text-align:center;">
+        <button class="start-btn" onclick="document.querySelectorAll('.tab-btn')[2].click()">Till räkneverktyget →</button>
+      </div>
+    </div>
+
+    <!-- Steg-navigation -->
+    <div class="step-nav">
+      <button class="snav-btn" id="gPrev" onclick="gNav(-1)" disabled style="opacity:0.4;">← Föregående</button>
+      <div class="step-dots" id="gDots"></div>
+      <button class="snav-btn primary" id="gNext" onclick="gNav(1)">Nästa →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ RÄKNEVERKTYG ═══════════════ -->
+<div class="section" id="tab-verktyg">
+  <div class="card">
+    <div class="card-title">Räkneverktyg</div>
+    <p class="card-lead">Välj bråk och operator — se bildstöd och beräkningssteg live.</p>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <div>
+        <div style="font-size:0.78rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Bråk A</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;">
+          <label style="font-size:0.85rem;color:var(--muted);min-width:55px;">Täljare:</label>
+          <input type="range" id="vAt" min="1" max="9" value="1" oninput="updateVerktyg()">
+          <span id="vAtV" style="font-family:var(--font-b);font-size:0.88rem;color:var(--accent);min-width:1.2rem;">1</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <label style="font-size:0.85rem;color:var(--muted);min-width:55px;">Nämnare:</label>
+          <input type="range" id="vAn" min="2" max="10" value="3" oninput="updateVerktyg()">
+          <span id="vAnV" style="font-family:var(--font-b);font-size:0.88rem;color:var(--muted);min-width:1.2rem;">3</span>
+        </div>
+      </div>
+      <div>
+        <select id="vOp" onchange="updateVerktyg()" style="border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font-b);font-size:1.2rem;padding:0.3rem 0.5rem;border-radius:7px;cursor:pointer;">
+          <option value="+">+</option>
+          <option value="−">−</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;color:var(--hi2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Bråk B</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;">
+          <label style="font-size:0.85rem;color:var(--muted);min-width:55px;">Täljare:</label>
+          <input type="range" id="vBt" min="1" max="9" value="1" oninput="updateVerktyg()">
+          <span id="vBtV" style="font-family:var(--font-b);font-size:0.88rem;color:var(--hi2);min-width:1.2rem;">1</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <label style="font-size:0.85rem;color:var(--muted);min-width:55px;">Nämnare:</label>
+          <input type="range" id="vBn" min="2" max="10" value="4" oninput="updateVerktyg()">
+          <span id="vBnV" style="font-family:var(--font-b);font-size:0.88rem;color:var(--muted);min-width:1.2rem;">4</span>
+        </div>
+      </div>
+    </div>
+    <div id="vResult" style="background:var(--surface2);border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:1rem;"></div>
+    <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.4rem;">Bildstöd</div>
+    <div id="vBars" class="fracbar-wrap" style="margin-bottom:1rem;"></div>
+    <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.4rem;">Beräkningssteg</div>
+    <div id="vSteps" style="background:var(--surface2);border-radius:10px;padding:0.9rem 1.1rem;font-size:0.87rem;color:var(--muted);line-height:2.2;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ÖVNING ═══════════════ -->
+<div class="section" id="tab-ovning">
+  <div class="card" style="padding:1.1rem 1.5rem;">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <span style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Nivå:</span>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="levelPicker">
+        <button class="level-btn active" data-level="1" onclick="setLevel(1,this)"><span class="lb-icon">🧱</span><span class="lb-label">B1</span><span class="lb-desc"> Samma nämnare</span></button>
+        <button class="level-btn" data-level="2" onclick="setLevel(2,this)"><span class="lb-icon">📐</span><span class="lb-label">B2</span><span class="lb-desc"> Olika nämnare</span></button>
+        <button class="level-btn" data-level="3" onclick="setLevel(3,this)"><span class="lb-icon">🚀</span><span class="lb-label">B3</span><span class="lb-desc"> Blandat</span></button>
+      </div>
+      <button style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.28rem 0.75rem;cursor:pointer;font-size:0.78rem;font-family:var(--font-b);margin-left:auto;" onclick="setLevel(exLevel,document.querySelector('.level-btn.active'))">🔀 Ny uppgift</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0.9rem 1.5rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.8rem;color:var(--muted);">
+      Uppgift <span id="exIdx">1</span> av <span id="exTotal">8</span>
+      <div style="display:flex;gap:4px;" id="exPips"></div>
+    </div>
+  </div>
+  <div class="card" id="exCard"><div id="exWrap"></div></div>
+</div>
+
+<!-- ═══════════════ QUIZ ═══════════════ -->
+<div class="section" id="tab-quiz">
+  <div class="card">
+    <div class="card-title">Quiz — Addera och subtrahera bråk</div>
+    <p class="card-lead">Sex frågor som testar hela modulen.</p>
+    <div class="quiz-prog" id="quizProg">Fråga 1 av 6</div>
+    <div id="quizWrap"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+
+// ══ GCD & MATH ══
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){const t=b;b=a%b;a=t;} return a||1; }
+function simplify(t,n){ if(t===0)return[0,1]; const g=gcd(Math.abs(t),Math.abs(n)); return[t/g,n/g]; }
+
+// ══ BRÅK-HTML ══
+function fv(t,n,tc,dc){
+  tc=tc||'var(--accent)'; dc=dc||'var(--muted)';
+  return `<span class="fv fv-md" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 0.15rem;gap:1px;"><span class="fv-n" style="color:${tc};font-weight:600;line-height:1.1;">${t}</span><span class="fv-b" style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.5;border-radius:1px;"></span><span class="fv-d" style="color:${dc};line-height:1.1;">${n}</span></span>`;
+}
+function fvS(t,n,tc,dc){
+  tc=tc||'var(--accent)'; dc=dc||'var(--muted)';
+  return `<span class="fv fv-sm" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 0.12rem;gap:1px;"><span class="fv-n" style="color:${tc};font-weight:600;line-height:1.1;font-size:0.82em;">${t}</span><span class="fv-b" style="width:100%;min-width:1.1em;height:1.5px;background:currentColor;opacity:0.5;border-radius:1px;"></span><span class="fv-d" style="color:${dc};line-height:1.1;font-size:0.82em;">${n}</span></span>`;
+}
+
+// ══ STAPELVISUALISERING ══
+function makeBar(n, filled, filledCls, emptyCls){
+  emptyCls = emptyCls || 'empty';
+  const fs = n > 9 ? '0.65rem' : '0.78rem';
+  return Array.from({length:n}, (_,i) => {
+    const f = i < filled;
+    return `<div class="fracbar-seg ${f ? filledCls : emptyCls}" style="font-size:${fs};"></div>`;
+  }).join('');
+}
+
+function renderBars(containerId, rows){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = rows.map(row => {
+    const bar = makeBar(row.n, row.fill, row.cls||'filled-a');
+    return `<div class="fracbar-row">
+      <div class="fracbar-lbl">${row.label||''}</div>
+      <div class="fracbar">${bar}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══ GENOMGÅNGSSTEG ══
+let gCur = 0;
+const G_TOTAL = 6;
+
+function initGDots(){
+  const el = document.getElementById('gDots');
+  if(!el) return;
+  el.innerHTML = Array.from({length:G_TOTAL}, (_,i) =>
+    `<div class="step-dot${i===0?' active':''}" onclick="gJump(${i})"></div>`
+  ).join('');
+}
+
+function gNav(dir){
+  gCur = Math.max(0, Math.min(G_TOTAL-1, gCur+dir));
+  showGStep();
+}
+function gJump(i){ gCur=i; showGStep(); }
+
+function showGStep(){
+  document.querySelectorAll('.gstep').forEach((s,i)=>s.classList.toggle('active', i===gCur));
+  document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('active', i===gCur));
+  const lbl = document.getElementById('gStepLabel');
+  if(lbl) lbl.textContent = `Steg ${gCur+1} av ${G_TOTAL}`;
+  const prev = document.getElementById('gPrev');
+  const next = document.getElementById('gNext');
+  if(prev){ prev.disabled = gCur===0; prev.style.opacity = gCur===0?'0.4':'1'; }
+  if(next){
+    if(gCur===G_TOTAL-1){
+      next.textContent='Till räkneverktyget →';
+      next.onclick = ()=>document.querySelectorAll('.tab-btn')[2].click();
+    } else {
+      next.textContent='Nästa →';
+      next.onclick = ()=>gNav(1);
+    }
+  }
+  renderGStep();
+}
+
+function fvMult(t,n,factor,tc,fc){
+  // Shows: t·factor / n·factor as a standing fraction
+  // tc = fraction color, fc = factor highlight color
+  tc = tc||'var(--accent)';
+  fc = fc||'var(--hi2)';
+  return `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 0.15rem;gap:1px;">
+    <span style="display:flex;align-items:center;gap:2px;line-height:1.2;font-size:0.88em;">
+      <span style="color:${tc};font-weight:600;">${t}</span>
+      <span style="color:${fc};font-weight:700;font-size:0.85em;">·${factor}</span>
+    </span>
+    <span style="width:100%;min-width:2em;height:2px;background:currentColor;opacity:0.4;border-radius:1px;"></span>
+    <span style="display:flex;align-items:center;gap:2px;line-height:1.2;font-size:0.88em;">
+      <span style="color:var(--muted);font-weight:600;">${n}</span>
+      <span style="color:${fc};font-weight:700;font-size:0.85em;">·${factor}</span>
+    </span>
+  </span>`;
+}
+
+function buildCalcSteps(t1,n1,t2,n2,op){
+  const newN = n1*n2;
+  const newT1 = t1*n2;
+  const newT2 = t2*n1;
+  const resT = op==='+' ? newT1+newT2 : newT1-newT2;
+  const [st,sn] = simplify(resT, newN);
+  const needsSimplify = (st!==resT || sn!==newN);
+  const opWord = op==='+' ? 'Addera' : 'Subtrahera';
+  const sameDenom = n1===n2;
+  return `<div style="display:flex;flex-direction:column;gap:0.65rem;font-family:var(--font-b);font-size:0.87rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+      <span style="color:var(--muted);font-size:0.78rem;min-width:5.5rem;">1. Förläng</span>
+      ${fvS(t1,n1,'var(--accent)','var(--muted)')}
+      <span style="color:var(--muted);">→</span>
+      ${fvMult(t1,n1,n2,'var(--accent)','var(--hi2)')}
+      <span style="color:var(--muted);">=</span>
+      ${fvS(newT1,newN,'var(--accent)','var(--muted)')}
+      <span style="color:var(--muted);margin:0 0.4rem;">och</span>
+      ${fvS(t2,n2,'var(--hi2)','var(--muted)')}
+      <span style="color:var(--muted);">→</span>
+      ${fvMult(t2,n2,n1,'var(--hi2)','var(--accent)')}
+      <span style="color:var(--muted);">=</span>
+      ${fvS(newT2,newN,'var(--hi2)','var(--muted)')}
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+      <span style="color:var(--muted);font-size:0.78rem;min-width:5.5rem;">2. ${opWord}</span>
+      ${fvS(newT1,newN,'var(--accent)','var(--muted)')}
+      <span style="color:var(--muted);">${op}</span>
+      ${fvS(newT2,newN,'var(--hi2)','var(--muted)')}
+      <span style="color:var(--muted);">=</span>
+      ${fvS(resT,newN,'var(--correct)','var(--muted)')}
+    </div>
+    ${needsSimplify
+      ? `<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+          <span style="color:var(--muted);font-size:0.78rem;min-width:5.5rem;">3. Förkorta</span>
+          ${fvS(resT,newN,'var(--correct)','var(--muted)')}
+          <span style="color:var(--accent2);font-weight:700;font-size:0.82rem;">÷${gcd(Math.abs(resT),newN)}</span>
+          <span style="color:var(--muted);">→</span>
+          ${fvS(st,sn,'var(--correct)','var(--muted)')}
+          <span style="color:var(--correct);font-weight:600;font-size:0.78rem;">✓</span>
+        </div>`
+      : `<div style="font-size:0.78rem;color:var(--correct);font-weight:600;">✓ Svar: ${resT}/${newN} — kan inte förkortas vidare</div>`
+    }
+  </div>`;
+}
+
+// ══ STEG 4 ANIMATION ══════════════════════════════════
+let g3AnimCur = 0;
+const G3_STEPS = 4;
+let g3PlayTimer = null;
+
+function g3AnimStep(dir){
+  g3AnimCur = Math.max(0, Math.min(G3_STEPS-1, g3AnimCur + dir));
+  g3Render();
+}
+
+function g3AnimPlay(){
+  if(g3AnimCur >= G3_STEPS-1) g3AnimCur = 0;
+  clearInterval(g3PlayTimer);
+  g3Render();
+  g3PlayTimer = setInterval(()=>{
+    g3AnimCur++;
+    g3Render();
+    if(g3AnimCur >= G3_STEPS-1) clearInterval(g3PlayTimer);
+  }, 1300);
+}
+
+function fvI(t,n,color){
+  return `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.1rem;"><span style="color:${color};font-weight:700;font-size:1rem;">${t}</span><span style="width:100%;min-width:0.9em;height:2px;background:currentColor;opacity:0.5;border-radius:1px;"></span><span style="font-size:1rem;">${n}</span></span>`;
+}
+
+function g3Render(){
+  const el  = document.getElementById('g3-anim');
+  const lbl = document.getElementById('g3-anim-label');
+  const btn = document.getElementById('g3PlayBtn');
+  if(!el) return;
+  const step = g3AnimCur;
+
+  const stepLabels = [
+    'Steg 1 / 4 — Utgångspunkt: delarna är olika stora',
+    'Steg 2 / 4 — Dela varje tredjedel i 4 bitar',
+    'Steg 3 / 4 — Dela varje fjärdedel i 3 bitar',
+    'Steg 4 / 4 — Samma nämnare! Nu kan vi addera.',
+  ];
+  if(lbl) lbl.textContent = stepLabels[step];
+  if(btn) btn.textContent = step >= G3_STEPS-1 ? '↺ Börja om' : '▶ Nästa steg';
+
+  function mkBar(n, fillN, fillColor, divAt, h){
+    h = h || '44px';
+    return Array.from({length:n}, (_,i) => {
+      const filled = i < fillN;
+      const thick  = divAt && (i+1) % divAt === 0 && i < n-1;
+      const bg     = filled ? fillColor : 'var(--surface2)';
+      return `<div style="flex:1;height:100%;background:${bg};border-right:${thick?'3px':'1px'} solid var(--bg);transition:background 0.4s;"></div>`;
+    }).join('');
+  }
+  function bar(inner, h){ h=h||'44px'; return `<div style="display:flex;height:${h};border-radius:8px;overflow:hidden;border:2px solid var(--border);">${inner}</div>`; }
+  function rowLbl(html, color){ return `<div style="font-size:0.85rem;color:${color||'var(--muted)'};margin-bottom:0.3rem;font-weight:500;">${html}</div>`; }
+  function caption(html){ return `<div style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem;text-align:center;">${html}</div>`; }
+
+  if(step===0){
+    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.85rem;">
+      <div>
+        ${rowLbl(fvI(1,3,'var(--accent)') + ' — en tredjedel', 'var(--accent)')}
+        ${bar(mkBar(3,1,'var(--accent)',1,'50px'),'50px')}
+        ${caption('3 lika delar — varje del är stor')}
+      </div>
+      <div>
+        ${rowLbl(fvI(1,4,'var(--hi2)') + ' — en fjärdedel', 'var(--hi2)')}
+        ${bar(mkBar(4,1,'var(--hi2)',1,'50px'),'50px')}
+        ${caption('4 lika delar — varje del är mindre')}
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:0.5rem 0.85rem;font-size:0.85rem;color:var(--muted);">
+        ⚠️ Delarna är <strong>olika stora</strong> — vi kan inte addera direkt. Vi behöver göra alla bitar lika stora.
+      </div>
+    </div>`;
+  }
+
+  else if(step===1){
+    // Show 1/3 splitting: original 3 thirds → 12 twelfths with thick dividers every 4
+    const orig3 = mkBar(3,1,'var(--accent)',1,'38px');
+    const new12a = mkBar(12,4,'var(--accent)',4,'44px');
+    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.85rem;">
+      <div>
+        ${rowLbl('Förläng ' + fvI(1,3,'var(--accent)') + ' med <span style="color:var(--hi2);font-weight:700;">×4</span> — dela varje tredjedel i 4 lika bitar:', 'var(--accent)')}
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          <div style="flex:1;">${bar(orig3,'38px')}</div>
+          <div style="color:var(--muted);font-size:1.1rem;">→</div>
+          <div style="flex:1;">${bar(new12a,'44px')}</div>
+        </div>
+        ${caption(fvI(1,3,'var(--accent)') + ' × <span style="color:var(--hi2);font-weight:700;">4</span>/<span style="color:var(--hi2);font-weight:700;">4</span> = ' + fvI(4,12,'var(--accent)') + ' — 4 av 12 tolftedelar')}
+      </div>
+      <div style="opacity:0.45;">
+        ${rowLbl(fvI(1,4,'var(--hi2)') + ' — väntar sin tur', 'var(--hi2)')}
+        ${bar(mkBar(4,1,'var(--hi2)',1,'38px'),'38px')}
+      </div>
+    </div>`;
+  }
+
+  else if(step===2){
+    const done12a = mkBar(12,4,'var(--accent)',4,'38px');
+    const orig4   = mkBar(4,1,'var(--hi2)',1,'38px');
+    const new12b  = mkBar(12,3,'var(--hi2)',3,'44px');
+    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.85rem;">
+      <div style="opacity:0.75;">
+        ${rowLbl(fvI(4,12,'var(--accent)') + ' — klart ✓', 'var(--accent)')}
+        ${bar(done12a,'38px')}
+      </div>
+      <div>
+        ${rowLbl('Förläng ' + fvI(1,4,'var(--hi2)') + ' med <span style="color:var(--accent);font-weight:700;">×3</span> — dela varje fjärdedel i 3 lika bitar:', 'var(--hi2)')}
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          <div style="flex:1;">${bar(orig4,'38px')}</div>
+          <div style="color:var(--muted);font-size:1.1rem;">→</div>
+          <div style="flex:1;">${bar(new12b,'44px')}</div>
+        </div>
+        ${caption(fvI(1,4,'var(--hi2)') + ' × <span style="color:var(--accent);font-weight:700;">3</span>/<span style="color:var(--accent);font-weight:700;">3</span> = ' + fvI(3,12,'var(--hi2)') + ' — 3 av 12 tolftedelar')}
+      </div>
+    </div>`;
+  }
+
+  else if(step===3){
+    const bar12a = mkBar(12,4,'var(--accent)',4,'38px');
+    const bar12b = mkBar(12,3,'var(--hi2)',3,'38px');
+    const barSum = Array.from({length:12},(_,i)=>{
+      const bg = i<4?'var(--accent)':i<7?'var(--hi2)':'var(--surface2)';
+      return `<div style="flex:1;height:100%;background:${bg};border-right:1px solid var(--bg);transition:background 0.5s;"></div>`;
+    }).join('');
+    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <div style="width:3rem;text-align:right;flex-shrink:0;">${fvI(4,12,'var(--accent)')}</div>
+        <div style="flex:1;">${bar(bar12a,'38px')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <div style="width:3rem;text-align:right;flex-shrink:0;font-size:1rem;color:var(--muted);">+</div>
+        <div style="flex:1;height:2px;background:var(--border);"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <div style="width:3rem;text-align:right;flex-shrink:0;">${fvI(3,12,'var(--hi2)')}</div>
+        <div style="flex:1;">${bar(bar12b,'38px')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.3rem;">
+        <div style="width:3rem;text-align:right;flex-shrink:0;color:var(--correct);font-weight:700;font-size:1.1rem;">=</div>
+        <div style="flex:1;">${bar(barSum,'50px')}</div>
+      </div>
+      ${caption('<span style="color:var(--correct);font-weight:700;font-size:0.92rem;">4 + 3 = 7 tolftedelar &nbsp;→&nbsp; ' + fvI(7,12,'var(--correct)') + '</span>')}
+    </div>`;
+  }
+}
+
+function renderGStep(){
+  if(gCur===0){
+    renderBars('g0-bars',[
+      {n:5, fill:1, cls:'filled-a',   label: fvS(1,5,'var(--accent)','var(--muted)')},
+      {n:5, fill:2, cls:'filled-b',   label: fvS(2,5,'var(--hi2)','var(--muted)')},
+      {n:5, fill:3, cls:'filled-sum', label: fvS(3,5,'var(--correct)','var(--muted)')},
+    ]);
+  }
+  if(gCur===1){
+    renderBars('g1-bars',[
+      {n:5,  fill:3, cls:'filled-sum',  label: fvS(3,5,'var(--correct)','var(--muted)')},
+      {n:10, fill:3, cls:'wrong-fill',  label: fvS(3,10,'var(--wrong)','var(--muted)')},
+    ]);
+  }
+  if(gCur===2){
+    renderBars('g2-bars',[
+      {n:8, fill:5, cls:'filled-a',   label: fvS(5,8,'var(--accent)','var(--muted)')},
+      {n:8, fill:2, cls:'filled-b',   label: fvS(2,8,'var(--hi2)','var(--muted)')},
+      {n:8, fill:3, cls:'filled-sum', label: fvS(3,8,'var(--correct)','var(--muted)')},
+    ]);
+  }
+  if(gCur===3){
+    renderBars('g3-bars',[
+      {n:3, fill:1, cls:'filled-a', label: fvS(1,3,'var(--accent)','var(--muted)')},
+      {n:4, fill:1, cls:'filled-b', label: fvS(1,4,'var(--hi2)','var(--muted)')},
+    ]);
+    g3AnimCur = 0;
+    g3Render();
+  }
+  if(gCur===4){
+    const el = document.getElementById('g4-steps');
+    if(el) el.innerHTML = buildCalcSteps(2,3,3,4,'+');
+  }
+  if(gCur===5){
+    const el = document.getElementById('g5-steps');
+    if(el) el.innerHTML = buildCalcSteps(3,4,1,3,'−');
+  }
+}
+
+// ══ RÄKNEVERKTYG ══
+function updateVerktyg(){
+  const t1=+document.getElementById('vAt').value;
+  const n1=+document.getElementById('vAn').value;
+  const t2=+document.getElementById('vBt').value;
+  const n2=+document.getElementById('vBn').value;
+  const op=document.getElementById('vOp').value;
+  document.getElementById('vAtV').textContent=t1;
+  document.getElementById('vAnV').textContent=n1;
+  document.getElementById('vBtV').textContent=t2;
+  document.getElementById('vBnV').textContent=n2;
+
+  const sameDenom = n1===n2;
+  const newN = n1*n2;
+  const newT1 = t1*n2, newT2 = t2*n1;
+  const resT = op==='+' ? (sameDenom?t1+t2:newT1+newT2) : (sameDenom?t1-t2:newT1-newT2);
+  const dispN = sameDenom ? n1 : newN;
+  const [st,sn] = simplify(resT, dispN);
+
+  document.getElementById('vResult').innerHTML = `
+    <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;justify-content:center;">
+      ${fv(t1,n1,'var(--accent)','var(--muted)')}
+      <span style="color:var(--muted);font-size:1.2rem;">${op}</span>
+      ${fv(t2,n2,'var(--hi2)','var(--muted)')}
+      <span style="color:var(--muted);font-size:1.2rem;">=</span>
+      ${fv(st,sn,'var(--correct)','var(--muted)')}
+      ${(st!==resT||sn!==dispN)?`<span style="font-size:0.74rem;color:var(--muted);">(från ${resT}/${dispN})</span>`:''}
+    </div>`;
+
+  const barN = Math.min(sameDenom?n1:newN, 24);
+  const scale = barN / (sameDenom?n1:newN);
+  const bT1 = Math.round((sameDenom?t1:newT1)*scale);
+  const bT2 = Math.round((sameDenom?t2:newT2)*scale);
+  const bRes = Math.max(0, Math.round(Math.abs(resT)*scale));
+
+  document.getElementById('vBars').innerHTML = `
+    <div class="fracbar-row"><div class="fracbar-lbl">${fvS(t1,n1,'var(--accent)','var(--muted)')}</div>
+      <div class="fracbar">${makeBar(barN,bT1,'filled-a')}</div></div>
+    <div class="fracbar-row"><div class="fracbar-lbl">${fvS(t2,n2,'var(--hi2)','var(--muted)')}</div>
+      <div class="fracbar">${makeBar(barN,bT2,'filled-b')}</div></div>
+    <div class="fracbar-row"><div class="fracbar-lbl">${fvS(st,sn,'var(--correct)','var(--muted)')}</div>
+      <div class="fracbar">${resT<0?'<span style="color:var(--wrong);font-size:0.8rem;padding:0 0.5rem;">Negativt resultat</span>':makeBar(barN,bRes,'filled-sum')}</div></div>`;
+
+  const t1_v=sameDenom?t1:t1*n2, t2_v=sameDenom?t2:t2*n1, n_v=sameDenom?n1:n1*n2;
+  document.getElementById('vSteps').innerHTML = sameDenom
+    ? `<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+        ${fvS(t1,n1,'var(--accent)','var(--muted)')} <span style="color:var(--muted);">${op}</span> ${fvS(t2,n2,'var(--hi2)','var(--muted)')}
+        <span style="color:var(--muted);">=</span> ${fvS(resT,n1,'var(--correct)','var(--muted)')}
+        ${(st!==resT||sn!==n1)?`<span style="color:var(--accent2);font-weight:700;font-size:0.82rem;">÷${gcd(Math.abs(st!==resT?resT:st), sn!==newN?newN:sn)}</span> <span style="color:var(--muted);">→</span> ${fvS(st,sn,'var(--correct)','var(--muted)')} ✓`:''}
+       </div><div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Samma nämnare → addera/subtrahera täljarna direkt.</div>`
+    : buildCalcSteps(t1,n1,t2,n2,op);
+}
+
+// ══ ÖVNINGAR ══
+let exLevel=1, exCur=0, exResults=[];
+
+function genEx(level){
+  const same_denoms = [4,5,6,8,10,12];
+  const diff_pairs  = [[2,3],[2,5],[3,4],[3,5],[4,5],[2,6],[3,6],[5,6],[2,4]];
+  const ops = ['+','−'];
+
+  return Array.from({length:8}, () => {
+    let t1,n1,t2,n2,op;
+    op = ops[Math.floor(Math.random()*2)];
+
+    if(level===1){
+      n1=n2=same_denoms[Math.floor(Math.random()*same_denoms.length)];
+      t1=Math.floor(Math.random()*(n1-1))+1;
+      t2=Math.floor(Math.random()*(n1-1))+1;
+      if(op==='−'){ if(t2>=t1) t2=Math.max(1,t1-1-Math.floor(Math.random()*Math.max(1,t1-1))); }
+      else { while(t1+t2>n1) t2=Math.max(1,Math.floor(Math.random()*(n1-t1))||1); }
+    } else {
+      const pair = diff_pairs[Math.floor(Math.random()*diff_pairs.length)];
+      n1=pair[0]; n2=pair[1];
+      t1=Math.floor(Math.random()*(n1-1))+1;
+      t2=Math.floor(Math.random()*(n2-1))+1;
+      const resT = op==='+' ? t1*n2+t2*n1 : t1*n2-t2*n1;
+      if(resT<=0){ op='+'; }
+    }
+    return {t1,n1,t2,n2,op};
+  });
+}
+
+function initEx(){
+  exercises = level===3 ? [...genEx(1),...genEx(2)].sort(()=>Math.random()-0.5).slice(0,8) : genEx(exLevel);
+  exCur=0; exResults=Array(exercises.length).fill(null);
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx();
+}
+let exercises=[];
+function setLevel(l,btn){
+  exLevel=l;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  exercises = l===3 ? [...genEx(1),...genEx(2)].sort(()=>Math.random()-0.5).slice(0,8) : genEx(l);
+  exCur=0; exResults=Array(exercises.length).fill(null);
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx();
+}
+function updateExPips(){
+  document.getElementById('exIdx').textContent=exCur+1;
+  document.getElementById('exPips').innerHTML=exercises.map((_,i)=>{
+    let c='ex-pip'; if(i===exCur)c+=' cur'; else if(exResults[i]===true)c+=' ok'; else if(exResults[i]===false)c+=' bad';
+    return `<div class="${c}"></div>`;}).join('');
+}
+function renderEx(){
+  updateExPips();
+  const ex=exercises[exCur];
+  const {t1,n1,t2,n2,op}=ex;
+  const sameDenom=n1===n2;
+  const rawN=sameDenom?n1:n1*n2;
+  const rawT=op==='+'?(sameDenom?t1+t2:t1*n2+t2*n1):(sameDenom?t1-t2:t1*n2-t2*n1);
+  const [ct,cn]=simplify(rawT,rawN);
+
+  document.getElementById('exWrap').innerHTML=`
+    <div style="margin-bottom:0.75rem;">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.5rem;">Beräkna och förkorta om möjligt</div>
+      <div style="display:flex;align-items:center;gap:0.6rem;font-size:1.1rem;flex-wrap:wrap;background:var(--surface2);padding:0.65rem 1rem;border-radius:10px;">
+        ${fv(t1,n1,'var(--accent)','var(--muted)')}
+        <span style="color:var(--muted);font-size:1.3rem;">${op}</span>
+        ${fv(t2,n2,'var(--hi2)','var(--muted)')}
+        <span style="color:var(--muted);font-size:1.3rem;">=</span>
+        <span style="color:var(--muted);">?</span>
+      </div>
+    </div>
+    ${exLevel===1 ? `<div id="ex-vis" style="margin-bottom:0.75rem;">
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.3rem;">Bildstöd:</div>
+      <div class="fracbar-wrap">
+        <div class="fracbar-row"><div class="fracbar-lbl">${fvS(t1,n1,'var(--accent)','var(--muted)')}</div><div class="fracbar">${makeBar(n1,t1,'filled-a')}</div></div>
+        <div class="fracbar-row"><div class="fracbar-lbl">${fvS(t2,n2,'var(--hi2)','var(--muted)')}</div><div class="fracbar">${makeBar(n2,t2,'filled-b')}</div></div>
+      </div></div>` :
+    exLevel===2 ? `<div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem;background:var(--surface2);padding:0.5rem 0.8rem;border-radius:8px;">
+      💡 Förläng ${fvS(t1,n1,'var(--accent)','var(--muted)')} med ×${n2} och ${fvS(t2,n2,'var(--hi2)','var(--muted)')} med ×${n1}</div>` : ''}
+    <div style="margin-bottom:0.6rem;">
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.4rem;">Ditt svar (förkortat):</div>
+      <div class="ans-wrap">
+        <div class="ans-frac">
+          <input class="ans-input" id="ans-t" type="number" min="-99" max="999" placeholder="?" />
+          <div class="ans-bar"></div>
+          <input class="ans-input" id="ans-n" type="number" min="1" max="999" placeholder="?" />
+        </div>
+        <button class="check-btn" onclick="checkAns(${ct},${cn},${rawT},${rawN})">Kontrollera</button>
+      </div>
+    </div>
+    <div class="ex-fb" id="exFb"></div>
+    <button class="ex-next-big" id="exNext" onclick="nextEx()">Nästa uppgift →</button>`;
+
+  const ft=document.getElementById('ans-t'); if(ft&&ft.focus)ft.focus();
+}
+
+function checkAns(ct,cn,rawT,rawN){
+  const ut=parseInt(document.getElementById('ans-t').value);
+  const un=parseInt(document.getElementById('ans-n').value);
+  if(isNaN(ut)||isNaN(un)||un<=0){
+    const fb=document.getElementById('exFb');
+    fb.className='ex-fb show bad'; fb.textContent='Fyll i täljare och nämnare (heltal)!'; return;
+  }
+  const ok = (ut===ct&&un===cn)||(ut===rawT&&un===rawN)||(Math.abs(ut/un-ct/cn)<0.0001);
+  exResults[exCur]=ok; updateExPips();
+  ['ans-t','ans-n'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.add(ok?'ok':'bad');el.disabled=true;}
+  });
+  const fb=document.getElementById('exFb');
+  fb.className='ex-fb show '+(ok?'ok':'bad');
+  fb.innerHTML = ok
+    ? `✓ Rätt! Svaret är ${fvS(ct,cn,'var(--correct)','var(--muted)')}.`
+    : `✗ Inte riktigt. Rätt svar: ${fvS(ct,cn,'var(--correct)','var(--muted)')}${rawT!==ct||rawN!==cn?' (förkortad från '+rawT+'/'+rawN+')':''}.`;
+
+  // Show result bar after check (B1)
+  if(exLevel===1){
+    const vis=document.getElementById('ex-vis');
+    if(vis){
+      const ex=exercises[exCur];
+      vis.innerHTML+=`<div class="fracbar-row"><div class="fracbar-lbl">${fvS(ct,cn,'var(--correct)','var(--muted)')}</div><div class="fracbar">${makeBar(ex.n1,Math.max(0,rawT),'filled-sum')}</div></div>`;
+    }
+  }
+  const nb=document.getElementById('exNext');
+  if(nb){nb.classList.add('show');nb.textContent=exCur<exercises.length-1?'Nästa uppgift →':'Se resultat';}
+}
+
+function nextEx(){
+  if(exCur<exercises.length-1){ exCur++; renderEx(); }
+  else {
+    const done=exResults.filter(r=>r===true).length;
+    document.getElementById('exWrap').innerHTML=`<div style="text-align:center;padding:1.5rem 0;">
+      <div style="font-size:2.2rem;margin-bottom:0.4rem;">${done===exercises.length?'🎉':done>=6?'💪':'📚'}</div>
+      <div style="font-family:var(--font-d);font-size:1.6rem;color:var(--accent2);margin-bottom:0.3rem;">${done} / ${exercises.length}</div>
+      <div style="color:var(--muted);font-size:0.9rem;margin-bottom:1.1rem;">${done===exercises.length?'Perfekt! Inga fel.':done>=6?'Bra jobbat!':'Prova B1 för mer stöd.'}</div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+        <button class="start-btn" onclick="setLevel(${exLevel},document.querySelector('.level-btn[data-level=\\'${exLevel}\\']'))">🔀 Ny omgång</button>
+        ${exLevel<3?`<button style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.3rem 0.9rem;cursor:pointer;font-size:0.82rem;font-family:var(--font-b);" onclick="setLevel(${exLevel+1},document.querySelector('.level-btn[data-level=\\'${exLevel+1}\\']'))">Prova B${exLevel+1} →</button>`:''}
+      </div></div>`;
+  }
+}
+
+// ══ FÖRKUNSKAPER ══
+const PQ4=[
+  {q:'Vad kallas siffran OVANFÖR bråkstrecket?',
+   opts:['Täljare','Nämnare','Kvot','Bråk'], ok:0,
+   fb:'Täljaren sitter ovanför — den räknar hur många delar vi tar.'},
+  {q:'Förläng 1/3 så att nämnaren blir 12.',
+   opts:['3/12','6/12','2/12','4/12'], ok:3,
+   fb:'3 × 4 = 12 → multiplicera täljare och nämnare med 4: 1×4 / 3×4 = 4/12.'},
+  {q:'Förkorta 6/9 så långt som möjligt.',
+   opts:['3/4','3/5','2/3','1/3'], ok:2,
+   fb:'GCD(6,9) = 3 → 6÷3 = 2 och 9÷3 = 3 → svaret är 2/3.'},
+  {q:'Vad är 3/7 + 2/7?',
+   opts:['1/7','5/14','6/7','5/7'], ok:3,
+   fb:'Samma nämnare → addera täljarna: 3+2=5. Nämnaren 7 ändras inte → 5/7.'},
+  {q:'Varför är 1/5 + 2/5 inte lika med 3/10?',
+   opts:['Man måste alltid förkorta','Nämnaren dubbleras vid addition','Nämnaren är enheten och ändras inte','Man adderar täljare och nämnare var för sig'], ok:2,
+   fb:'Nämnaren (5) är enheten — man adderar bara täljarna. Svaret är 3/5, inte 3/10.'},
+];
+let pq4I=0, pq4R=[];
+function initPQ4(){ pq4I=0; pq4R=Array(PQ4.length).fill(null); renderPQ4(); }
+function renderPQ4(){
+  const q=PQ4[pq4I];
+  document.getElementById('pq4-pips').innerHTML=PQ4.map((_,i)=>{
+    let c='mq-pip'; if(i===pq4I)c+=' cur'; else if(pq4R[i]===true)c+=' ok'; else if(pq4R[i]===false)c+=' bad';
+    return `<div class="${c}"></div>`;}).join('');
+  document.getElementById('pq4-wrap').innerHTML=`
+    <div class="mq-q">${q.q}</div>
+    <div class="mq-opts">${q.opts.map((o,i)=>`<button class="mq-opt" onclick="answerPQ4(${i},this)">${o}</button>`).join('')}</div>
+    <div class="mq-fb" id="pq4-fb"></div>
+    <button class="mq-next-btn" id="pq4-next" onclick="nextPQ4()">${pq4I<PQ4.length-1?'Nästa →':'Se resultat'}</button>`;
+}
+function answerPQ4(i,btn){
+  const q=PQ4[pq4I]; const ok=i===q.ok; pq4R[pq4I]=ok;
+  document.querySelectorAll('#pq4-wrap .mq-opt').forEach((b,j)=>{
+    b.disabled=true; if(b===btn)b.classList.add(ok?'mq-ok':'mq-err'); if(j===q.ok)b.classList.add('mq-reveal');});
+  const fb=document.getElementById('pq4-fb'); fb.className='mq-fb '+(ok?'ok':'bad'); fb.textContent=(ok?'✓ ':'✗ ')+q.fb;
+  document.getElementById('pq4-next').classList.add('show');
+  document.getElementById('pq4-pips').innerHTML=PQ4.map((_,i2)=>{let c='mq-pip';if(i2===pq4I)c+=' cur';else if(pq4R[i2]===true)c+=' ok';else if(pq4R[i2]===false)c+=' bad';return `<div class="${c}"></div>`;}).join('');
+}
+function nextPQ4(){
+  if(pq4I<PQ4.length-1){pq4I++;renderPQ4();}
+  else{
+    const cor=pq4R.filter(r=>r===true).length;
+    document.getElementById('pq4-pips').innerHTML='';
+    document.getElementById('pq4-wrap').innerHTML=`<div style="text-align:center;padding:1rem 0;">
+      <div style="font-size:1.8rem;">${cor===PQ4.length?'🎉':cor>=3?'👍':'💪'}</div>
+      <div style="font-family:var(--font-d);font-size:1.2rem;color:var(--accent2);margin:0.3rem 0;">${cor}/${PQ4.length} rätt</div>
+      <div style="font-size:0.84rem;color:var(--muted);">${cor===PQ4.length?'Klar — starta genomgången!':'Repetera, sedan kör vi!'}</div>
+      <button style="margin-top:0.6rem;background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.35rem 0.9rem;cursor:pointer;font-size:0.82rem;font-family:var(--font-b);" onclick="initPQ4()">Försök igen</button>
+    </div>`;
+  }
+}
+
+// ══ QUIZ ══
+let qI=0, qAns=false;
+function fvQ(t,n){return `<span class="fv fv-sm" style="display:inline-flex;flex-direction:column;align-items:center;gap:1px;vertical-align:middle;"><span class="fv-n">${t}</span><span class="fv-b"></span><span class="fv-d">${n}</span></span>`;}
+const QD=[
+  {q:`Vad är ${fvQ(2,7)} + ${fvQ(3,7)}?`, opts:[`${fvQ(5,7)}`,`${fvQ(5,14)}`,`${fvQ(6,7)}`,`${fvQ(1,7)}`], ok:0, fb:'Samma nämnare → 2+3=5. Nämnaren 7 ändras inte → 5/7.'},
+  {q:`Varför är ${fvQ(1,5)}+${fvQ(2,5)} inte lika med ${fvQ(3,10)}?`, opts:['Täljarna adderas fel','Nämnaren är enheten och ändras inte','Man måste förkorta','Nämnaren ska multipliceras'], ok:1, fb:'Nämnaren (5) är enheten. Man adderar bara täljarna: 1+2=3, svar 3/5.'},
+  {q:`Vad är ${fvQ(5,8)} − ${fvQ(2,8)}?`, opts:[`${fvQ(3,8)}`,`${fvQ(3,16)}`,`${fvQ(7,8)}`,`${fvQ(3,0)}`], ok:0, fb:'Samma nämnare → 5−2=3. Svar: 3/8.'},
+  {q:`För att beräkna ${fvQ(1,3)}+${fvQ(1,4)} — vilken gemensam nämnare ger förlängning med varandras nämnare?`, opts:['7','12','6','8'], ok:1, fb:'3×4=12. Gemensam nämnare: 12.'},
+  {q:`Vad är ${fvQ(1,2)} + ${fvQ(1,3)}?`, opts:[`${fvQ(2,5)}`,`${fvQ(5,6)}`,`${fvQ(2,6)}`,`${fvQ(1,6)}`], ok:1, fb:'1/2→3/6, 1/3→2/6. 3/6+2/6=5/6. Kan inte förkortas.'},
+  {q:`Vad är ${fvQ(3,4)} − ${fvQ(1,3)}?`, opts:[`${fvQ(2,1)}`,`${fvQ(5,12)}`,`${fvQ(8,12)}`,`${fvQ(1,4)}`], ok:1, fb:'3/4→9/12, 1/3→4/12. 9/12−4/12=5/12. Kan inte förkortas.'},
+];
+function initQuiz(){ qI=0; renderQ(); }
+function renderQ(){
+  const q=QD[qI]; qAns=false;
+  document.getElementById('quizProg').textContent=`Fråga ${qI+1} av ${QD.length}`;
+  document.getElementById('quizWrap').innerHTML=`
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="ansQ(${i})">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="qFb"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQ()" style="display:none;">${qI<QD.length-1?'Nästa →':'Börja om 🔄'}</button>`;
+}
+function ansQ(i){
+  if(qAns)return; qAns=true; const q=QD[qI];
+  document.querySelectorAll('.quiz-opt').forEach((b,j)=>{
+    b.disabled=true; if(j===i)b.classList.add(i===q.ok?'correct':'wrong'); if(j===q.ok)b.classList.add('correct');});
+  const fb=document.getElementById('qFb');
+  fb.innerHTML=(i===q.ok?'✓ Rätt! ':'✗ Inte riktigt. ')+q.fb;
+  fb.className='quiz-fb show '+(i===q.ok?'ok':'bad');
+  document.getElementById('qNext').style.display='inline-block';
+}
+function nextQ(){ qI=(qI+1)%QD.length; renderQ(); }
+
+// ══ UI ══
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleTG(header){
+  const body=header.nextElementSibling;
+  const open=header.classList.toggle('open');
+  body.style.display=open?'flex':'none';
+}
+
+// ══ MARKERA KLAR ══
+function markDone(){
+  const ind=document.getElementById('doneIndicator');
+  const btn=document.getElementById('doneBtn');
+  if(ind)ind.classList.add('show');
+  if(btn){btn.textContent='✓ Klar';btn.disabled=true;btn.style.opacity='0.6';}
+  try{const p=JSON.parse(localStorage.getItem('brak-progress')||'{}');p[4]='done';localStorage.setItem('brak-progress',JSON.stringify(p));}catch(e){}
+}
+
+// ══ PORTALTEMA ══
+const PORTAL_THEMES=[{id:'pt-light',label:'PT Ljust',icon:'☀️'},{id:'pt-dark',label:'PT Mörkt',icon:'🌙'},{id:'ad-light',label:'AD Ljust',icon:'🌿'},{id:'ad-dark',label:'AD Mörkt',icon:'🌑'}];
+let portalThemeIdx=0;
+function applyPortalTheme(idx){
+  const t=PORTAL_THEMES[idx];
+  document.documentElement.setAttribute('data-theme',t.id);
+  const lbl=document.getElementById('portalThemeLabel'); const ico=document.getElementById('portalThemeIcon');
+  if(lbl)lbl.textContent=t.label; if(ico)ico.textContent=t.icon;
+  localStorage.setItem('math-portal-theme',t.id);
+}
+function cyclePortalTheme(){ portalThemeIdx=(portalThemeIdx+1)%PORTAL_THEMES.length; applyPortalTheme(portalThemeIdx); }
+(function(){
+  const saved=localStorage.getItem('math-portal-theme');
+  const legacyMap={'pt':'pt-light','pt-dark':'pt-dark','blue':'pt-light'};
+  const resolved=legacyMap[saved]||saved;
+  const VALID=PORTAL_THEMES.map(t=>t.id);
+  if(resolved&&VALID.includes(resolved)) portalThemeIdx=PORTAL_THEMES.findIndex(t=>t.id===resolved);
+  applyPortalTheme(portalThemeIdx);
+})();
+
+// ══ INIT ══
+(function(){
+  try{
+    const p=JSON.parse(localStorage.getItem('brak-progress')||'{}');
+    if(!p[4]||p[4]==='not-started'){p[4]='in-progress';localStorage.setItem('brak-progress',JSON.stringify(p));}
+    if(p[4]==='done'){
+      const ind=document.getElementById('doneIndicator'); const btn=document.getElementById('doneBtn');
+      if(ind)ind.classList.add('show');
+      if(btn){btn.textContent='✓ Klar';btn.disabled=true;btn.style.opacity='0.6';}
+    }
+  }catch(e){}
+  initGDots(); showGStep(); updateVerktyg();
+  exercises=genEx(exLevel); exResults=Array(exercises.length).fill(null);
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx(); initQuiz(); initPQ4();
+})();
+
+
+</script>
+
+<nav class="module-nav">
+  <a class="mnav-btn" href="brak3.html"><span>←</span><div><span class="mnav-label">Föregående</span><span class="mnav-title">Jämföra bråk</span></div></a>
+  <span class="mnav-spacer"></span>
+  <a class="mnav-btn primary" href="brak5.html"><div style="text-align:right"><span class="mnav-label">Nästa</span><span class="mnav-title">Bråkform och decimalform</span></div><span>→</span></a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bråk 5 — Bråkform och decimalform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+
+
+
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  portal.css  —  PT Matematik · Alfred Dalinskolan
+ *  Patrick Tegnefur · Förstelärare & IT-pedagog
+ *
+ *  Importeras av alla sidor på portalen via:
+ *    <link rel="stylesheet" href="[relativ sökväg]/portal.css">
+ *
+ *  STRUKTUR:
+ *   1. Google Fonts-import
+ *   2. Globala tokens (:root)
+ *   3. Teman  — AD Ljust / AD Mörkt / PT Ljust / PT Mörkt
+ *   4. Reset & bas
+ *   5. Header  (portal-header, portal-back, portal-crumb, tema-toggle)
+ *   6. Modul-navigation  (module-nav, mnav-btn)
+ *   7. Gemensamma UI-komponenter
+ *      — Knappar (tab-btn, start-btn, check-btn m.fl.)
+ *      — Bråkvisning (fv)
+ *      — Förkunskaps-quiz (mq-*)
+ *      — Framstegsindikatorer (mq-pip, step-dot)
+ *      — Färg-badges (pill-video, pill-sim m.fl.)
+ *   8. Responsiv  (max-width: 600px)
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. TYPSNITT ──────────────────────────────────────────────────── */
+/* ── 2. GLOBALA TOKENS ────────────────────────────────────────────── */
+:root {
+  --radius:  14px;
+  --trans:   0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. TEMAN
+   Varje tema definierar ALLA variabler fullständigt.
+   Åk 7 = Blå · Åk 8 = Grön · Åk 9 = Röd/Rosa
+
+   AD-färger:  Blågrön #00A19A · Guld #FBBC33 · Rosa #EC6095
+               Grön #A2C617   · Gul #FFDE14
+   PT-färger:  Blå #306BF0 · Röd #F03048 · Orange #FF8837
+               Grön #39C762 · Klarblå #7179E8
+   PT-gradient: #66C7C2 → #F4A261 → #EC6095
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── AD LJUST ─────────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #006a64;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  /* Kolumn-gradienter */
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  /* Badges */
+  --b7: #d8eaff; --b7t: #1040a0;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── AD MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #0a2048; --b7t: #7ab0ff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* ── PT LJUST ─────────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #306BF0;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #dce8fe; --b7t: #1a4ecc;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── PT MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #16204a; --b7t: #80aaff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* PT Mörkt — gradient-accenter på aktiva element */
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .check-btn-main,
+[data-theme="pt-dark"] .check-main,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .mq-next-btn,
+[data-theme="pt-dark"] .ex-next-big,
+[data-theme="pt-dark"] .snav-btn.primary,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .row-check,
+[data-theme="pt-dark"] .level-btn.active {
+  background: #EC6095 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-theme="pt-dark"] .progress-fill {
+  background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+}
+[data-theme="pt-dark"] .fv .fv-n  { color: #F4A261; }
+[data-theme="pt-dark"] .fv .fv-b  { opacity: 0.5; }
+[data-theme="pt-dark"] .rect-seg.on-a   { background: #66C7C2; color: #12101c; }
+[data-theme="pt-dark"] .rect-seg.rs-one { background: #66C7C2; }
+[data-theme="pt-dark"] .frac-card.fc-ok    { border-color: #39C762; background: rgba(57,199,98,0.1); }
+[data-theme="pt-dark"] .frac-card:hover    { border-color: #66C7C2; }
+[data-theme="pt-dark"] .sub-btn.active     { background: rgba(244,162,97,0.13); color: #F4A261; border-bottom: 2px solid #F4A261; }
+
+/* AD Mörkt — tab-knapp */
+[data-theme="ad-dark"] .tab-btn.active {
+  background: linear-gradient(90deg, #00A19A, #FBBC33);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RESET & BAS
+═══════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HEADER
+═══════════════════════════════════════════════════════════════════ */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Tillbaka-länk */
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size:0.75rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+
+/* Brödsmulor */
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+
+/* Tema-toggle */
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size:0.75rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* Klar-indikator och -knapp */
+.done-ind {
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--correct);
+  background: rgba(24,163,72,0.12);
+  border: 1px solid rgba(24,163,72,0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  display: none;
+}
+.done-ind.show { display: inline-block; }
+
+.done-hdr-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  font-size:0.75rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.done-hdr-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. MODUL-NAVIGATION  (Föregående / Nästa)
+═══════════════════════════════════════════════════════════════════ */
+.module-nav {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.mnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.mnav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface2);
+}
+.mnav-btn.primary {
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  border-color: transparent;
+  color: #fff;
+}
+.mnav-btn.primary:hover { opacity: 0.9; }
+.mnav-btn.primary .mnav-label { color: rgba(255,255,255,0.75); }
+.mnav-btn.primary .mnav-title { color: #fff; }
+
+.mnav-label {
+  font-size:0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  display: block;
+}
+.mnav-title  { display: block; }
+.mnav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. GEMENSAMMA UI-KOMPONENTER
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tab-navigation ───────────────────────────────────────────────── */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.tab-btn:hover  { border-color: var(--accent); color: var(--text); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Bråkvisning (fv) ─────────────────────────────────────────────── */
+.fv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  margin: 0 0.22rem;
+  vertical-align: middle;
+  gap: 1px;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.fv .fv-n { font-family: var(--font-b); color: var(--accent); font-weight: 500; }
+.fv .fv-b { width: 100%; min-width: 1em; height: 1.5px; background: currentColor; border-radius: 1px; opacity: 0.6; }
+.fv .fv-d { font-family: var(--font-b); }
+.fv.fv-sm .fv-n, .fv.fv-sm .fv-d { font-size: 0.82em; }
+.fv.fv-md .fv-n, .fv.fv-md .fv-d { font-size: 1.05em; }
+.fv.fv-lg .fv-n, .fv.fv-lg .fv-d { font-size: 1.4em; }
+
+/* ── Segmentstaplar (rektanglar) ──────────────────────────────────── */
+.rect-seg {
+  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-b);
+  font-size:0.75rem;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+.rect-seg:last-child { border-right: none; }
+.rect-seg.on-a  { background: var(--accent); color: #fff; }
+.rect-seg.on-b  { background: var(--hi2);    color: #1a1200; font-weight: 600; }
+.rect-seg.off   { background: var(--surface2); color: var(--muted); }
+.rect-seg.rs-one { background: var(--accent); }
+
+/* ── Förkunskaps-quiz (mq-*) ──────────────────────────────────────── */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.bad,
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+
+.mq-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  transition: all 0.15s;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+.mq-opt:hover       { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok,
+.mq-opt.ok          { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err,
+.mq-opt.err         { border-color: var(--wrong); background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal,
+.mq-opt.reveal      { border-color: var(--correct); color: var(--correct); }
+
+.mq-fb, .ex-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.ok, .ex-fb.ok     { color: var(--correct); }
+.mq-fb.bad, .mq-fb.mq-fb-err,
+.ex-fb.bad               { color: var(--wrong); }
+.mq-fb.show, .ex-fb.show { display: block; }
+
+.mq-next-btn, .mq-next, .quiz-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next-btn.show,
+.mq-next.show,
+.quiz-next.show  { display: inline-block; }
+.mq-next-btn:hover,
+.mq-next:hover,
+.quiz-next:hover { opacity: 0.85; }
+
+/* ── Knappar ──────────────────────────────────────────────────────── */
+.start-btn, .check-main, .ex-next-big {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.start-btn:hover,
+.check-main:hover,
+.ex-next-big:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.check-btn, .row-check {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.check-btn:hover, .row-check:hover { opacity: 0.85; }
+
+/* ── Navigationspunktar (steg-genomgång) ──────────────────────────── */
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot:hover  { border-color: var(--accent); }
+.step-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 18px;
+  border-radius: 4px;
+}
+
+/* ── Framsteg / progress ──────────────────────────────────────────── */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Pills (typ-indikatorer) ──────────────────────────────────────── */
+.pill { font-size:0.72rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+.pill-pdf    { background: #f5e8ff; color: #600090; border-color: #c080f0; }
+
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+[data-theme="ad-dark"] .pill-pdf,
+[data-theme="pt-dark"] .pill-pdf   { background: #200030; color: #d080ff; border-color: #500080; }
+
+/* ── Programmering & NP badges ────────────────────────────────────── */
+.badge-prog { background: var(--badge-prog); color: var(--badge-prog-t); }
+.badge-np   { background: var(--badge-np);   color: var(--badge-np-t); }
+
+/* ── Kort (card) ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info-ruta ────────────────────────────────────────────────────── */
+.info-box {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* ── Highlight-ruta ───────────────────────────────────────────────── */
+.hl {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+.hl.gold { border-left: 3px solid var(--hi2); }
+.hl.blue { border-left: 3px solid var(--accent); }
+
+/* ── Quiz-komponenter ─────────────────────────────────────────────── */
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--font-b);
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+.quiz-opt:hover   { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.quiz-opt.wrong   { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+
+.quiz-fb {
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  display: none;
+  color: var(--muted);
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok   { color: var(--correct); }
+.quiz-fb.bad  { color: var(--wrong); }
+
+/* ── Lärar-tips (teacher-guide) ───────────────────────────────────── */
+.teacher-guide {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface2);
+  user-select: none;
+  transition: background 0.15s;
+}
+.tg-header:hover         { background: var(--border); }
+.tg-chevron              { margin-left: auto; font-size:0.75rem; transition: transform 0.25s; }
+.tg-header.open .tg-chevron { transform: rotate(180deg); }
+.tg-body {
+  padding: 0.8rem 1rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tg-body strong { color: var(--text); }
+
+/* ─── 8. RESPONSIV ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .module-nav          { padding: 0.75rem 1rem 2rem; }
+  .mnav-btn            { font-size: 0.75rem; padding: 0.5rem 0.9rem; }
+  .nav-tabs            { padding: 0.5rem 0.75rem; gap: 0.25rem; top: 52px; }
+  .tab-btn             { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+}
+
+
+/* ══ SIDSPECIFIK CSS — Bråk 4 ══════════════════════════════════ */
+
+/* Stapelvisualisering */
+.fracbar-wrap{margin:0.9rem 0;}
+.fracbar-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.55rem;}
+.fracbar-lbl{width:3.5rem;text-align:right;flex-shrink:0;font-size:0.88rem;}
+.fracbar{flex:1;display:flex;height:40px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);}
+.fracbar-seg{flex:1;border-right:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-b);transition:background 0.3s;}
+.fracbar-seg:last-child{border-right:none;}
+.fracbar-seg.filled-a  {background:var(--accent);color:#fff;}
+.fracbar-seg.filled-b  {background:var(--hi2);color:#1a1200;}
+.fracbar-seg.filled-sum{background:var(--correct);color:#fff;}
+.fracbar-seg.empty     {background:var(--surface2);color:var(--muted);}
+.fracbar-seg.wrong-fill{background:var(--wrong);color:#fff;}
+
+/* Hybrid-visualisering */
+.hybrid-wrap{display:flex;gap:0.8rem;align-items:flex-start;flex-wrap:wrap;margin:0.9rem 0;}
+.hybrid-col{flex:1;min-width:110px;}
+.hybrid-col-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.35rem;font-weight:600;}
+.hybrid-bar{display:flex;height:34px;border-radius:6px;overflow:hidden;border:1.5px solid var(--border);}
+.hybrid-seg{flex:1;}
+.arrow-col{display:flex;align-items:center;padding-top:1.3rem;color:var(--muted);font-size:1.1rem;flex-shrink:0;}
+
+/* Ekvationsrad */
+.eq-row{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;padding:0.6rem 0.9rem;background:var(--surface2);border-radius:9px;margin:0.6rem 0;}
+.eq-op{color:var(--muted);font-weight:300;font-size:1.1rem;}
+.eq-note{font-size:0.88rem;color:var(--muted);font-style:italic;}
+
+/* Förlängnings-display */
+.extend-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem;flex-wrap:wrap;font-size:0.88rem;}
+
+/* Inmatning */
+.ans-wrap{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin:0.5rem 0;}
+.ans-frac{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.ans-input{width:52px;height:38px;border:2px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font-family:var(--font-b);font-size:1rem;font-weight:600;text-align:center;transition:border-color 0.15s;outline:none;}
+.ans-input:focus{border-color:var(--accent);}
+.ans-input.ok {border-color:var(--correct);background:rgba(24,163,72,0.07);}
+.ans-input.bad{border-color:var(--wrong);background:rgba(224,32,32,0.07);}
+.ans-bar{width:52px;height:2px;background:var(--muted);border-radius:1px;}
+.check-btn{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.42rem 1.1rem;cursor:pointer;font-family:var(--font-b);font-size:0.85rem;font-weight:600;transition:opacity 0.15s;}
+.check-btn:hover{opacity:0.85;}
+
+/* Genomgång */
+.gstep{display:none;}
+.gstep.active{display:block;}
+.step-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.4rem;flex-wrap:wrap;}
+.step-dots{display:flex;flex-direction:row;align-items:center;gap:5px;flex-shrink:0;}
+.snav-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;color:var(--muted);transition:all 0.18s;}
+.snav-btn:hover{border-color:var(--accent);color:var(--text);}
+.snav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.snav-btn.primary:hover{opacity:0.88;}
+.info-box{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:0.65rem 1rem;font-size:0.88rem;color:var(--text);margin-bottom:0.9rem;font-weight:500;}
+
+/* Förkunskaper */
+.prereq-hero{background:var(--surface2);border-radius:12px;padding:1.1rem 1.4rem;margin-bottom:1.2rem;border-left:4px solid var(--accent);}
+.prereq-hero-title{font-family:var(--font-d);font-size:1.15rem;color:var(--text);margin-bottom:0.2rem;}
+.prereq-hero-sub{font-size:0.9rem;color:var(--muted);}
+.prereq-sec-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);font-weight:700;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;}
+.prereq-sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.skill-list{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.2rem;}
+.skill-item{display:flex;align-items:flex-start;gap:0.65rem;background:var(--surface2);border-radius:9px;padding:0.65rem 0.85rem;font-size:0.87rem;color:var(--muted);border:1px solid var(--border);}
+.skill-item strong{color:var(--text);}
+
+/* Övningar */
+.level-btn{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-family:var(--font-b);font-size:0.8rem;color:var(--muted);transition:all 0.18s;}
+.level-btn:hover{border-color:var(--accent);color:var(--text);}
+.level-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.lb-icon{font-size:0.95rem;}
+.lb-label{font-weight:600;}
+.lb-desc{font-size:0.75rem;opacity:0.75;}
+.ex-pip{width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);}
+.ex-pip.ok{background:var(--correct);border-color:var(--correct);}
+.ex-pip.bad{background:var(--wrong);border-color:var(--wrong);}
+.ex-pip.cur{background:var(--accent);border-color:var(--accent);transform:scale(1.15);}
+.ex-fb{font-size:0.85rem;margin-top:0.55rem;padding:0.4rem 0.6rem;border-radius:6px;display:none;color:var(--muted);}
+.ex-fb.show{display:block;}
+.ex-fb.ok{color:var(--correct);}
+.ex-fb.bad{color:var(--wrong);}
+.ex-next-big{background:var(--accent);border:none;color:#fff;border-radius:9px;padding:0.55rem 1.3rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;font-weight:600;display:none;margin-top:0.75rem;transition:opacity 0.15s;}
+.ex-next-big.show{display:inline-block;}
+.ex-next-big:hover{opacity:0.88;}
+
+/* Lärar-tips */
+.teacher-guide{margin-top:1rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.tg-header{display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.9rem;cursor:pointer;font-size:0.88rem;color:var(--muted);background:var(--surface2);user-select:none;transition:background 0.15s;}
+.tg-header:hover{background:var(--border);}
+.tg-chevron{margin-left:auto;font-size:0.75rem;transition:transform 0.25s;}
+.tg-header.open .tg-chevron{transform:rotate(180deg);}
+.tg-body{padding:0.8rem 1rem;font-size:0.9rem;color:var(--muted);line-height:1.65;display:none;flex-direction:column;gap:0.5rem;border-top:1px solid var(--border);}
+.tg-body strong{color:var(--text);}
+
+/* Quiz */
+.quiz-prog{font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;}
+.quiz-q{font-size:0.95rem;color:var(--text);margin-bottom:0.8rem;line-height:1.6;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-bottom:0.75rem;}
+.quiz-opt{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:0.55rem 0.9rem;cursor:pointer;font-family:var(--font-b);font-size:0.87rem;color:var(--muted);text-align:center;transition:all 0.15s;display:flex;align-items:center;justify-content:center;min-height:44px;}
+.quiz-opt:hover{border-color:var(--accent);color:var(--text);}
+.quiz-opt.correct{border-color:var(--correct);background:rgba(24,163,72,0.10);color:var(--correct);}
+.quiz-opt.wrong{border-color:var(--wrong);background:rgba(224,32,32,0.10);color:var(--wrong);}
+.quiz-fb{font-size:0.9rem;margin-top:0.5rem;padding:0.4rem 0.6rem;border-radius:6px;display:none;color:var(--muted);}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{color:var(--correct);}
+.quiz-fb.bad{color:var(--wrong);}
+.quiz-next{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;font-weight:600;margin-top:0.5rem;}
+
+/* Layout */
+.main{max-width:760px;margin:0 auto;padding:1.5rem 1.5rem 2rem;}
+.section{display:none;}
+.section.active{display:block;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.card-title{font-family:var(--font-d);font-size:1.2rem;color:var(--text);margin-bottom:0.3rem;}
+.card-lead{font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;}
+
+@media(max-width:600px){
+  .hybrid-wrap{gap:0.4rem;}
+  .quiz-opts{grid-template-columns:1fr;}
+}
+
+
+
+/* ══ SIDSPECIFIK CSS — Bråk 5 ══════════════════════════════════ */
+
+/* Gloskort */
+.glos-card {
+  height: 110px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+  border: 2px solid var(--border);
+}
+.glos-card.flipped { transform: rotateY(180deg); }
+.glos-card:hover   { border-color: var(--accent); }
+
+.glos-front, .glos-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 0.6rem;
+}
+.glos-front { background: var(--surface); }
+.glos-back  { background: var(--surface2); transform: rotateY(180deg); }
+
+/* Steg/genomgång */
+.gstep        { display: none; }
+.gstep.active { display: block; }
+.step-nav     { display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.4rem;flex-wrap:wrap; }
+.step-dots    { display:flex;flex-direction:row;align-items:center;gap:5px;flex-shrink:0; }
+.info-box     { background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:0.65rem 1rem;font-size:0.88rem;color:var(--text);margin-bottom:0.9rem;font-weight:500; }
+
+/* Övningar */
+.ans-wrap  { display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin:0.5rem 0; }
+.ans-frac  { display:flex;flex-direction:column;align-items:center;gap:3px; }
+.ans-input { width:52px;height:38px;border:2px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font-family:var(--font-b);font-size:1rem;font-weight:600;text-align:center;transition:border-color 0.15s;outline:none; }
+.ans-input:focus { border-color:var(--accent); }
+.ans-input.ok  { border-color:var(--correct);background:rgba(24,163,72,0.07); }
+.ans-input.bad { border-color:var(--wrong);background:rgba(224,32,32,0.07); }
+.ans-bar   { width:52px;height:2px;background:var(--muted);border-radius:1px; }
+.check-btn { background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.42rem 1.1rem;cursor:pointer;font-family:var(--font-b);font-size:0.85rem;font-weight:600;transition:opacity 0.15s; }
+.check-btn:hover { opacity:0.85; }
+.ex-fb  { font-size:0.88rem;margin-top:0.55rem;padding:0.4rem 0.6rem;border-radius:6px;display:none;color:var(--muted); }
+.ex-fb.show { display:block; }
+.ex-fb.ok  { color:var(--correct); }
+.ex-fb.bad { color:var(--wrong); }
+.ex-next-big { background:var(--accent);border:none;color:#fff;border-radius:9px;padding:0.55rem 1.3rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;font-weight:600;display:none;margin-top:0.75rem;transition:opacity 0.15s; }
+.ex-next-big.show { display:inline-block; }
+.ex-next-big:hover { opacity:0.88; }
+.ex-pip { width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border); }
+.ex-pip.ok  { background:var(--correct);border-color:var(--correct); }
+.ex-pip.bad { background:var(--wrong);border-color:var(--wrong); }
+.ex-pip.cur { background:var(--accent);border-color:var(--accent);transform:scale(1.15); }
+
+/* Quiz */
+.quiz-prog { font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem; }
+.quiz-q    { font-size:0.95rem;color:var(--text);margin-bottom:0.8rem;line-height:1.6; }
+.quiz-opts { display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-bottom:0.75rem; }
+.quiz-opt  { background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:0.55rem 0.9rem;cursor:pointer;font-family:var(--font-b);font-size:0.87rem;color:var(--muted);text-align:center;transition:all 0.15s;display:flex;align-items:center;justify-content:center;min-height:44px; }
+.quiz-opt:hover   { border-color:var(--accent);color:var(--text); }
+.quiz-opt.correct { border-color:var(--correct);background:rgba(24,163,72,0.10);color:var(--correct); }
+.quiz-opt.wrong   { border-color:var(--wrong);background:rgba(224,32,32,0.10);color:var(--wrong); }
+.quiz-fb  { font-size:0.88rem;margin-top:0.5rem;padding:0.4rem 0.6rem;border-radius:6px;display:none;color:var(--muted); }
+.quiz-fb.show { display:block; }
+.quiz-fb.ok  { color:var(--correct); }
+.quiz-fb.bad { color:var(--wrong); }
+.quiz-next { background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-b);font-size:0.82rem;font-weight:600;margin-top:0.5rem; }
+
+/* Lärar-tips */
+.teacher-guide { margin-top:1rem;border:1px solid var(--border);border-radius:10px;overflow:hidden; }
+.tg-header { display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.9rem;cursor:pointer;font-size:0.88rem;color:var(--muted);background:var(--surface2);user-select:none;transition:background 0.15s; }
+.tg-header:hover { background:var(--border); }
+.tg-chevron { margin-left:auto;font-size:0.75rem;transition:transform 0.25s; }
+.tg-header.open .tg-chevron { transform:rotate(180deg); }
+.tg-body { padding:0.8rem 1rem;font-size:0.9rem;color:var(--muted);line-height:1.65;display:none;flex-direction:column;gap:0.5rem;border-top:1px solid var(--border); }
+.tg-body strong { color:var(--text); }
+
+/* Layout */
+.main    { max-width:760px;margin:0 auto;padding:1.5rem 1.5rem 2rem; }
+.section { display:none; }
+.section.active { display:block; }
+.card    { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow); }
+.card-title { font-family:var(--font-d);font-size:1.2rem;color:var(--text);margin-bottom:0.3rem; }
+.card-lead  { font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6; }
+.level-btn  { display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-family:var(--font-b);font-size:0.85rem;color:var(--muted);transition:all 0.18s; }
+.level-btn:hover  { border-color:var(--accent);color:var(--text); }
+.level-btn.active { background:var(--accent);border-color:var(--accent);color:#fff; }
+.lb-icon  { font-size:0.95rem; }
+.lb-label { font-weight:600; }
+.lb-desc  { font-size:0.75rem;opacity:0.75; }
+.prereq-hero { background:var(--surface2);border-radius:12px;padding:1.1rem 1.4rem;margin-bottom:1.2rem;border-left:4px solid var(--accent); }
+.prereq-hero-title { font-family:var(--font-d);font-size:1.15rem;color:var(--text);margin-bottom:0.2rem; }
+.prereq-hero-sub   { font-size:0.9rem;color:var(--muted); }
+.prereq-sec-title  { font-size:0.75rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);font-weight:700;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem; }
+.prereq-sec-title::after { content:'';flex:1;height:1px;background:var(--border); }
+.skill-list { display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.2rem; }
+.skill-item { display:flex;align-items:flex-start;gap:0.65rem;background:var(--surface2);border-radius:9px;padding:0.65rem 0.85rem;font-size:0.88rem;color:var(--muted);border:1px solid var(--border); }
+.skill-item strong { color:var(--text); }
+.mq-opts { display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem; }
+.mq-opt  { background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:0.5rem 1.1rem;cursor:pointer;font-family:var(--font-b);font-size:0.87rem;color:var(--muted);transition:all 0.15s;min-height:40px;display:flex;align-items:center; }
+.mq-opt:hover    { border-color:var(--accent);color:var(--text); }
+.mq-opt.mq-ok   { border-color:var(--correct);background:rgba(24,163,72,0.10);color:var(--correct); }
+.mq-opt.mq-err  { border-color:var(--wrong);background:rgba(224,32,32,0.10);color:var(--wrong); }
+.mq-opt.mq-reveal { border-color:var(--correct);color:var(--correct); }
+.mq-fb  { font-size:0.88rem;color:var(--muted);margin-top:0.35rem;min-height:1.2em; }
+.mq-fb.ok  { color:var(--correct); }
+.mq-fb.bad { color:var(--wrong); }
+.mq-next-btn { background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.42rem 0.9rem;cursor:pointer;font-family:var(--font-b);font-size:0.85rem;font-weight:500;margin-top:0.5rem;display:none;transition:opacity 0.15s; }
+.mq-next-btn.show { display:inline-block; }
+.mq-pips { display:flex;gap:3px;margin-bottom:0.6rem; }
+.mq-pip { width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);transition:all 0.2s; }
+.mq-pip.ok  { background:var(--correct);border-color:var(--correct); }
+.mq-pip.bad { background:var(--wrong);border-color:var(--wrong); }
+.mq-pip.cur { background:var(--accent);border-color:var(--accent);transform:scale(1.2); }
+.start-btn { background:var(--accent);border:none;color:#fff;border-radius:9px;padding:0.55rem 1.3rem;cursor:pointer;font-family:var(--font-b);font-size:0.88rem;font-weight:600;transition:opacity 0.15s; }
+.start-btn:hover { opacity:0.88; }
+.snav-btn { background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-b);font-size:0.85rem;color:var(--muted);transition:all 0.18s; }
+.snav-btn:hover   { border-color:var(--accent);color:var(--text); }
+.snav-btn.primary { background:var(--accent);border-color:var(--accent);color:#fff; }
+.snav-btn.primary:hover { opacity:0.88; }
+.eq-row { display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap; }
+
+@media(max-width:600px){
+  .quiz-opts { grid-template-columns:1fr; }
+  .hybrid-wrap { gap:0.4rem; }
+}
+
+</style>
+</head>
+<body>
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <div class="portal-header-left">
+      <a class="portal-back" href="index.html">← Bråk</a>
+      <div class="portal-crumb">
+        <span>7.5 Bråk</span><span class="portal-crumb-sep">/</span><span>Bråkform och decimalform</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <span class="done-ind" id="doneIndicator">✓ Klar</span>
+      <button class="done-hdr-btn" id="doneBtn" onclick="markDone()">Markera som klar</button>
+      <button class="portal-theme-toggle" onclick="cyclePortalTheme()">
+        <span id="portalThemeIcon">🎨</span>
+        <span id="portalThemeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('prereq',this)">📚 Förkunskaper</button>
+  <button class="tab-btn" onclick="showTab('genomgang',this)">Genomgång</button>
+  <button class="tab-btn" onclick="showTab('glosor',this)">Gloskort</button>
+  <button class="tab-btn" onclick="showTab('verktyg',this)">Förlängningsverktyg</button>
+  <button class="tab-btn" onclick="showTab('ovning',this)">Övning</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">Quiz</button>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════ FÖRKUNSKAPER ═══════════════ -->
+<div class="section active" id="tab-prereq">
+  <div class="card">
+    <div class="prereq-hero">
+      <div class="prereq-hero-title">Bråk 5 — Bråkform och decimalform</div>
+      <div class="prereq-hero-sub">Kontrollera att du har med dig dessa verktyg — de används hela vägen genom modulen.</div>
+    </div>
+
+    <div class="prereq-sec-title">Färdigheter du bör ha med dig</div>
+    <div class="skill-list">
+      <div class="skill-item"><span>➗</span><div><strong>Division med 10, 100 och 1000</strong> — du vet att 5 ÷ 10 = 0,5 och förstår hur siffror "hoppar" i positionssystemet.</div></div>
+      <div class="skill-item"><span>✖️</span><div><strong>Förlänga bråk</strong> — du kan multiplicera täljare och nämnare med samma tal för att byta form utan att ändra värdet.</div></div>
+      <div class="skill-item"><span>✂️</span><div><strong>Förkorta bråk</strong> — du kan hitta gemensamma faktorer och förenkla, t.ex. 75/100 = 3/4.</div></div>
+    </div>
+
+    <div class="prereq-sec-title">Snabbkoll — division med 10, 100 och 1000</div>
+    <div class="mq-pips" id="pq5-pips"></div>
+    <div id="pq5-wrap"></div>
+
+    <div class="prereq-sec-title" style="margin-top:1.2rem;">Föregående modul</div>
+    <div style="display:flex;align-items:center;gap:0.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;cursor:pointer;" onclick="window.location.href='brak4.html'">
+      <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--c7a),var(--c7b));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-d);font-size:0.9rem;flex-shrink:0;">4</div>
+      <div>
+        <div style="font-size:0.92rem;color:var(--text);font-weight:500;">Bråk 4 — Addera och subtrahera bråk</div>
+        <div style="font-size:0.84rem;color:var(--muted);">Gemensam nämnare, förlängning och förkortning.</div>
+      </div>
+      <span style="margin-left:auto;color:var(--muted);">→</span>
+    </div>
+
+    <div style="margin-top:1.5rem;text-align:center;">
+      <button class="start-btn" onclick="document.querySelectorAll('.tab-btn')[1].click()">Starta genomgången →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ GENOMGÅNG ═══════════════ -->
+<div class="section" id="tab-genomgang">
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.25rem;">
+      <div class="card-title" style="margin:0;">Genomgång — steg för steg</div>
+      <span id="gStepLabel" style="font-size:0.84rem;color:var(--muted);">Steg 1 av 6</span>
+    </div>
+    <p class="card-lead">Bläddra i din egen takt.</p>
+
+    <!-- Steg 1: Glosorna -->
+    <div class="gstep active" id="gstep-0">
+      <div class="info-box">Steg 1 av 6 — Bråk som glosor</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Precis som man lär sig glosor på ett språk finns det bråk som är värda att lära sig utantill.
+        Känner du igen dem direkt sparar du tid vid alla beräkningar.
+      </p>
+      <div id="g0-glosor" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.6rem;margin-bottom:0.9rem;"></div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>💡</span> Varför är just dessa viktiga? <span class="tg-chevron">▼</span></div>
+        <div class="tg-body"><p>Halvorna, fjärdedelarna och femtedelarna dyker upp i nästan all vardagsmatematik — rabatter, recept, mätningar. Tiondelarna är grunden för decimalsystemet. Kan du dessa utantill slipper du räkna om dem varje gång.</p></div>
+      </div>
+    </div>
+
+    <!-- Steg 2: Förlängning till tiondelar -->
+    <div class="gstep" id="gstep-1">
+      <div class="info-box">Steg 2 av 6 — Strategin: förläng till tiondelar eller hundradelar</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Glömt glosan? Inget problem — förläng bråket tills nämnaren blir 10 eller 100.
+        Då är det enkelt att skriva som decimal: nämnaren talar om hur många decimaler.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.8rem;">Exempel: Vad är 1/2 i decimalform?</div>
+        <div id="g1-extend"></div>
+      </div>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.8rem;">Exempel: Vad är 3/4 i decimalform?</div>
+        <div id="g1-extend2"></div>
+      </div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>✏️</span> Tumregel <span class="tg-chevron">▼</span></div>
+        <div class="tg-body">
+          <p>Tiondelar (nämnare 10) → <strong>en decimal</strong> — 5/10 = 0,5<br>
+          Hundradelar (nämnare 100) → <strong>två decimaler</strong> — 75/100 = 0,75<br>
+          Tusendedelar (nämnare 1000) → <strong>tre decimaler</strong> — 125/1000 = 0,125</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steg 3: Division som metod -->
+    <div class="gstep" id="gstep-2">
+      <div class="info-box">Steg 3 av 6 — Division: täljare ÷ nämnare</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Ett bråk <em>är</em> en division. Täljaren divideras med nämnaren — och du får alltid ett decimaltal.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.7rem;">Hur det fungerar</div>
+        <div id="g2-division"></div>
+      </div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>✏️</span> Vilken metod ska man välja? <span class="tg-chevron">▼</span></div>
+        <div class="tg-body">
+          <p><strong>Känner du igen glosan?</strong> Skriv svaret direkt.<br>
+          <strong>Kan du förlänga till 10/100?</strong> Gör det — enkelt och snabbt.<br>
+          <strong>Annars:</strong> utför divisionen täljare ÷ nämnare.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steg 4: Decimal → bråk -->
+    <div class="gstep" id="gstep-3">
+      <div class="info-box">Steg 4 av 6 — Decimal till bråk</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Åt andra hållet: se på decimalens position för att hitta nämnaren, skriv sedan bråket och förkorta.
+        <strong>Viktigt:</strong> täljaren ska alltid vara ett heltal — aldrig ett decimaltal.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div id="g3-dec2frac"></div>
+      </div>
+      <div style="background:var(--surface2);border-left:3px solid var(--wrong);border-radius:0 10px 10px 0;padding:0.65rem 1rem;font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:0.75rem;">
+        ✗ <strong style="color:var(--wrong);">Undvik:</strong> Skriv aldrig
+        <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.2rem;">
+          <span style="color:var(--wrong);font-weight:700;">0,75</span>
+          <span style="width:100%;height:2px;background:currentColor;opacity:0.4;min-width:2em;"></span>
+          <span>1</span>
+        </span>
+        — det är inte ett bråk på standardform.
+      </div>
+    </div>
+
+    <!-- Steg 5: Periodiska decimaler -->
+    <div class="gstep" id="gstep-4">
+      <div class="info-box">Steg 5 av 6 — Periodiska decimaler och ≈-tecknet</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Vissa bråk ger decimaler som aldrig slutar — de <em>upprepar</em> sig i ett mönster. Då skriver vi <strong>≈</strong> (ungefär lika med) istället för =.
+      </p>
+      <div style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.9rem;">
+        <div id="g4-periodic"></div>
+      </div>
+      <div class="teacher-guide">
+        <div class="tg-header" onclick="toggleTG(this)"><span>🔍</span> Varför ≈ och inte =? <span class="tg-chevron">▼</span></div>
+        <div class="tg-body">
+          <p>1/3 = 0,3333... för <em>alltid</em> — det slutar aldrig. När vi skriver 0,33 har vi avrundat och förlorat information. Därför är 1/3 ≠ 0,33, men 1/3 ≈ 0,33. Likhetstecknet är reserverat för exakta värden.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steg 6: Perioder i alla bråk -->
+    <div class="gstep" id="gstep-5">
+      <div class="info-box">Steg 6 av 6 — Perioder och kuriosa</div>
+      <p style="color:var(--muted);margin-bottom:0.9rem;line-height:1.7;">
+        Alla bråk ger antingen ett <strong>ändligt</strong> decimaltal (som 1/4 = 0,25) eller ett <strong>periodiskt</strong> — mönstret upprepar sig alltid förr eller senare.
+      </p>
+      <div id="g5-periods" style="margin-bottom:0.9rem;"></div>
+      <div style="margin-top:1.2rem;text-align:center;">
+        <button class="start-btn" onclick="document.querySelectorAll('.tab-btn')[2].click()">Till gloskorten →</button>
+      </div>
+    </div>
+
+    <!-- Steg-navigation -->
+    <div class="step-nav">
+      <button class="snav-btn" id="gPrev" onclick="gNav(-1)" disabled style="opacity:0.4;">← Föregående</button>
+      <div class="step-dots" id="gDots"></div>
+      <button class="snav-btn primary" id="gNext" onclick="gNav(1)">Nästa →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ GLOSKORT ═══════════════ -->
+<div class="section" id="tab-glosor">
+  <div class="card">
+    <div class="card-title">Gloskort</div>
+    <p class="card-lead">Klicka på ett kort för att vända det. Öva tills du kan dem utantill!</p>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.2rem;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:0.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;">
+        <span style="font-size:0.82rem;color:var(--muted);">Visa procent</span>
+        <button onclick="togglePct(this)" id="pctToggle" style="width:38px;height:20px;border-radius:10px;border:none;background:var(--border);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;">
+          <span id="pctKnob" style="position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;display:block;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+        </button>
+      </div>
+      <button onclick="resetCards()" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:4px 14px;cursor:pointer;font-size:0.82rem;font-family:var(--font-b);">↺ Vänd alla tillbaka</button>
+      <span id="cardProgress" style="font-size:0.82rem;color:var(--muted);margin-left:auto;">0 / 12 vända</span>
+    </div>
+    <div id="cardGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.75rem;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ FÖRLÄNGNINGSVERKTYG ═══════════════ -->
+<div class="section" id="tab-verktyg">
+  <div class="card">
+    <div class="card-title">Förlängningsverktyg</div>
+    <p class="card-lead">Välj ett bråk och se hur det förlängs till tiondelar eller hundradelar — och vad det blir i decimalform.</p>
+
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <div>
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.4rem;">Täljare</div>
+        <input type="range" id="vT" min="1" max="9" value="1" oninput="updateVerktyg()">
+        <span id="vTV" style="font-family:var(--font-b);font-size:1rem;color:var(--accent);margin-left:0.4rem;">1</span>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.4rem;">Nämnare</div>
+        <input type="range" id="vN" min="2" max="10" value="2" oninput="updateVerktyg()">
+        <span id="vNV" style="font-family:var(--font-b);font-size:1rem;color:var(--muted);margin-left:0.4rem;">2</span>
+      </div>
+    </div>
+
+    <div id="vResult" style="background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ÖVNING ═══════════════ -->
+<div class="section" id="tab-ovning">
+  <div class="card" style="padding:1.1rem 1.5rem;">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <span style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">Nivå:</span>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="levelPicker">
+        <button class="level-btn active" data-level="1" onclick="setLevel(1,this)"><span class="lb-icon">🧱</span><span class="lb-label">B1</span><span class="lb-desc"> Bråk → decimal</span></button>
+        <button class="level-btn" data-level="2" onclick="setLevel(2,this)"><span class="lb-icon">📐</span><span class="lb-label">B2</span><span class="lb-desc"> Decimal → bråk</span></button>
+        <button class="level-btn" data-level="3" onclick="setLevel(3,this)"><span class="lb-icon">🚀</span><span class="lb-label">B3</span><span class="lb-desc"> Blandat</span></button>
+      </div>
+      <button style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.28rem 0.75rem;cursor:pointer;font-size:0.78rem;font-family:var(--font-b);margin-left:auto;" onclick="setLevel(exLevel,document.querySelector('.level-btn.active'))">🔀 Ny uppgift</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0.9rem 1.5rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;color:var(--muted);">
+      Uppgift <span id="exIdx">1</span> av <span id="exTotal">8</span>
+      <div style="display:flex;gap:4px;" id="exPips"></div>
+    </div>
+  </div>
+  <div class="card" id="exCard"><div id="exWrap"></div></div>
+</div>
+
+<!-- ═══════════════ QUIZ ═══════════════ -->
+<div class="section" id="tab-quiz">
+  <div class="card">
+    <div class="card-title">Quiz — Bråkform och decimalform</div>
+    <p class="card-lead">Sex frågor som testar hela modulen.</p>
+    <div class="quiz-prog" id="quizProg">Fråga 1 av 6</div>
+    <div id="quizWrap"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ══ HELPERS ══════════════════════════════════════════════════════
+function gcd(a,b){ a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t;}return a||1; }
+function simplify(t,n){const g=gcd(Math.abs(t),n);return[t/g,n/g];}
+function fv(t,n,tc,dc){
+  tc=tc||'var(--accent)';dc=dc||'var(--muted)';
+  return `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.15rem;">
+    <span style="color:${tc};font-weight:700;font-size:0.95em;line-height:1.15;">${t}</span>
+    <span style="width:100%;min-width:1.2em;height:2px;background:currentColor;opacity:0.45;border-radius:1px;"></span>
+    <span style="color:${dc};font-size:0.95em;line-height:1.15;">${n}</span>
+  </span>`;
+}
+function fvS(t,n,tc,dc){
+  tc=tc||'var(--accent)';dc=dc||'var(--muted)';
+  return `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;">
+    <span style="color:${tc};font-weight:700;font-size:0.82em;line-height:1.15;">${t}</span>
+    <span style="width:100%;min-width:1em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;"></span>
+    <span style="color:${dc};font-size:0.82em;line-height:1.15;">${n}</span>
+  </span>`;
+}
+
+// ══ GLOSKORT DATA ═════════════════════════════════════════════════
+const GLOSOR = [
+  {t:1,n:2,  dec:'0,5',   pct:'50 %'},
+  {t:1,n:4,  dec:'0,25',  pct:'25 %'},
+  {t:3,n:4,  dec:'0,75',  pct:'75 %'},
+  {t:1,n:5,  dec:'0,2',   pct:'20 %'},
+  {t:2,n:5,  dec:'0,4',   pct:'40 %'},
+  {t:3,n:5,  dec:'0,6',   pct:'60 %'},
+  {t:4,n:5,  dec:'0,8',   pct:'80 %'},
+  {t:1,n:10, dec:'0,1',   pct:'10 %'},
+  {t:1,n:100,dec:'0,01',  pct:'1 %'},
+  {t:1,n:3,  dec:'0,333…',pct:'33,3… %', approx:true},
+  {t:2,n:3,  dec:'0,667…',pct:'66,7… %', approx:true},
+  {t:1,n:8,  dec:'0,125', pct:'12,5 %'},
+];
+
+let showPct = false;
+let flipped = {};
+
+function togglePct(btn){
+  showPct = !showPct;
+  const knob = document.getElementById('pctKnob');
+  btn.style.background = showPct ? 'var(--accent)' : 'var(--border)';
+  knob.style.left = showPct ? '20px' : '2px';
+  renderCards();
+}
+
+function resetCards(){
+  flipped = {};
+  renderCards();
+  document.getElementById('cardProgress').textContent = '0 / '+GLOSOR.length+' vända';
+}
+
+function flipCard(i){
+  flipped[i] = !flipped[i];
+  const card = document.getElementById('gc-'+i);
+  if(!card) return;
+  card.classList.toggle('flipped', !!flipped[i]);
+  const done = Object.values(flipped).filter(Boolean).length;
+  document.getElementById('cardProgress').textContent = done+' / '+GLOSOR.length+' vända';
+}
+
+function renderCards(){
+  const grid = document.getElementById('cardGrid');
+  if(!grid) return;
+  grid.innerHTML = GLOSOR.map((g,i) => {
+    const eq = g.approx ? '≈' : '=';
+    const back = showPct
+      ? `<div style="font-size:1.1rem;font-weight:700;color:var(--hi2);">${g.dec}</div>
+         <div style="font-size:0.85rem;color:var(--muted);margin-top:0.3rem;">${eq} ${g.pct}</div>`
+      : `<div style="font-size:1.2rem;font-weight:700;color:var(--accent);">${g.dec}</div>`;
+    return `<div class="glos-card${flipped[i]?' flipped':''}" id="gc-${i}" onclick="flipCard(${i})">
+      <div class="glos-front">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:0.4rem;">Bråk</div>
+        ${fv(g.t, g.n, 'var(--accent)', 'var(--muted)')}
+      </div>
+      <div class="glos-back">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:0.4rem;">Decimal${showPct?' + Procent':''}</div>
+        ${back}
+        ${g.approx?'<div style="font-size:0.72rem;color:var(--muted);margin-top:0.3rem;">≈ avrundad</div>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ GENOMGÅNG ════════════════════════════════════════════════════
+let gCur = 0;
+const G_TOTAL = 6;
+
+function initGDots(){
+  const el = document.getElementById('gDots');
+  if(!el) return;
+  el.innerHTML = Array.from({length:G_TOTAL},(_,i)=>
+    `<div class="step-dot${i===0?' active':''}" onclick="gJump(${i})"></div>`
+  ).join('');
+}
+function gNav(dir){ gCur=Math.max(0,Math.min(G_TOTAL-1,gCur+dir)); showGStep(); }
+function gJump(i){ gCur=i; showGStep(); }
+
+function showGStep(){
+  document.querySelectorAll('.gstep').forEach((s,i)=>s.classList.toggle('active',i===gCur));
+  document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('active',i===gCur));
+  const lbl=document.getElementById('gStepLabel');
+  if(lbl) lbl.textContent=`Steg ${gCur+1} av ${G_TOTAL}`;
+  const prev=document.getElementById('gPrev');
+  const next=document.getElementById('gNext');
+  if(prev){prev.disabled=gCur===0;prev.style.opacity=gCur===0?'0.4':'1';}
+  if(next){
+    if(gCur===G_TOTAL-1){next.textContent='Till gloskorten →';next.onclick=()=>document.querySelectorAll('.tab-btn')[2].click();}
+    else{next.textContent='Nästa →';next.onclick=()=>gNav(1);}
+  }
+  renderGStep();
+}
+
+function fvMult(t,n,factor,tc,fc){
+  tc=tc||'var(--accent)';fc=fc||'var(--hi2)';
+  return `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 0.15rem;gap:1px;">
+    <span style="display:flex;align-items:center;gap:2px;line-height:1.2;font-size:0.88em;">
+      <span style="color:${tc};font-weight:700;">${t}</span>
+      <span style="color:${fc};font-weight:700;font-size:0.82em;">·${factor}</span>
+    </span>
+    <span style="width:100%;min-width:2em;height:2px;background:currentColor;opacity:0.4;border-radius:1px;"></span>
+    <span style="display:flex;align-items:center;gap:2px;line-height:1.2;font-size:0.88em;">
+      <span style="color:var(--muted);font-weight:700;">${n}</span>
+      <span style="color:${fc};font-weight:700;font-size:0.82em;">·${factor}</span>
+    </span>
+  </span>`;
+}
+
+function eqRow(html){
+  return `<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;background:var(--surface2);border-radius:9px;padding:0.6rem 0.9rem;margin:0.4rem 0;">${html}</div>`;
+}
+
+function renderGStep(){
+  // Steg 1: Glosor mini-grid
+  if(gCur===0){
+    const el=document.getElementById('g0-glosor');
+    if(!el) return;
+
+    const stamBrak  = [{t:1,n:2,dec:'0,5'},{t:1,n:4,dec:'0,25'},{t:1,n:5,dec:'0,2'},{t:1,n:8,dec:'0,125'},{t:1,n:10,dec:'0,1'},{t:1,n:100,dec:'0,01'}];
+    const multiplar = [{t:2,n:2,dec:'1,0'},{t:3,n:4,dec:'0,75'},{t:4,n:5,dec:'0,8'},{t:3,n:8,dec:'0,375'},{t:7,n:10,dec:'0,7'}];
+
+    function glosCard(g){
+      return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.75rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;white-space:nowrap;">
+        ${fv(g.t,g.n,'var(--accent)','var(--muted)')}
+        <span style="color:var(--muted);font-size:0.82rem;">=</span>
+        <span style="font-size:0.9rem;font-weight:600;color:var(--text);">${g.dec}</span>
+      </div>`;
+    }
+
+    el.innerHTML = `
+      <div style="margin-bottom:0.35rem;">
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:0.4rem;">Stambråk</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">${stamBrak.map(glosCard).join('')}</div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:0.4rem;">Multipler</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">${multiplar.map(glosCard).join('')}</div>
+      </div>`;
+  }
+
+  // Steg 2: Förlängning till tiondelar/hundradelar
+  if(gCur===1){
+    const el1=document.getElementById('g1-extend');
+    const el2=document.getElementById('g1-extend2');
+    if(el1) el1.innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        ${eqRow(`${fvS(1,2,'var(--accent)','var(--muted)')} <span style="color:var(--muted);">→ nämnaren 2 × <span style="color:var(--hi2);font-weight:700;">5</span> = 10 →</span> ${fvMult(1,2,5,'var(--accent)','var(--hi2)')} <span style="color:var(--muted);">=</span> ${fvS(5,10,'var(--accent)','var(--muted)')} <span style="color:var(--muted);">=</span> <strong style="color:var(--correct);">0,5</strong>`)}
+        <div style="font-size:0.82rem;color:var(--muted);padding:0 0.5rem;">Tiondelar (nämnare 10) → <strong>en decimal:</strong> <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">5</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">10</span></span> = 0,5</div>
+      </div>`;
+    if(el2) el2.innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        ${eqRow(`${fvS(3,4,'var(--accent)','var(--muted)')} <span style="color:var(--muted);">→ nämnaren 4 × <span style="color:var(--hi2);font-weight:700;">25</span> = 100 →</span> ${fvMult(3,4,25,'var(--accent)','var(--hi2)')} <span style="color:var(--muted);">=</span> ${fvS(75,100,'var(--accent)','var(--muted)')} <span style="color:var(--muted);">=</span> <strong style="color:var(--correct);">0,75</strong>`)}
+        <div style="font-size:0.82rem;color:var(--muted);padding:0 0.5rem;">Hundradelar (nämnare 100) → <strong>två decimaler:</strong> <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">75</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">100</span></span> = 0,75</div>
+      </div>`;
+  }
+
+  // Steg 3: Division
+  if(gCur===2){
+    const el=document.getElementById('g2-division');
+    if(!el) return;
+    const examples=[
+      {t:1,n:4,dec:'0,25',steps:'1 ÷ 4 = 0,25'},
+      {t:3,n:8,dec:'0,375',steps:'3 ÷ 8 = 0,375'},
+      {t:5,n:4,dec:'1,25',steps:'5 ÷ 4 = 1,25 (täljaren > nämnaren → decimal > 1)'},
+    ];
+    el.innerHTML=`<div style="display:flex;flex-direction:column;gap:0.5rem;">
+      ${examples.map(e=>`
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+          ${fv(e.t,e.n,'var(--accent)','var(--muted)')}
+          <span style="color:var(--muted);">= ${e.t} ÷ ${e.n} =</span>
+          <strong style="color:var(--correct);font-size:1rem;">${e.dec}</strong>
+          ${e.t>e.n?'<span style="font-size:0.78rem;color:var(--hi2);">← täljare > nämnare</span>':''}
+        </div>`).join('')}
+    </div>`;
+  }
+
+  // Steg 4: Decimal → bråk
+  if(gCur===3){
+    const el=document.getElementById('g3-dec2frac');
+    if(!el) return;
+    el.innerHTML=`
+      <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.75rem;">Positionssystemet — nyckeln till decimal → bråk</div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.8rem;">
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.75;">
+          Titta på <strong style="color:var(--text);">0,48</strong> — vad "säger" positionssystemet?<br>
+          <span style="display:inline-flex;gap:1rem;margin:0.4rem 0;flex-wrap:wrap;">
+            <span>4 tiondelar &nbsp;<span style="color:var(--muted);">+</span>&nbsp; 8 hundradelar</span>
+            <span style="color:var(--muted);">=</span>
+            <span style="color:var(--text);font-weight:600;">48 hundradelar</span>
+          </span><br>
+          Därför är direkt:
+          <span style="display:inline-flex;align-items:center;gap:0.4rem;margin:0.3rem 0.2rem;vertical-align:middle;">
+            <strong style="color:var(--accent);font-size:1.05rem;">0,48</strong>
+            <span style="color:var(--muted);">=</span>
+            ${fvS(48,100,'var(--accent)','var(--muted)')}
+          </span>
+          <br>
+          <span style="font-size:0.85rem;color:var(--hi2);">Förkortning är en bonus — inte ett krav:</span>
+          <span style="display:inline-flex;align-items:center;gap:0.4rem;vertical-align:middle;margin-left:0.3rem;">
+            ${fvS(48,100,'var(--muted)','var(--muted)')}
+            <span style="color:var(--muted);">÷ 4 →</span>
+            ${fvS(12,25,'var(--correct)','var(--muted)')}
+          </span>
+        </div>
+      </div>
+
+      <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;">Tumregeln:</div>
+      <div style="display:flex;flex-direction:column;gap:0.45rem;">
+        ${[
+          {dec:'0,3',  raw:'3/10',   t:3, n:10,  hint:'en decimal → 10 i nämnaren'},
+          {dec:'0,75', raw:'75/100', t:3, n:4,   hint:'två decimaler → 100 i nämnaren'},
+          {dec:'0,125',raw:'125/1000',t:1,n:8,   hint:'tre decimaler → 1000 i nämnaren'},
+        ].map(r=>`
+          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;background:var(--surface2);border-radius:8px;padding:0.6rem 0.9rem;">
+            <strong style="color:var(--accent);font-size:1rem;min-width:3rem;">${r.dec}</strong>
+            <span style="color:var(--muted);">→</span>
+            ${fvS(r.raw.split('/')[0], r.raw.split('/')[1], 'var(--muted)','var(--muted)')}
+            <span style="color:var(--muted);font-size:0.82rem;">→ förkorta →</span>
+            ${fvS(r.t, r.n, 'var(--correct)','var(--muted)')}
+            <span style="font-size:0.78rem;color:var(--muted);font-style:italic;">(${r.hint})</span>
+          </div>`).join('')}
+      </div>
+
+      <div style="margin-top:0.9rem;background:var(--surface2);border-left:3px solid var(--hi2);border-radius:0 10px 10px 0;padding:0.65rem 1rem;font-size:0.88rem;color:var(--muted);line-height:1.65;">
+        💡 <strong style="color:var(--text);">Varför bråkräkning?</strong><br>
+        Med bråk håller du svaren <em>exakta</em> — <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">3</span></span> förblir <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">3</span></span>, aldrig 0,333... Med lite förlängning och förkortning undviker du djupa uppställningar och håller beräkningarna enkla och översiktliga.
+      </div>`;
+  }
+
+  // Steg 5: Periodiska decimaler
+  if(gCur===4){
+    const el=document.getElementById('g4-periodic');
+    if(!el) return;
+    el.innerHTML=`<div style="display:flex;flex-direction:column;gap:0.7rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;background:var(--surface2);border-radius:9px;padding:0.7rem 1rem;">
+        ${fv(1,3,'var(--accent)','var(--muted)')}
+        <span style="font-size:1.1rem;color:var(--wrong);font-weight:700;">≠</span>
+        <span style="color:var(--muted);">0,33</span>
+        <span style="font-size:0.82rem;color:var(--muted);">— 0,33 är avrundat, inte exakt</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;background:var(--surface2);border-radius:9px;padding:0.7rem 1rem;">
+        ${fv(1,3,'var(--accent)','var(--muted)')}
+        <span style="font-size:1.1rem;color:var(--correct);font-weight:700;">≈</span>
+        <span style="color:var(--correct);font-weight:600;">0,33</span>
+        <span style="font-size:0.82rem;color:var(--muted);">— ≈ betyder "ungefär lika med"</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;background:var(--surface2);border-radius:9px;padding:0.7rem 1rem;">
+        ${fv(1,3,'var(--accent)','var(--muted)')}
+        <span style="font-size:1.1rem;color:var(--accent);font-weight:700;">=</span>
+        <span style="color:var(--accent);font-weight:600;">0,<span style="text-decoration:overline;">3</span></span>
+        <span style="font-size:0.82rem;color:var(--muted);">— överstrecket visar perioden (exakt notation)</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;background:var(--surface2);border-radius:9px;padding:0.7rem 1rem;">
+        ${fv(2,3,'var(--hi2)','var(--muted)')}
+        <span style="font-size:1.1rem;color:var(--accent);font-weight:700;">≈</span>
+        <span style="color:var(--hi2);font-weight:600;">0,67</span>
+        <span style="font-size:0.82rem;color:var(--muted);">— 2/3 ≈ 0,667… avrundas till 0,67</span>
+      </div>
+    </div>`;
+  }
+
+  // Steg 6: Perioder och kuriosa
+  if(gCur===5){
+    const el=document.getElementById('g5-periods');
+    if(!el) return;
+    const rows=[
+      {t:1,n:7, dec:'0,142857142857…', period:'142857', len:6, note:'Perioden har 6 siffror!'},
+      {t:1,n:11,dec:'0,090909…',        period:'09',     len:2, note:'Perioden upprepas var 2:a siffra'},
+      {t:1,n:6, dec:'0,1666…',          period:'6',      len:1, note:'Mixad — börjar ändligt, sedan period'},
+    ];
+    el.innerHTML=`
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.6;">
+        Alla bråk ger antingen ett <strong style="color:var(--correct);">ändligt</strong> decimaltal (som <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">4</span></span> = 0,25)
+        eller ett <strong style="color:var(--hi2);">periodiskt</strong> som upprepar sig för alltid.
+        Perioden börjar alltid — det är matematisk garanti!
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        ${rows.map(r=>`
+          <div style="background:var(--surface2);border-radius:9px;padding:0.7rem 1rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            ${fvS(r.t,r.n,'var(--accent)','var(--muted)')}
+            <span style="color:var(--muted);">=</span>
+            <span style="font-family:var(--font-b);font-size:0.9rem;color:var(--hi2);">${r.dec}</span>
+            <span style="font-size:0.78rem;color:var(--muted);font-style:italic;">${r.note}</span>
+          </div>`).join('')}
+      </div>`;
+  }
+}
+
+// ══ FÖRLÄNGNINGSVERKTYG ══════════════════════════════════════════
+function updateVerktyg(){
+  const t=+document.getElementById('vT').value;
+  const n=+document.getElementById('vN').value;
+  document.getElementById('vTV').textContent=t;
+  document.getElementById('vNV').textContent=n;
+  const el=document.getElementById('vResult');
+  if(!el) return;
+
+  const decimal = t/n;
+  const decStr  = Number.isInteger(decimal) ? decimal.toString()
+    : decimal.toFixed(10).replace(/0+$/,'').replace(/\.$/,'');
+
+  // Try to extend to 10, 100, 1000
+  let extHTML='';
+  for(const target of [10,100,1000]){
+    if(target % n === 0){
+      const factor = target/n;
+      const newT   = t*factor;
+      const decVal = newT/target;
+      const places = Math.log10(target);
+      extHTML=`
+        <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+          ${fvMult(t,n,factor,'var(--accent)','var(--hi2)')}
+          <span style="color:var(--muted);font-size:1.1rem;">=</span>
+          ${fvS(newT,target,'var(--accent)','var(--muted)')}
+          <span style="color:var(--muted);font-size:1.1rem;">=</span>
+          <strong style="color:var(--correct);font-size:1.3rem;">${decVal.toString().replace('.',',')}</strong>
+        </div>
+        <div style="font-size:0.88rem;color:var(--muted);">
+          Nämnaren ${target} → <strong>${places} decimal${places>1?'er':''}</strong>
+        </div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:0.5rem;border-top:1px solid var(--border);padding-top:0.5rem;">
+          Åt andra hållet: ${decVal.toString().replace('.',',')} = ${newT}/${target}${newT!==t*factor||target!==n*factor?` → förkorta → `+fvS(...simplify(newT,target),'var(--correct)','var(--muted)'):''}
+        </div>`;
+      break;
+    }
+  }
+  if(!extHTML){
+    // Show division method
+    const isRepeating = !Number.isFinite(decimal) || decStr.length > 8;
+    extHTML=`
+      <div style="font-size:0.9rem;color:var(--muted);margin-bottom:0.6rem;">
+        Går inte att förlänga till 10, 100 eller 1000 med heltalsfaktor.<br>Använd division: täljare ÷ nämnare
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+        ${fv(t,n,'var(--accent)','var(--muted)')}
+        <span style="color:var(--muted);">= ${t} ÷ ${n} =</span>
+        <strong style="color:var(--correct);font-size:1.1rem;">${decStr.replace('.',',')}${decStr.length>8?'…':''}</strong>
+        ${decStr.length>8?`<span style="font-size:0.78rem;color:var(--hi2);">(periodisk)</span>`:''}
+      </div>`;
+  }
+
+  // Is this a "glosa"?
+  const glosa = GLOSOR.find(g=>g.t===t&&g.n===n);
+
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;flex-wrap:wrap;">
+      ${fv(t,n,'var(--accent)','var(--muted)')}
+      ${glosa?`<span style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:0.78rem;color:var(--hi2);">⭐ Glosa — lär dig utantill!</span>`:''}
+    </div>
+    ${extHTML}`;
+}
+
+// ══ ÖVNINGAR ═════════════════════════════════════════════════════
+let exLevel=1, exCur=0, exResults=[], exercises=[];
+
+// Common fractions pool
+const FRAC_POOL=[
+  {t:1,n:2,dec:'0,5'},{t:1,n:4,dec:'0,25'},{t:3,n:4,dec:'0,75'},
+  {t:1,n:5,dec:'0,2'},{t:2,n:5,dec:'0,4'},{t:3,n:5,dec:'0,6'},{t:4,n:5,dec:'0,8'},
+  {t:1,n:10,dec:'0,1'},{t:3,n:10,dec:'0,3'},{t:7,n:10,dec:'0,7'},
+  {t:1,n:8,dec:'0,125'},{t:3,n:8,dec:'0,375'},{t:5,n:8,dec:'0,625'},
+  {t:1,n:20,dec:'0,05'},{t:1,n:25,dec:'0,04'},{t:1,n:50,dec:'0,02'},
+];
+
+function genEx(level){
+  const pool=[...FRAC_POOL].sort(()=>Math.random()-0.5).slice(0,8);
+  return pool.map(g=>({...g, dir: level===1?'frac2dec': level===2?'dec2frac': Math.random()>0.5?'frac2dec':'dec2frac'}));
+}
+
+function initEx(){
+  exercises=genEx(exLevel);
+  exCur=0;exResults=Array(exercises.length).fill(null);
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx();
+}
+
+function setLevel(l,btn){
+  exLevel=l;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  exercises=genEx(l);
+  exCur=0;exResults=Array(exercises.length).fill(null);
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx();
+}
+
+function updateExPips(){
+  document.getElementById('exIdx').textContent=exCur+1;
+  document.getElementById('exPips').innerHTML=exercises.map((_,i)=>{
+    let c='ex-pip';if(i===exCur)c+=' cur';else if(exResults[i]===true)c+=' ok';else if(exResults[i]===false)c+=' bad';
+    return `<div class="${c}"></div>`;}).join('');
+}
+
+function renderEx(){
+  updateExPips();
+  const ex=exercises[exCur];
+  const isFrac2Dec = ex.dir==='frac2dec';
+  const decDisplay = ex.dec.replace('.',',');
+
+  if(isFrac2Dec){
+    document.getElementById('exWrap').innerHTML=`
+      <div style="margin-bottom:0.75rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.5rem;">Skriv som decimaltal</div>
+        <div style="font-size:1.3rem;background:var(--surface2);display:inline-flex;align-items:center;padding:0.5rem 1rem;border-radius:10px;gap:0.5rem;">
+          ${fv(ex.t,ex.n,'var(--accent)','var(--muted)')}
+          <span style="color:var(--muted);">=</span>
+          <span style="color:var(--muted);">?</span>
+        </div>
+      </div>
+      <div style="margin-bottom:0.6rem;">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">Svar (använd komma, t.ex. 0,5):</div>
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          <input id="ans-dec" type="text" inputmode="decimal" placeholder="0,__" autocomplete="off"
+            style="width:90px;height:42px;border:2px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font-family:var(--font-b);font-size:1.1rem;text-align:center;outline:none;padding:0 0.5rem;transition:border-color 0.15s;" />
+          <button class="check-btn" onclick="checkFrac2Dec('${ex.dec}','${ex.t}','${ex.n}')">Kontrollera</button>
+        </div>
+      </div>
+      <div class="ex-fb" id="exFb"></div>
+      <button class="ex-next-big" id="exNext" onclick="nextEx()">Nästa uppgift →</button>`;
+    const inp=document.getElementById('ans-dec');
+    if(inp&&inp.focus) inp.focus();
+  } else {
+    document.getElementById('exWrap').innerHTML=`
+      <div style="margin-bottom:0.75rem;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.5rem;">Skriv som bråk (förkortat)</div>
+        <div style="font-size:1.3rem;background:var(--surface2);display:inline-flex;align-items:center;padding:0.5rem 1rem;border-radius:10px;gap:0.5rem;">
+          <strong style="color:var(--accent);">${decDisplay}</strong>
+          <span style="color:var(--muted);">=</span>
+          <span style="color:var(--muted);">?</span>
+        </div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem;background:var(--surface2);padding:0.5rem 0.8rem;border-radius:8px;">
+        💡 Räkna decimaler → nämnare 10/100/1000 → förkorta
+      </div>
+      <div style="margin-bottom:0.6rem;">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">Ditt svar (täljare och nämnare):</div>
+        <div class="ans-wrap">
+          <div class="ans-frac">
+            <input class="ans-input" id="ans-t" type="number" min="1" max="999" placeholder="?" />
+            <div class="ans-bar"></div>
+            <input class="ans-input" id="ans-n" type="number" min="1" max="999" placeholder="?" />
+          </div>
+          <button class="check-btn" onclick="checkDec2Frac(${ex.t},${ex.n})">Kontrollera</button>
+        </div>
+      </div>
+      <div class="ex-fb" id="exFb"></div>
+      <button class="ex-next-big" id="exNext" onclick="nextEx()">Nästa uppgift →</button>`;
+  }
+}
+
+function checkFrac2Dec(correctDec, t, n){
+  const inp=document.getElementById('ans-dec');
+  if(!inp) return;
+  const raw=inp.value.trim().replace(',','.');
+  const userVal=parseFloat(raw);
+  const corrVal=parseFloat(correctDec);
+  const ok=!isNaN(userVal)&&Math.abs(userVal-corrVal)<0.0001;
+  exResults[exCur]=ok; updateExPips();
+  inp.style.borderColor=ok?'var(--correct)':'var(--wrong)';
+  inp.disabled=true;
+  const fb=document.getElementById('exFb');
+  const decDisplay=correctDec.replace('.',',');
+  fb.className='ex-fb show '+(ok?'ok':'bad');
+  fb.innerHTML=ok
+    ? `✓ Rätt! ${fvS(t,n,'var(--accent)','var(--muted)')} = <strong>${decDisplay}</strong>`
+    : `✗ Rätt svar: ${fvS(t,n,'var(--accent)','var(--muted)')} = <strong style="color:var(--correct);">${decDisplay}</strong>`;
+  const nb=document.getElementById('exNext');
+  if(nb){nb.classList.add('show');nb.textContent=exCur<exercises.length-1?'Nästa uppgift →':'Se resultat';}
+}
+
+function checkDec2Frac(ct,cn){
+  const ut=parseInt(document.getElementById('ans-t').value);
+  const un=parseInt(document.getElementById('ans-n').value);
+  if(isNaN(ut)||isNaN(un)||un<=0){
+    const fb=document.getElementById('exFb');
+    fb.className='ex-fb show bad';fb.textContent='Fyll i täljare och nämnare!';return;
+  }
+  // Accept simplified or equivalent forms
+  const ok=(ut===ct&&un===cn)||(!isNaN(ut/un)&&Math.abs(ut/un-ct/cn)<0.0001&&ut===Math.round(ut)&&un===Math.round(un));
+  exResults[exCur]=ok; updateExPips();
+  ['ans-t','ans-n'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add(ok?'ok':'bad');el.disabled=true;}});
+  const fb=document.getElementById('exFb');
+  const ex=exercises[exCur];
+  fb.className='ex-fb show '+(ok?'ok':'bad');
+  if(ok){
+    const isSimplest=(ut===ct&&un===cn);
+    fb.innerHTML=`✓ Rätt!${!isSimplest?' (Du kan också skriva '+fvS(ct,cn,'var(--correct)','var(--muted)')+' — enklast möjliga form)':''}`;
+  } else {
+    fb.innerHTML=`✗ Rätt svar: ${fvS(ct,cn,'var(--correct)','var(--muted)')} &nbsp;<span style="font-size:0.82rem;color:var(--muted);">(eller ${fvS(ex.t*10,ex.n*10,'var(--muted)','var(--muted)')} osv.)</span>`;
+  }
+  const nb=document.getElementById('exNext');
+  if(nb){nb.classList.add('show');nb.textContent=exCur<exercises.length-1?'Nästa uppgift →':'Se resultat';}
+}
+
+function nextEx(){
+  if(exCur<exercises.length-1){exCur++;renderEx();}
+  else{
+    const done=exResults.filter(r=>r===true).length;
+    document.getElementById('exWrap').innerHTML=`<div style="text-align:center;padding:1.5rem 0;">
+      <div style="font-size:2.2rem;margin-bottom:0.4rem;">${done===exercises.length?'🎉':done>=6?'💪':'📚'}</div>
+      <div style="font-family:var(--font-d);font-size:1.6rem;color:var(--accent2);margin-bottom:0.3rem;">${done} / ${exercises.length}</div>
+      <div style="color:var(--muted);font-size:0.9rem;margin-bottom:1.1rem;">${done===exercises.length?'Perfekt!':done>=6?'Bra jobbat!':'Prova B1 för mer stöd.'}</div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+        <button class="start-btn" onclick="setLevel(${exLevel},document.querySelector('.level-btn.active'))">🔀 Ny omgång</button>
+        ${exLevel<3?`<button style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.3rem 0.9rem;cursor:pointer;font-size:0.82rem;font-family:var(--font-b);" onclick="setLevel(${exLevel+1},document.querySelector('.level-btn[data-level=\\'${exLevel+1}\\']'))">Prova B${exLevel+1} →</button>`:''}
+      </div></div>`;
+  }
+}
+
+// ══ FÖRKUNSKAPS-QUIZ ══════════════════════════════════════════════
+const PQ5=[
+  {q:`Vad är <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">7</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">10</span></span> i decimalform?`, opts:['70','7,0','0,07','0,7'], ok:3,
+   fb:`Dela täljaren med nämnaren: 7 delat på 10 = 0,7. Siffran hoppar ett steg åt höger i positionssystemet.`},
+  {q:`Vad är <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">35</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">100</span></span> i decimalform?`, opts:['3,5','350','0,35','0,035'], ok:2,
+   fb:`Nämnaren 100 → två decimaler. 35 delat på 100 = 0,35.`},
+  {q:`Vad är <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">4</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">1000</span></span> i decimalform?`, opts:['0,4','40','4000','0,004'], ok:3,
+   fb:`Nämnaren 1000 → tre decimaler. 4 delat på 1000 = 0,004.`},
+  {q:'Förkorta <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">6</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">12</span></span> så långt som möjligt.', opts:['3/6','2/4','1/3','1/2'], ok:3,
+   fb:'GCD(6,12)=6 → 6÷6 / 12÷6 = <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--correct);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">2</span></span>.'},
+  {q:'Förläng 1/5 med 2. Vad får du?', opts:['2/5','2/10','1/10','3/10'], ok:1,
+   fb:'Multiplicera täljare och nämnare med 2: 1×2 / 5×2 = <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--correct);font-weight:700;font-size:0.88em;line-height:1.15;\">2</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">10</span></span>.'},
+];
+let pq5I=0,pq5R=[];
+function initPQ5(){pq5I=0;pq5R=Array(PQ5.length).fill(null);renderPQ5();}
+function renderPQ5(){
+  const q=PQ5[pq5I];
+  document.getElementById('pq5-pips').innerHTML=PQ5.map((_,i)=>{
+    let c='mq-pip';if(i===pq5I)c+=' cur';else if(pq5R[i]===true)c+=' ok';else if(pq5R[i]===false)c+=' bad';
+    return `<div class="${c}"></div>`;}).join('');
+  document.getElementById('pq5-wrap').innerHTML=`
+    <div class="mq-q">${q.q}</div>
+    <div class="mq-opts">${q.opts.map((o,i)=>`<button class="mq-opt" onclick="answerPQ5(${i},this)">${o}</button>`).join('')}</div>
+    <div class="mq-fb" id="pq5-fb"></div>
+    <button class="mq-next-btn" id="pq5-next" onclick="nextPQ5()">${pq5I<PQ5.length-1?'Nästa →':'Se resultat'}</button>`;
+}
+function answerPQ5(i,btn){
+  const q=PQ5[pq5I];const ok=i===q.ok;pq5R[pq5I]=ok;
+  document.querySelectorAll('#pq5-wrap .mq-opt').forEach((b,j)=>{b.disabled=true;if(b===btn)b.classList.add(ok?'mq-ok':'mq-err');if(j===q.ok)b.classList.add('mq-reveal');});
+  const fb=document.getElementById('pq5-fb');fb.className='mq-fb '+(ok?'ok':'bad');fb.textContent=(ok?'✓ ':'✗ ')+q.fb;
+  document.getElementById('pq5-next').classList.add('show');
+  document.getElementById('pq5-pips').innerHTML=PQ5.map((_,i2)=>{let c='mq-pip';if(i2===pq5I)c+=' cur';else if(pq5R[i2]===true)c+=' ok';else if(pq5R[i2]===false)c+=' bad';return `<div class="${c}"></div>`;}).join('');
+}
+function nextPQ5(){
+  if(pq5I<PQ5.length-1){pq5I++;renderPQ5();}
+  else{
+    const cor=pq5R.filter(r=>r===true).length;
+    document.getElementById('pq5-pips').innerHTML='';
+    document.getElementById('pq5-wrap').innerHTML=`<div style="text-align:center;padding:1rem 0;">
+      <div style="font-size:1.8rem;">${cor===PQ5.length?'🎉':cor>=3?'👍':'💪'}</div>
+      <div style="font-family:var(--font-d);font-size:1.2rem;color:var(--accent2);margin:0.3rem 0;">${cor}/${PQ5.length} rätt</div>
+      <div style="font-size:0.84rem;color:var(--muted);">${cor===PQ5.length?'Redo — kör genomgången!':'Repetera och kör sedan!'}</div>
+      <button style="margin-top:0.6rem;background:var(--accent);border:none;color:#fff;border-radius:7px;padding:0.35rem 0.9rem;cursor:pointer;font-size:0.82rem;font-family:var(--font-b);" onclick="initPQ5()">Försök igen</button>
+    </div>`;
+  }
+}
+
+// ══ QUIZ ══════════════════════════════════════════════════════════
+let qI=0,qAns=false;
+function fvQ(t,n){return `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.1rem;"><span style="font-weight:700;font-size:0.88em;">${t}</span><span style="width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;"></span><span style="font-size:0.88em;">${n}</span></span>`;}
+const QD=[
+  {q:`Vad är ${fvQ(1,4)} i decimalform?`, opts:['0,14','0,4','0,25','2,5'], ok:2,
+   fb:'<span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">4</span></span> = <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">25</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">100</span></span> = 0,25. En gloska att lära sig utantill!'},
+  {q:`Vad är 0,6 som bråk (förkortad form)?`, opts:[`${fvQ(6,100)}`,`${fvQ(3,5)}`,`${fvQ(6,10)}`,`${fvQ(2,3)}`], ok:1,
+   fb:'0,6 = <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">6</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">10</span></span> → förkorta med 2 → <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--correct);font-weight:700;font-size:0.88em;line-height:1.15;\">3</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">5</span></span>.'},
+  {q:`Vad är ${fvQ(3,8)} i decimalform?`, opts:['0,38','0,3','0,375','0,25'], ok:2,
+   fb:'3 ÷ 8 = 0,375. Alternativt: 8 × 125 = 1000, så <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">3</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">8</span></span> = <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">375</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">1000</span></span> = 0,375.'},
+  {q:`Vilket tecken är rätt? ${fvQ(1,3)} ___ 0,33`, opts:['=','≈','≠ (<span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--muted);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">3</span></span> < 0,33)','≠ (<span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--muted);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">3</span></span> > 0,33)'], ok:1,
+   fb:'<span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">3</span></span> = 0,333... för alltid. 0,33 är avrundat — vi skriver <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">3</span></span> ≈ 0,33.'},
+  {q:`Vilket bråk är lika med 0,125?`, opts:[`${fvQ(1,8)}`,`${fvQ(1,4)}`,`${fvQ(1,12)}`,`${fvQ(12,100)}`], ok:0,
+   fb:'0,125 = <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">125</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">1000</span></span> → förkorta med 125 → <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--correct);font-weight:700;font-size:0.88em;line-height:1.15;\">1</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">8</span></span>.'},
+  {q:`Hur många decimaler får du om du förlänger till hundradels-nämnare?`, opts:['En decimal','Tre decimaler','Två decimaler','Beror på täljaren'], ok:2,
+   fb:'Nämnaren 100 → alltid exakt två decimaler. T.ex. <span style=\"display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;gap:1px;margin:0 0.12rem;\"><span style=\"color:var(--accent);font-weight:700;font-size:0.88em;line-height:1.15;\">75</span><span style=\"width:100%;min-width:0.9em;height:1.5px;background:currentColor;opacity:0.45;border-radius:1px;\"></span><span style=\"font-size:0.88em;line-height:1.15;\">100</span></span> = 0,75.'},
+];
+function initQuiz(){qI=0;renderQ();}
+function renderQ(){
+  const q=QD[qI];qAns=false;
+  document.getElementById('quizProg').textContent=`Fråga ${qI+1} av ${QD.length}`;
+  document.getElementById('quizWrap').innerHTML=`
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="ansQ(${i})">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="qFb"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQ()" style="display:none;">${qI<QD.length-1?'Nästa →':'Börja om 🔄'}</button>`;
+}
+function ansQ(i){
+  if(qAns)return;qAns=true;const q=QD[qI];
+  document.querySelectorAll('.quiz-opt').forEach((b,j)=>{b.disabled=true;if(j===i)b.classList.add(i===q.ok?'correct':'wrong');if(j===q.ok)b.classList.add('correct');});
+  const fb=document.getElementById('qFb');
+  fb.innerHTML=(i===q.ok?'✓ Rätt! ':'✗ Inte riktigt. ')+q.fb;
+  fb.className='quiz-fb show '+(i===q.ok?'ok':'bad');
+  document.getElementById('qNext').style.display='inline-block';
+}
+function nextQ(){qI=(qI+1)%QD.length;renderQ();}
+
+// ══ UI ════════════════════════════════════════════════════════════
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleTG(header){
+  const body=header.nextElementSibling;
+  const open=header.classList.toggle('open');
+  body.style.display=open?'flex':'none';
+}
+
+// ══ MARKERA KLAR ═════════════════════════════════════════════════
+function markDone(){
+  const ind=document.getElementById('doneIndicator');
+  const btn=document.getElementById('doneBtn');
+  if(ind)ind.classList.add('show');
+  if(btn){btn.textContent='✓ Klar';btn.disabled=true;btn.style.opacity='0.6';}
+  try{const p=JSON.parse(localStorage.getItem('brak-progress')||'{}');p[5]='done';localStorage.setItem('brak-progress',JSON.stringify(p));}catch(e){}
+}
+
+// ══ PORTALTEMA ════════════════════════════════════════════════════
+const PORTAL_THEMES=[{id:'pt-light',label:'PT Ljust',icon:'☀️'},{id:'pt-dark',label:'PT Mörkt',icon:'🌙'},{id:'ad-light',label:'AD Ljust',icon:'🌿'},{id:'ad-dark',label:'AD Mörkt',icon:'🌑'}];
+let portalThemeIdx=0;
+function applyPortalTheme(idx){
+  const t=PORTAL_THEMES[idx];
+  document.documentElement.setAttribute('data-theme',t.id);
+  const lbl=document.getElementById('portalThemeLabel');const ico=document.getElementById('portalThemeIcon');
+  if(lbl)lbl.textContent=t.label;if(ico)ico.textContent=t.icon;
+  localStorage.setItem('math-portal-theme',t.id);
+}
+function cyclePortalTheme(){portalThemeIdx=(portalThemeIdx+1)%PORTAL_THEMES.length;applyPortalTheme(portalThemeIdx);}
+(function(){
+  const saved=localStorage.getItem('math-portal-theme');
+  const m={'pt':'pt-light','pt-dark':'pt-dark','blue':'pt-light'};
+  const r=m[saved]||saved;
+  const V=PORTAL_THEMES.map(t=>t.id);
+  if(r&&V.includes(r))portalThemeIdx=PORTAL_THEMES.findIndex(t=>t.id===r);
+  applyPortalTheme(portalThemeIdx);
+})();
+
+// ══ INIT ══════════════════════════════════════════════════════════
+(function(){
+  try{
+    const p=JSON.parse(localStorage.getItem('brak-progress')||'{}');
+    if(!p[5]||p[5]==='not-started'){p[5]='in-progress';localStorage.setItem('brak-progress',JSON.stringify(p));}
+    if(p[5]==='done'){
+      const ind=document.getElementById('doneIndicator');const btn=document.getElementById('doneBtn');
+      if(ind)ind.classList.add('show');
+      if(btn){btn.textContent='✓ Klar';btn.disabled=true;btn.style.opacity='0.6';}
+    }
+  }catch(e){}
+  initGDots(); showGStep(); updateVerktyg();
+  exercises=genEx(exLevel); exResults=Array(exercises.length).fill(null);
+  document.getElementById('exTotal').textContent=exercises.length;
+  renderEx(); renderCards(); initQuiz(); initPQ5();
+})();
+
+</script>
+
+<nav class="module-nav">
+  <a class="mnav-btn" href="brak4.html"><span>←</span><div><span class="mnav-label">Föregående</span><span class="mnav-title">Addera och subtrahera bråk</span></div></a>
+  <span class="mnav-spacer"></span>
+</nav>
+</body>
+</html>

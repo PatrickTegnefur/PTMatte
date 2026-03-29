@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.5 Bråk — AD Matematik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  portal.css  —  PT Matematik · Alfred Dalinskolan
+ *  Patrick Tegnefur · Förstelärare & IT-pedagog
+ *
+ *  Importeras av alla sidor på portalen via:
+ *    <link rel="stylesheet" href="[relativ sökväg]/portal.css">
+ *
+ *  STRUKTUR:
+ *   1. Google Fonts-import
+ *   2. Globala tokens (:root)
+ *   3. Teman  — AD Ljust / AD Mörkt / PT Ljust / PT Mörkt
+ *   4. Reset & bas
+ *   5. Header  (portal-header, portal-back, portal-crumb, tema-toggle)
+ *   6. Modul-navigation  (module-nav, mnav-btn)
+ *   7. Gemensamma UI-komponenter
+ *      — Knappar (tab-btn, start-btn, check-btn m.fl.)
+ *      — Bråkvisning (fv)
+ *      — Förkunskaps-quiz (mq-*)
+ *      — Framstegsindikatorer (mq-pip, step-dot)
+ *      — Färg-badges (pill-video, pill-sim m.fl.)
+ *   8. Responsiv  (max-width: 600px)
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. TYPSNITT ──────────────────────────────────────────────────── */
+/* ── 2. GLOBALA TOKENS ────────────────────────────────────────────── */
+:root {
+  --radius:  14px;
+  --trans:   0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. TEMAN
+   Varje tema definierar ALLA variabler fullständigt.
+   Åk 7 = Blå · Åk 8 = Grön · Åk 9 = Röd/Rosa
+
+   AD-färger:  Blågrön #00A19A · Guld #FBBC33 · Rosa #EC6095
+               Grön #A2C617   · Gul #FFDE14
+   PT-färger:  Blå #306BF0 · Röd #F03048 · Orange #FF8837
+               Grön #39C762 · Klarblå #7179E8
+   PT-gradient: #66C7C2 → #F4A261 → #EC6095
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── AD LJUST ─────────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #006a64;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  /* Kolumn-gradienter */
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  /* Badges */
+  --b7: #d8eaff; --b7t: #1040a0;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── AD MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe:       linear-gradient(90deg, #306BF0, #00A19A, #A2C617, #FBBC33, #EC6095, #FFDE14);
+  --stripe-h:     3px;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #0a2048; --b7t: #7ab0ff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* ── PT LJUST ─────────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --link-hover:   #306BF0;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #dce8fe; --b7t: #1a4ecc;
+  --b8: #d0f5e0; --b8t: #0e6030;
+  --b9: #ffd8d8; --b9t: #a01010;
+  --badge-prog: #ede0ff; --badge-prog-t: #5c20c0;
+  --badge-np:   #fff0cc; --badge-np-t:   #8a5c00;
+}
+
+/* ── PT MÖRKT ─────────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe:       linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+  --stripe-h:     4px;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --link-hover:   #ffffff;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+  --c8a: #18a348; --c8b: #5dd68c;
+  --c9a: #e02020; --c9b: #ff6060;
+  --b7: #16204a; --b7t: #80aaff;
+  --b8: #082a18; --b8t: #60d890;
+  --b9: #380808; --b9t: #ff8080;
+  --badge-prog: #2e1060; --badge-prog-t: #c090ff;
+  --badge-np:   #3a2a00; --badge-np-t:   #ffd060;
+}
+
+/* PT Mörkt — gradient-accenter på aktiva element */
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .check-btn-main,
+[data-theme="pt-dark"] .check-main,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .mq-next-btn,
+[data-theme="pt-dark"] .ex-next-big,
+[data-theme="pt-dark"] .snav-btn.primary,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .row-check,
+[data-theme="pt-dark"] .level-btn.active {
+  background: #EC6095 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-theme="pt-dark"] .progress-fill {
+  background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095);
+}
+[data-theme="pt-dark"] .fv .fv-n  { color: #F4A261; }
+[data-theme="pt-dark"] .fv .fv-b  { opacity: 0.5; }
+[data-theme="pt-dark"] .rect-seg.on-a   { background: #66C7C2; color: #12101c; }
+[data-theme="pt-dark"] .rect-seg.rs-one { background: #66C7C2; }
+[data-theme="pt-dark"] .frac-card.fc-ok    { border-color: #39C762; background: rgba(57,199,98,0.1); }
+[data-theme="pt-dark"] .frac-card:hover    { border-color: #66C7C2; }
+[data-theme="pt-dark"] .sub-btn.active     { background: rgba(244,162,97,0.13); color: #F4A261; border-bottom: 2px solid #F4A261; }
+
+/* AD Mörkt — tab-knapp */
+[data-theme="ad-dark"] .tab-btn.active {
+  background: linear-gradient(90deg, #00A19A, #FBBC33);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RESET & BAS
+═══════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. HEADER
+═══════════════════════════════════════════════════════════════════ */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* Tillbaka-länk */
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+
+/* Brödsmulor */
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+
+/* Tema-toggle */
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* Klar-indikator och -knapp */
+.done-ind {
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--correct);
+  background: rgba(24,163,72,0.12);
+  border: 1px solid rgba(24,163,72,0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  display: none;
+}
+.done-ind.show { display: inline-block; }
+
+.done-hdr-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.done-hdr-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. MODUL-NAVIGATION  (Föregående / Nästa)
+═══════════════════════════════════════════════════════════════════ */
+.module-nav {
+  max-width: 960px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.mnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.mnav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface2);
+}
+.mnav-btn.primary {
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  border-color: transparent;
+  color: #fff;
+}
+.mnav-btn.primary:hover { opacity: 0.9; }
+.mnav-btn.primary .mnav-label { color: rgba(255,255,255,0.75); }
+.mnav-btn.primary .mnav-title { color: #fff; }
+
+.mnav-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  display: block;
+}
+.mnav-title  { display: block; }
+.mnav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. GEMENSAMMA UI-KOMPONENTER
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tab-navigation ───────────────────────────────────────────────── */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.tab-btn:hover  { border-color: var(--accent); color: var(--text); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Bråkvisning (fv) ─────────────────────────────────────────────── */
+.fv {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  margin: 0 0.22rem;
+  vertical-align: middle;
+  gap: 1px;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.fv .fv-n { font-family: var(--font-b); color: var(--accent); font-weight: 500; }
+.fv .fv-b { width: 100%; min-width: 1em; height: 1.5px; background: currentColor; border-radius: 1px; opacity: 0.6; }
+.fv .fv-d { font-family: var(--font-b); }
+.fv.fv-sm .fv-n, .fv.fv-sm .fv-d { font-size: 0.82em; }
+.fv.fv-md .fv-n, .fv.fv-md .fv-d { font-size: 1.05em; }
+.fv.fv-lg .fv-n, .fv.fv-lg .fv-d { font-size: 1.4em; }
+
+/* ── Segmentstaplar (rektanglar) ──────────────────────────────────── */
+.rect-seg {
+  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-b);
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: background 0.25s;
+}
+.rect-seg:last-child { border-right: none; }
+.rect-seg.on-a  { background: var(--accent); color: #fff; }
+.rect-seg.on-b  { background: var(--hi2);    color: #1a1200; font-weight: 600; }
+.rect-seg.off   { background: var(--surface2); color: var(--muted); }
+.rect-seg.rs-one { background: var(--accent); }
+
+/* ── Förkunskaps-quiz (mq-*) ──────────────────────────────────────── */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.bad,
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.mq-opt:hover       { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok,
+.mq-opt.ok          { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err,
+.mq-opt.err         { border-color: var(--wrong); background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal,
+.mq-opt.reveal      { border-color: var(--correct); color: var(--correct); }
+
+.mq-fb, .ex-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.ok, .ex-fb.ok     { color: var(--correct); }
+.mq-fb.bad, .mq-fb.mq-fb-err,
+.ex-fb.bad               { color: var(--wrong); }
+.mq-fb.show, .ex-fb.show { display: block; }
+
+.mq-next-btn, .mq-next, .quiz-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next-btn.show,
+.mq-next.show,
+.quiz-next.show  { display: inline-block; }
+.mq-next-btn:hover,
+.mq-next:hover,
+.quiz-next:hover { opacity: 0.85; }
+
+/* ── Knappar ──────────────────────────────────────────────────────── */
+.start-btn, .check-main, .ex-next-big {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 9px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-block;
+}
+.start-btn:hover,
+.check-main:hover,
+.ex-next-big:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.check-btn, .row-check {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.check-btn:hover, .row-check:hover { opacity: 0.85; }
+
+/* ── Navigationspunktar (steg-genomgång) ──────────────────────────── */
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot:hover  { border-color: var(--accent); }
+.step-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  width: 18px;
+  border-radius: 4px;
+}
+
+/* ── Framsteg / progress ──────────────────────────────────────────── */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Pills (typ-indikatorer) ──────────────────────────────────────── */
+.pill { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+.pill-pdf    { background: #f5e8ff; color: #600090; border-color: #c080f0; }
+
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+[data-theme="ad-dark"] .pill-pdf,
+[data-theme="pt-dark"] .pill-pdf   { background: #200030; color: #d080ff; border-color: #500080; }
+
+/* ── Programmering & NP badges ────────────────────────────────────── */
+.badge-prog { background: var(--badge-prog); color: var(--badge-prog-t); }
+.badge-np   { background: var(--badge-np);   color: var(--badge-np-t); }
+
+/* ── Kort (card) ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Info-ruta ────────────────────────────────────────────────────── */
+.info-box {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* ── Highlight-ruta ───────────────────────────────────────────────── */
+.hl {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+.hl.gold { border-left: 3px solid var(--hi2); }
+.hl.blue { border-left: 3px solid var(--accent); }
+
+/* ── Quiz-komponenter ─────────────────────────────────────────────── */
+.quiz-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--font-b);
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+.quiz-opt:hover   { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.quiz-opt.wrong   { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+
+.quiz-fb {
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  display: none;
+  color: var(--muted);
+}
+.quiz-fb.show { display: block; }
+.quiz-fb.ok   { color: var(--correct); }
+.quiz-fb.bad  { color: var(--wrong); }
+
+/* ── Lärar-tips (teacher-guide) ───────────────────────────────────── */
+.teacher-guide {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface2);
+  user-select: none;
+  transition: background 0.15s;
+}
+.tg-header:hover         { background: var(--border); }
+.tg-chevron              { margin-left: auto; font-size: 0.7rem; transition: transform 0.25s; }
+.tg-header.open .tg-chevron { transform: rotate(180deg); }
+.tg-body {
+  padding: 0.8rem 1rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tg-body strong { color: var(--text); }
+
+/* ─── 8. RESPONSIV ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .module-nav          { padding: 0.75rem 1rem 2rem; }
+  .mnav-btn            { font-size: 0.75rem; padding: 0.5rem 0.9rem; }
+  .nav-tabs            { padding: 0.5rem 0.75rem; gap: 0.25rem; top: 52px; }
+  .tab-btn             { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <a class="back-btn" href="../../index.html">← Tillbaka</a>
+        <div class="header-crumb">
+          <span>Åk 7</span>
+          <span class="crumb-sep">/</span>
+          <span>7.5 Bråk</span>
+        </div>
+      </div>
+      <button class="theme-toggle" onclick="cycleTheme()">
+        <span id="themeIcon">🎨</span>
+        <span id="themeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="chapter-hero">
+    <div class="chapter-badge">7.5</div>
+    <div class="chapter-intro">
+      <p class="chapter-label">Årskurs 7</p>
+      <h1 class="chapter-title">Bråk</h1>
+      <p class="chapter-desc">
+        Bråk är ett sätt att beskriva delar av en helhet. Här bygger du upp förståelse
+        från grunden — från vad ett bråk är och hur man jämför dem, till att räkna med
+        bråk och koppla dem till decimaltal.
+      </p>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div class="progress-inner">
+      <span class="progress-text" id="progressText">0 av 5 moduler klara</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-pct" id="progressPct">0%</span>
+      <button class="reset-btn" onclick="resetProgress()">Återställ</button>
+    </div>
+  </div>
+
+  <!-- KUNSKAPSMÅL -->
+  <div class="goals-section">
+    <div class="goals-card">
+      <div class="goals-header" onclick="toggleGoals(this)">
+        <div class="goals-header-left">
+          <span class="goals-icon">🎯</span>
+          <span class="goals-title">Du ska kunna...</span>
+        </div>
+        <span class="goals-chevron">▼</span>
+      </div>
+      <div class="goals-body">
+        <ul class="goals-list">
+          <li>Förklara vad ett bråk är, samt skriva ett tal i bråkform och i blandad form.</li>
+          <li>Förklara vad en andel och ett förhållande är, samt beräkna delen av det hela.</li>
+          <li>Skriva olika bråk som uttrycker lika stora andelar och jämföra bråk, samt förlänga och förkorta bråk.</li>
+          <li>Addera och subtrahera bråk.</li>
+          <li>Uttrycka andelar i bråkform och i decimalform.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAGGFILTER -->
+  <div class="filter-section">
+    <p class="filter-label">🔍 Filtrera på ämne</p>
+    <div class="filter-tags">
+      <button class="tag-btn active" data-tag="alla"       onclick="filterTag('alla')">Alla</button>
+      <button class="tag-btn"        data-tag="brak1"      onclick="filterTag('brak1')">Bråk 1</button>
+      <button class="tag-btn"        data-tag="brak2"      onclick="filterTag('brak2')">Bråk 2</button>
+      <button class="tag-btn"        data-tag="brak3"      onclick="filterTag('brak3')">Bråk 3</button>
+      <button class="tag-btn"        data-tag="brak4"      onclick="filterTag('brak4')">Bråk 4</button>
+      <button class="tag-btn"        data-tag="brak5"      onclick="filterTag('brak5')">Bråk 5</button>
+      <button class="tag-btn"        data-tag="forstaa"    onclick="filterTag('forstaa')">Förstå bråk</button>
+      <button class="tag-btn"        data-tag="rakna"      onclick="filterTag('rakna')">Räkna med bråk</button>
+      <button class="tag-btn"        data-tag="jamfora"    onclick="filterTag('jamfora')">Jämföra</button>
+      <button class="tag-btn"        data-tag="decimal"    onclick="filterTag('decimal')">Decimal</button>
+    </div>
+  </div>
+
+  <!-- KLUSTER -->
+  <div class="clusters" id="clusters">
+
+    <!-- KLUSTER 1: Förstå bråk -->
+    <div class="cluster" data-tags="forstaa brak1 brak2">
+      <div class="cluster-label">🍕 Förstå bråk</div>
+
+      <div class="module-card" id="card-1" data-tags="forstaa brak1" onclick="openModule(1)">
+        <div class="mod-num" id="num-1">1</div>
+        <div>
+          <div class="mod-label">Bråk 1</div>
+          <div class="mod-title">Vad är ett bråk?</div>
+          <div class="mod-desc">Förstå vad ett bråk är, lär dig om täljare och nämnare, och utforska vad en andel innebär.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Täljare &amp; nämnare</span>
+            <span class="mod-topic">Andel</span>
+            <span class="mod-topic">Blandad form</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(1)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-1">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="module-card" id="card-2" data-tags="forstaa brak2" onclick="openModule(2)">
+        <div class="mod-num" id="num-2">2</div>
+        <div>
+          <div class="mod-label">Bråk 2</div>
+          <div class="mod-title">Beräkna delen</div>
+          <div class="mod-desc">Lär dig att beräkna en del av ett helt tal — hitta en del, multiplicera sedan.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Del av helhet</span>
+            <span class="mod-topic">Förhållande</span>
+            <span class="mod-topic">Andel</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+            <span class="pill pill-pdf">📄 PDF</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(2)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-2">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KLUSTER 2: Jämföra bråk -->
+    <div class="cluster" data-tags="jamfora brak3">
+      <div class="cluster-label">⚖️ Jämföra och likvärdiga bråk</div>
+
+      <div class="module-card" id="card-3" data-tags="jamfora brak3" onclick="openModule(3)">
+        <div class="mod-num" id="num-3">3</div>
+        <div>
+          <div class="mod-label">Bråk 3</div>
+          <div class="mod-title">Jämföra bråk</div>
+          <div class="mod-desc">Fyra metoder — från enkelt till generellt. Förlänga och förkorta bråk med bildstöd och tallinje.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Förlänga</span>
+            <span class="mod-topic">Förkorta</span>
+            <span class="mod-topic">Likvärdiga bråk</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(3)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-3">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KLUSTER 3: Räkna med bråk -->
+    <div class="cluster" data-tags="rakna brak4 brak5 decimal">
+      <div class="cluster-label">➕ Räkna med bråk och former</div>
+
+      <div class="module-card coming-soon" id="card-4" data-tags="rakna brak4">
+        <span class="coming-soon-badge">Kommer snart</span>
+        <div class="mod-num" id="num-4">4</div>
+        <div>
+          <div class="mod-label">Bråk 4</div>
+          <div class="mod-title">Addera och subtrahera bråk</div>
+          <div class="mod-desc">Räkna med bråk som har samma och olika nämnare. Förenkla ditt svar.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Addition</span>
+            <span class="mod-topic">Subtraktion</span>
+            <span class="mod-topic">Gemensam nämnare</span>
+          </div>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-4">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="module-card coming-soon" id="card-5" data-tags="rakna brak5 decimal">
+        <span class="coming-soon-badge">Kommer snart</span>
+        <div class="mod-num" id="num-5">5</div>
+        <div>
+          <div class="mod-label">Bråk 5</div>
+          <div class="mod-title">Bråkform och decimalform</div>
+          <div class="mod-desc">Översätt mellan bråk och decimaltal. Förstå sambandet mellan formerna.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Decimaltal</span>
+            <span class="mod-topic">Omvandling</span>
+            <span class="mod-topic">Andelar</span>
+          </div>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-5">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="no-results" id="noResults">Inga moduler matchar den valda taggen.</p>
+
+  <!-- PREREQ MODAL -->
+  <div class="modal-overlay" id="prereqOverlay" onclick="closePrereqOutside(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closePrereq()">✕ Stäng</button>
+      <div class="modal-title" id="prereqTitle"></div>
+      <div class="modal-sub" id="prereqSub"></div>
+      <div class="prereq-section">
+        <div class="prereq-section-title">Färdigheter du bör ha med dig</div>
+        <div class="skill-list" id="prereqSkills"></div>
+      </div>
+      <div class="prereq-section">
+        <div class="prereq-section-title">Snabbkoll — kan du det här?</div>
+        <div class="mq-progress" id="mqPips"></div>
+        <div id="mqWrap"></div>
+      </div>
+      <div class="prereq-section" id="prevModSection"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© <span id="yr"></span> Patrick Tegnefur &nbsp;·&nbsp; Förstelärare och IT-pedagog &nbsp;·&nbsp; Alfred Dalinskolan, Huskvarna</p>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // ── Tema (synkat med portalen) ─────────────────────────────
+    const THEMES = [
+      { id: 'pt-light', label: 'PT Ljust',  icon: '☀️' },
+      { id: 'pt-dark',  label: 'PT Mörkt',  icon: '🌙' },
+      { id: 'ad-light', label: 'AD Ljust',  icon: '🌿' },
+      { id: 'ad-dark',  label: 'AD Mörkt',  icon: '🌑' },
+    ];
+    let currentIdx = 0;
+
+    function applyTheme(idx) {
+      const t = THEMES[idx];
+      document.documentElement.setAttribute('data-theme', t.id);
+      document.getElementById('themeLabel').textContent = t.label;
+      document.getElementById('themeIcon').textContent  = t.icon;
+      localStorage.setItem('math-portal-theme', t.id);
+    }
+
+    function cycleTheme() {
+      currentIdx = (currentIdx + 1) % THEMES.length;
+      applyTheme(currentIdx);
+    }
+
+    const saved = localStorage.getItem('math-portal-theme');
+    const VALID = THEMES.map(t => t.id);
+    if (saved && VALID.includes(saved)) currentIdx = THEMES.findIndex(t => t.id === saved);
+    applyTheme(currentIdx);
+
+    // ── Kunskapsmål ────────────────────────────────────────────
+    function toggleGoals(header) {
+      const body = header.nextElementSibling;
+      const open = header.classList.toggle('open');
+      body.classList.toggle('open', open);
+      body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+    }
+    toggleGoals(document.querySelector('.goals-header'));
+
+    // ── Taggfilter ─────────────────────────────────────────────
+    function filterTag(tag) {
+      document.querySelectorAll('.tag-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tag === tag));
+
+      document.querySelectorAll('.module-card').forEach(card => {
+        const tags = (card.dataset.tags || '').split(' ');
+        card.classList.toggle('hidden', tag !== 'alla' && !tags.includes(tag));
+      });
+
+      document.querySelectorAll('.cluster').forEach(cluster => {
+        const visible = cluster.querySelectorAll('.module-card:not(.hidden)').length;
+        cluster.classList.toggle('all-hidden', visible === 0);
+      });
+
+      const any = document.querySelectorAll('.module-card:not(.hidden)').length > 0;
+      document.getElementById('noResults').classList.toggle('visible', !any);
+    }
+
+    // ── Progress ───────────────────────────────────────────────
+    const TOTAL = 5;
+    const MODULE_FILES = { 1:'brak1.html', 2:'brak2.html', 3:'brak3.html', 4:'brak4.html', 5:'brak5.html' };
+    const STATUS_LABELS = { 'not-started':'Inte påbörjad', 'in-progress':'Påbörjad', 'done':'Klar ✓' };
+
+    function loadProgress() { try { return JSON.parse(localStorage.getItem('brak-progress') || '{}'); } catch(e) { return {}; } }
+    function saveProgress(p) { localStorage.setItem('brak-progress', JSON.stringify(p)); }
+
+    function renderProgress() {
+      const p = loadProgress(); let done = 0;
+      for (let i = 1; i <= TOTAL; i++) {
+        const st = p[i] || 'not-started';
+        const card = document.getElementById('card-' + i);
+        const statusEl = document.getElementById('status-' + i);
+        const numEl = document.getElementById('num-' + i);
+        if (!card) continue;
+        if (statusEl) { statusEl.textContent = STATUS_LABELS[st]; statusEl.className = 'mod-status ' + st; }
+        card.classList.remove('done', 'in-progress-card');
+        if (st === 'done')        { card.classList.add('done'); if(numEl) numEl.textContent = '✓'; done++; }
+        else if (st === 'in-progress') { card.classList.add('in-progress-card'); if(numEl) numEl.textContent = i; }
+        else { if(numEl) numEl.textContent = i; }
+      }
+      const pct = Math.round(done / TOTAL * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = `${done} av ${TOTAL} moduler klara`;
+      document.getElementById('progressPct').textContent = pct + '%';
+    }
+
+    function openModule(n) {
+      const p = loadProgress();
+      if (!p[n] || p[n] === 'not-started') p[n] = 'in-progress';
+      saveProgress(p);
+      window.location.href = MODULE_FILES[n];
+    }
+
+    function resetProgress() {
+      if (confirm('Återställ allt framsteg?')) { localStorage.removeItem('brak-progress'); renderProgress(); }
+    }
+
+    renderProgress();
+
+    // ── Prereq-modal ───────────────────────────────────────────
+    const PREREQ = {
+      1: {
+        title: 'Bråk 1 — Vad är ett bråk?',
+        sub: 'Förkunskaper inför modulen',
+        prev: null,
+        skills: [
+          { icon:'➗', text:'<strong>Division</strong> — du kan dela ett tal med ett annat och förstår vad "dela lika" betyder.' },
+          { icon:'🔢', text:'<strong>Heltalsräkning</strong> — du kan räkna med och jämföra hela tal.' },
+          { icon:'📐', text:'<strong>Enkel bråkigenkänning</strong> — du har sett bråk som ½ och ¼ i vardagen.' },
+        ],
+        quiz: [
+          { q:'Vad är 12 ÷ 4?', opts:['2','3','4','6'], ok:1, fb:'12 ÷ 4 = 3.' },
+          { q:'En pizza delas i 8 lika bitar. Hur stor är en bit?', opts:['1/4','1/6','1/8','1/10'], ok:2, fb:'8 bitar → varje bit är 1/8 av pizzan.' },
+          { q:'Vilket tal är störst?', opts:['4','9','2','7'], ok:1, fb:'9 är störst av de fyra talen.' },
+        ],
+      },
+      2: {
+        title: 'Bråk 2 — Beräkna delen',
+        sub: 'Förkunskaper inför modulen',
+        prev: { n:1, title:'Bråk 1 — Vad är ett bråk?', desc:'Täljare, nämnare och vad ett bråk innebär.' },
+        skills: [
+          { icon:'🔢', text:'<strong>Täljare och nämnare</strong> — du vet vad de heter och vad de berättar om ett bråk.' },
+          { icon:'✖️', text:'<strong>Multiplikation</strong> — du kan multiplicera hela tal.' },
+          { icon:'➗', text:'<strong>Division</strong> — du kan dela ett tal och kontrollera att det går jämnt ut.' },
+        ],
+        quiz: [
+          { q:'Vad kallas siffran UNDER bråkstrecket?', opts:['Täljare','Nämnare','Kvot','Bråk'], ok:1, fb:'Siffran under strecket kallas nämnaren.' },
+          { q:'Vad är 60 ÷ 4?', opts:['12','15','20','16'], ok:1, fb:'60 ÷ 4 = 15.' },
+          { q:'I bråket 3/5 — vad berättar 5?', opts:['Vi tar 5 delar','Helheten är delad i 5 lika delar','Svaret är 5','Det finns 5 bråk'], ok:1, fb:'Nämnaren berättar i hur många delar helheten är uppdelad.' },
+        ],
+      },
+      3: {
+        title: 'Bråk 3 — Jämföra bråk',
+        sub: 'Förkunskaper inför modulen',
+        prev: { n:2, title:'Bråk 2 — Beräkna delen', desc:'Hitta en del och multiplicera med täljaren.' },
+        skills: [
+          { icon:'🔢', text:'<strong>Täljare och nämnare</strong> — du förstår att nämnaren delar helheten och täljaren räknar delarna.' },
+          { icon:'📏', text:'<strong>Tallinje</strong> — du kan placera ut tal på en tallinje och förstår att tal till höger är större.' },
+          { icon:'✖️', text:'<strong>Multiplikation</strong> — du behöver kunna multiplicera täljare och nämnare när vi förlänger bråk.' },
+        ],
+        quiz: [
+          { q:'Vilket bråk är störst om nämnaren är samma?', opts:['Det med störst täljare','Det med minst täljare','De är alltid lika','Kan inte avgöras'], ok:0, fb:'Samma nämnare → störst täljare = störst bråk.' },
+          { q:'Du delar en kaka i 4 bitar. Hur stor är en bit?', opts:['1/2','1/3','1/4','1/5'], ok:2, fb:'4 bitar → varje bit är 1/4 av kakan.' },
+          { q:'Vad är 3 × 7?', opts:['10','18','21','24'], ok:2, fb:'3 × 7 = 21. Behövs när vi förlänger bråk.' },
+        ],
+      },
+    };
+
+    let mqData = [], mqIdx = 0, mqResults = [];
+
+    function openPrereq(n) {
+      const data = PREREQ[n];
+      if (!data) return;
+      document.getElementById('prereqTitle').textContent = data.title;
+      document.getElementById('prereqSub').textContent = data.sub;
+      document.getElementById('prereqSkills').innerHTML = data.skills.map(s =>
+        `<div class="skill-item"><span class="skill-icon">${s.icon}</span><span class="skill-text">${s.text}</span></div>`
+      ).join('');
+      mqData = data.quiz; mqIdx = 0; mqResults = Array(mqData.length).fill(null);
+      renderMQ();
+      const ps = document.getElementById('prevModSection');
+      if (data.prev) {
+        ps.innerHTML = `
+          <div class="prereq-section-title">Repetition — tidigare modul</div>
+          <div class="prev-module-link" onclick="openModule(${data.prev.n})">
+            <div class="pml-num">${data.prev.n}</div>
+            <div><div class="pml-title">${data.prev.title}</div><div class="pml-desc">${data.prev.desc}</div></div>
+            <span class="pml-arrow">→</span>
+          </div>`;
+      } else {
+        ps.innerHTML = `
+          <div class="prereq-section-title">Startmodul</div>
+          <div class="skill-item"><span class="skill-icon">🚀</span><span class="skill-text">Detta är den första modulen — inga tidigare bråk-moduler krävs!</span></div>`;
+      }
+      document.getElementById('prereqOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePrereq() {
+      document.getElementById('prereqOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closePrereqOutside(e) {
+      if (e.target === document.getElementById('prereqOverlay')) closePrereq();
+    }
+
+    function renderMQ() {
+      const q = mqData[mqIdx];
+      document.getElementById('mqPips').innerHTML = mqData.map((_, i) => {
+        let c = 'mq-pip';
+        if (i === mqIdx) c += ' cur';
+        else if (mqResults[i] === true)  c += ' ok';
+        else if (mqResults[i] === false) c += ' err';
+        return `<div class="${c}"></div>`;
+      }).join('');
+      document.getElementById('mqWrap').innerHTML = `
+        <div class="mq-question">${q.q}</div>
+        <div class="mq-opts">${q.opts.map((o, i) => `<button class="mq-opt" onclick="answerMQ(${i},this)">${o}</button>`).join('')}</div>
+        <div class="mq-fb" id="mqFb"></div>
+        <button class="mq-next" id="mqNext" onclick="nextMQ()">${mqIdx < mqData.length - 1 ? 'Nästa →' : 'Se resultat'}</button>`;
+    }
+
+    function answerMQ(i, btn) {
+      const q = mqData[mqIdx];
+      const ok = i === q.ok;
+      mqResults[mqIdx] = ok;
+      document.querySelectorAll('.mq-opt').forEach((b, j) => {
+        b.disabled = true;
+        if (j === i)    b.classList.add(ok ? 'mq-ok' : 'mq-err');
+        if (j === q.ok) b.classList.add('mq-reveal');
+      });
+      const fb = document.getElementById('mqFb');
+      fb.textContent = (ok ? '✓ ' : '✗ ') + q.fb;
+      fb.className = 'mq-fb ' + (ok ? 'mq-fb-ok' : 'mq-fb-err');
+      document.getElementById('mqNext').classList.add('show');
+      renderMQPips();
+    }
+
+    function renderMQPips() {
+      document.getElementById('mqPips').innerHTML = mqData.map((_, i) => {
+        let c = 'mq-pip';
+        if (i === mqIdx) c += ' cur';
+        else if (mqResults[i] === true)  c += ' ok';
+        else if (mqResults[i] === false) c += ' err';
+        return `<div class="${c}"></div>`;
+      }).join('');
+    }
+
+    function nextMQ() {
+      if (mqIdx < mqData.length - 1) {
+        mqIdx++; renderMQ();
+      } else {
+        const correct = mqResults.filter(r => r === true).length;
+        document.getElementById('mqPips').innerHTML = '';
+        document.getElementById('mqWrap').innerHTML = `
+          <div style="text-align:center;padding:0.75rem 0;">
+            <div style="font-size:1.8rem;margin-bottom:0.3rem;">${correct === mqData.length ? '🎉' : correct > 0 ? '👍' : '💪'}</div>
+            <div style="font-family:var(--font-d);font-size:1.2rem;color:var(--accent2);margin-bottom:0.3rem;">${correct} / ${mqData.length} rätt</div>
+            <div style="font-size:0.85rem;color:var(--muted);">${correct === mqData.length ? 'Du verkar redo — kör på!' : 'Repetera gärna de frågorna du missade.'}</div>
+            <button style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;font-family:var(--font-b);" onclick="mqIdx=0;mqResults=Array(mqData.length).fill(null);renderMQ();">Försök igen</button>
+          </div>`;
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closePrereq();
+    });
+  </script>
+</body>
+</html>
