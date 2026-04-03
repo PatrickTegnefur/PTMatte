@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Procent 1 — Procent som språk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+/* ── TOKENS ─────────────────────────────────────────────────────── */
+:root {
+  --radius: 14px;
+  --trans:  0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+[data-theme="ad-light"] {
+  --bg:#f2fbf8; --surface:#fff; --surface2:#e4f5ef; --border:#b8ddd4;
+  --text:#0b1e18; --muted:#527060;
+  --hdr-bg:linear-gradient(120deg,#00A19A 0%,#007870 100%); --hdr-text:#fff;
+  --stripe-fade:rgba(255,255,255,0.30);
+  --accent:#1a6ef5; --accent2:#FBBC33; --hi:#5ba3ff; --hi2:#F4A261;
+  --correct:#18a348; --wrong:#e02020;
+  --shadow:0 2px 12px rgba(0,161,154,.10); --shadow-hov:0 8px 28px rgba(0,161,154,.22);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="ad-dark"] {
+  --bg:#0c1512; --surface:#152018; --surface2:#1c2c20; --border:#283c2c;
+  --text:#e4f5ee; --muted:#6a9878;
+  --hdr-bg:linear-gradient(120deg,#081a10 0%,#051208 100%); --hdr-text:#e4f5ee;
+  --stripe-fade:rgba(255,255,255,0.12);
+  --accent:#4ecb8a; --accent2:#FBBC33; --hi:#5dd68c; --hi2:#F4A261;
+  --correct:#39C762; --wrong:#F03048;
+  --shadow:0 2px 16px rgba(0,0,0,.40); --shadow-hov:0 8px 32px rgba(0,0,0,.60);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="pt-light"] {
+  --bg:#f6f4ff; --surface:#fff; --surface2:#eae6ff; --border:#ccc5f0;
+  --text:#100e28; --muted:#585078;
+  --hdr-bg:linear-gradient(120deg,#66C7C2 0%,#F4A261 50%,#EC6095 100%); --hdr-text:#fff;
+  --stripe-fade:rgba(255,255,255,0.35);
+  --accent:#306BF0; --accent2:#EC6095; --hi:#5ba3ff; --hi2:#F4A261;
+  --correct:#18a348; --wrong:#e02020;
+  --shadow:0 2px 14px rgba(48,107,240,.12); --shadow-hov:0 8px 30px rgba(48,107,240,.22);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="pt-dark"] {
+  --bg:#12101c; --surface:#1c192c; --surface2:#262238; --border:#342e54;
+  --text:#eae8ff; --muted:#8880b8;
+  --hdr-bg:linear-gradient(120deg,#66C7C2 0%,#F4A261 50%,#EC6095 100%); --hdr-text:#fff;
+  --stripe-fade:rgba(255,255,255,0.15);
+  --accent:#6a9aff; --accent2:#EC6095; --hi:#80aaff; --hi2:#F4A261;
+  --correct:#39C762; --wrong:#F03048;
+  --shadow:0 2px 16px rgba(48,107,240,.18); --shadow-hov:0 8px 36px rgba(48,107,240,.35);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .mq-next-btn { background:#EC6095 !important; border-color:transparent !important; color:#fff !important; }
+[data-theme="pt-dark"] .progress-fill { background:linear-gradient(90deg,#66C7C2,#F4A261,#EC6095); }
+[data-theme="ad-dark"] .tab-btn.active { background:linear-gradient(90deg,#00A19A,#FBBC33); border-color:transparent; color:#fff; }
+
+/* ── RESET & BAS ─────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:var(--font-b); background:var(--bg); color:var(--text); min-height:100vh; transition:background var(--trans),color var(--trans); }
+
+/* ── HEADER ──────────────────────────────────────────────────────── */
+.portal-header { background:var(--hdr-bg); color:var(--hdr-text); position:sticky; top:0; z-index:200; box-shadow:0 2px 24px rgba(0,0,0,.20); }
+.portal-header::after { content:''; display:block; height:10px; background:linear-gradient(to bottom,transparent,var(--stripe-fade)); pointer-events:none; }
+.portal-header-inner { max-width:960px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; height:48px; }
+.portal-header-left  { display:flex; align-items:center; gap:0.8rem; }
+.portal-back { display:flex; align-items:center; gap:0.35rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); border-radius:30px; padding:4px 11px; color:rgba(255,255,255,0.9); font-size:0.68rem; font-family:var(--font-b); font-weight:500; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
+.portal-back:hover { background:rgba(255,255,255,0.22); }
+.portal-crumb { display:flex; align-items:center; gap:0.35rem; font-family:var(--font-d); font-size:1rem; font-weight:700; color:var(--hdr-text); }
+.portal-crumb-sep { opacity:0.4; font-weight:300; }
+.portal-theme-toggle { display:flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); border-radius:30px; padding:4px 11px; cursor:pointer; color:rgba(255,255,255,0.9); font-size:0.68rem; font-family:var(--font-b); font-weight:500; transition:background 0.2s; white-space:nowrap; }
+.portal-theme-toggle:hover { background:rgba(255,255,255,0.22); }
+.done-hdr-btn { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:rgba(255,255,255,0.85); border-radius:20px; padding:4px 11px; cursor:pointer; font-size:0.68rem; font-family:var(--font-b); font-weight:500; transition:background 0.2s; white-space:nowrap; }
+.done-hdr-btn:hover { background:rgba(255,255,255,0.22); }
+
+/* ── TAB-NAVIGATION ─────────────────────────────────────────────── */
+.nav-tabs { display:flex; justify-content:center; gap:0.35rem; padding:0.7rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:wrap; position:sticky; top:58px; z-index:100; }
+.tab-btn { background:none; border:1px solid var(--border); border-radius:8px; padding:0.38rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.82rem; color:var(--muted); transition:all 0.18s; white-space:nowrap; }
+.tab-btn:hover { border-color:var(--accent); color:var(--text); }
+.tab-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+
+/* ── TAB-INNEHÅLL ───────────────────────────────────────────────── */
+.tab-panel { display:none; max-width:820px; margin:0 auto; padding:1.8rem 1.5rem 3rem; }
+.tab-panel.active { display:block; }
+
+/* ── RUBRIKER & TEXT ────────────────────────────────────────────── */
+.section-title { font-family:var(--font-d); font-size:1.3rem; font-weight:700; color:var(--text); margin-bottom:0.3rem; }
+.section-sub   { font-size:0.86rem; color:var(--muted); margin-bottom:1.4rem; line-height:1.6; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1rem; }
+.info-box { background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:0.6rem 0.9rem; font-size:0.88rem; color:var(--text); margin-bottom:0.9rem; line-height:1.6; }
+.hl { background:var(--surface2); border-radius:8px; padding:0.6rem 0.9rem; font-size:0.9rem; }
+.hl.gold { border-left:3px solid var(--hi2); }
+.hl.blue { border-left:3px solid var(--accent); }
+
+/* ── BRÅKVISNING (fv) ───────────────────────────────────────────── */
+.fv { display:inline-flex; flex-direction:column; align-items:center; line-height:1.1; margin:0 0.22rem; vertical-align:middle; gap:1px; margin-top:0.15em; margin-bottom:0.15em; }
+.fv .fv-n { font-family:var(--font-b); color:var(--accent); font-weight:500; }
+.fv .fv-b { width:100%; min-width:1em; height:1.5px; background:currentColor; border-radius:1px; opacity:0.6; }
+.fv .fv-d { font-family:var(--font-b); }
+.fv.fv-sm .fv-n,.fv.fv-sm .fv-d { font-size:0.82em; }
+.fv.fv-md .fv-n,.fv.fv-md .fv-d { font-size:1.05em; }
+.fv.fv-lg .fv-n,.fv.fv-lg .fv-d { font-size:1.5em; }
+
+/* ── GENOMGÅNG — steg ───────────────────────────────────────────── */
+.step-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.4rem 1.5rem; margin-bottom:1rem; }
+.step-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem; }
+.step-num { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--c7a),var(--c7b)); color:#fff; font-family:var(--font-d); font-size:0.9rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-title { font-family:var(--font-d); font-size:1.05rem; font-weight:700; color:var(--text); }
+.step-body { font-size:0.9rem; color:var(--muted); line-height:1.7; }
+.step-body p { margin-bottom:0.7rem; }
+.step-body p:last-child { margin-bottom:0; }
+.step-body strong { color:var(--text); }
+
+/* ── TRE-FORMER-DISPLAY ─────────────────────────────────────────── */
+.forms-row { display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin:1rem 0; }
+.form-box { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:0.9rem 1.2rem; text-align:center; min-width:110px; flex:1; max-width:160px; }
+.form-box-label { font-size:0.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.4rem; }
+.form-box-val { font-family:var(--font-d); font-size:1.5rem; color:var(--text); font-weight:700; display:flex; align-items:center; justify-content:center; min-height:2.2rem; }
+.form-box.hi-blue { border-color:var(--accent); background:rgba(48,107,240,0.07); }
+.form-box.hi-blue .form-box-val { color:var(--accent); }
+.form-box.hi-orange { border-color:var(--hi2); background:rgba(244,162,97,0.10); }
+.form-box.hi-orange .form-box-val { color:#b06000; }
+[data-theme="pt-dark"] .form-box.hi-orange .form-box-val,
+[data-theme="ad-dark"] .form-box.hi-orange .form-box-val { color:var(--hi2); }
+.form-box.hi-green { border-color:var(--correct); background:rgba(24,163,72,0.07); }
+.form-box.hi-green .form-box-val { color:var(--correct); }
+.forms-arrow { display:flex; align-items:center; font-size:1.2rem; color:var(--muted); align-self:center; }
+
+/* ── HUNDRADELAR-RUTNÄT ─────────────────────────────────────────── */
+.hundred-grid { display:grid; grid-template-columns:repeat(10,1fr); gap:2px; margin:1rem auto; max-width:300px; }
+.hg-cell { aspect-ratio:1; border-radius:3px; background:var(--surface2); border:1px solid var(--border); transition:background 0.2s; }
+.hg-cell.on { background:var(--accent); border-color:var(--accent); }
+.hg-cell.on-orange { background:var(--hi2); border-color:var(--hi2); }
+.hg-slider-row { display:flex; align-items:center; gap:0.8rem; margin-top:0.5rem; flex-wrap:wrap; }
+.hg-slider-row label { font-size:0.82rem; color:var(--muted); white-space:nowrap; }
+.hg-slider-row input[type=range] { flex:1; min-width:120px; accent-color:var(--accent); }
+.hg-val { font-size:1rem; font-weight:700; color:var(--accent); min-width:2.5rem; text-align:right; }
+
+/* ── GLOSKORT ───────────────────────────────────────────────────── */
+.glos-controls { display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; margin-bottom:1rem; }
+.glos-toggle { background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:4px 14px; font-size:0.78rem; font-family:var(--font-b); color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.glos-toggle:hover { border-color:var(--accent); color:var(--text); }
+.glos-toggle.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+.glos-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.7rem; }
+.glos-card { perspective:600px; cursor:pointer; height:110px; }
+.glos-inner { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.45s cubic-bezier(.4,0,.2,1); }
+.glos-card.flipped .glos-inner { transform:rotateY(180deg); }
+.glos-front, .glos-back {
+  position:absolute; inset:0;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:0.2rem; padding:0.6rem;
+  transition:border-color 0.2s;
+}
+.glos-front:hover { border-color:var(--accent); }
+.glos-back { transform:rotateY(180deg); background:var(--surface2); }
+.glos-front .glos-brak { display:inline-flex; flex-direction:column; align-items:center; gap:1px; }
+.glos-front .glos-brak .gb-t { font-size:1.1rem; font-weight:600; color:var(--accent); font-family:var(--font-b); }
+.glos-front .glos-brak .gb-line { width:1.8rem; height:1.5px; background:var(--accent); opacity:0.7; border-radius:1px; }
+.glos-front .glos-brak .gb-d { font-size:1.1rem; font-weight:600; color:var(--accent); font-family:var(--font-b); }
+.glos-front .glos-dec { font-size:0.78rem; color:var(--muted); }
+.glos-back-row { display:flex; align-items:center; gap:0.6rem; font-size:0.8rem; color:var(--muted); }
+.glos-back-row strong { color:var(--text); font-size:0.88rem; }
+.glos-back .pct-big { font-family:var(--font-d); font-size:1.5rem; font-weight:700; color:var(--correct); }
+.glos-back .pct-label { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; }
+.glos-hint { font-size:0.68rem; color:var(--muted); margin-top:0.5rem; text-align:center; }
+
+/* ── FÖRKUNSKAPS-QUIZ ───────────────────────────────────────────── */
+.pq-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.4rem; }
+.pq-progress { display:flex; gap:4px; margin-bottom:0.8rem; }
+.pq-pip { width:8px; height:8px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); transition:all 0.2s; }
+.pq-pip.ok  { background:var(--correct); border-color:var(--correct); }
+.pq-pip.err { background:var(--wrong);   border-color:var(--wrong); }
+.pq-pip.cur { background:var(--accent);  border-color:var(--accent); transform:scale(1.2); }
+.pq-q { font-size:0.92rem; font-weight:600; color:var(--text); margin-bottom:0.6rem; line-height:1.45; }
+.pq-opts { display:flex; flex-direction:column; gap:0.35rem; }
+.pq-opt { background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.87rem; color:var(--muted); text-align:left; transition:all 0.15s; }
+.pq-opt:hover { border-color:var(--accent); color:var(--text); }
+.pq-opt.ok     { border-color:var(--correct); background:rgba(24,163,72,0.10); color:var(--correct); }
+.pq-opt.err    { border-color:var(--wrong);   background:rgba(224,32,32,0.10); color:var(--wrong); }
+.pq-opt.reveal { border-color:var(--correct); color:var(--correct); }
+.pq-fb { font-size:0.82rem; margin-top:0.4rem; padding:0.3rem 0.5rem; border-radius:6px; min-height:1.2em; color:var(--muted); }
+.pq-fb.ok  { color:var(--correct); }
+.pq-fb.err { color:var(--wrong); }
+.pq-next { background:var(--accent); border:none; color:#fff; border-radius:7px; padding:0.38rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.82rem; font-weight:500; margin-top:0.5rem; display:none; transition:opacity 0.15s; }
+.pq-next.show { display:inline-block; }
+.pq-next:hover { opacity:0.85; }
+
+/* ── ÖVNINGAR ───────────────────────────────────────────────────── */
+.level-row { display:flex; gap:0.4rem; margin-bottom:1rem; flex-wrap:wrap; }
+.level-btn { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:4px 13px; font-size:0.78rem; font-family:var(--font-b); color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.level-btn:hover { border-color:var(--accent); color:var(--text); }
+.level-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+.ex-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.3rem 1.5rem; }
+.ex-num  { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.3rem; }
+.ex-q    { font-size:1rem; color:var(--text); margin-bottom:1rem; line-height:1.5; }
+.ex-q strong { color:var(--accent); }
+.ex-input-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.7rem; }
+.ex-input { width:80px; border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.6rem; font-family:var(--font-b); font-size:0.9rem; color:var(--text); background:var(--surface2); text-align:center; transition:border-color 0.15s; }
+.ex-input:focus { outline:none; border-color:var(--accent); }
+.ex-input.ok  { border-color:var(--correct); background:rgba(24,163,72,0.08); }
+.ex-input.err { border-color:var(--wrong);   background:rgba(224,32,32,0.08); }
+.ex-unit { font-size:0.88rem; color:var(--muted); }
+.check-btn { background:var(--accent); border:none; color:#fff; border-radius:8px; padding:0.42rem 1.1rem; cursor:pointer; font-family:var(--font-b); font-size:0.85rem; font-weight:600; transition:opacity 0.15s; }
+.check-btn:hover { opacity:0.85; }
+.ex-fb { font-size:0.84rem; margin-top:0.3rem; padding:0.3rem 0.5rem; border-radius:6px; min-height:1.2em; color:var(--muted); }
+.ex-fb.ok  { color:var(--correct); }
+.ex-fb.err { color:var(--wrong); }
+.ex-next-row { margin-top:0.9rem; display:flex; justify-content:flex-end; }
+.ex-next-big { background:linear-gradient(135deg,var(--c7a),var(--c7b)); border:none; color:#fff; border-radius:9px; padding:0.5rem 1.3rem; cursor:pointer; font-family:var(--font-b); font-size:0.88rem; font-weight:600; transition:opacity 0.15s,transform 0.15s; }
+.ex-next-big:hover { opacity:0.88; transform:translateY(-1px); }
+
+/* ── QUIZ ───────────────────────────────────────────────────────── */
+.quiz-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.3rem 1.5rem; }
+.quiz-progress { display:flex; gap:4px; margin-bottom:0.8rem; }
+.quiz-pip { width:8px; height:8px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); transition:all 0.2s; }
+.quiz-pip.ok  { background:var(--correct); border-color:var(--correct); }
+.quiz-pip.err { background:var(--wrong);   border-color:var(--wrong); }
+.quiz-pip.cur { background:var(--accent);  border-color:var(--accent); transform:scale(1.2); }
+.quiz-q { font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:0.7rem; line-height:1.5; }
+.quiz-opts { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.5rem; }
+.quiz-opt { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:0.55rem 0.9rem; cursor:pointer; font-size:0.88rem; color:var(--muted); font-family:var(--font-b); text-align:left; transition:all 0.18s; }
+.quiz-opt:hover   { border-color:var(--accent); color:var(--text); }
+.quiz-opt.correct { border-color:var(--correct); background:rgba(24,163,72,0.10); color:var(--correct); }
+.quiz-opt.wrong   { border-color:var(--wrong);   background:rgba(224,32,32,0.10); color:var(--wrong); }
+.quiz-fb { font-size:0.84rem; margin-top:0.4rem; padding:0.35rem 0.6rem; border-radius:6px; display:none; color:var(--muted); }
+.quiz-fb.show { display:block; }
+.quiz-fb.ok  { color:var(--correct); }
+.quiz-fb.bad { color:var(--wrong); }
+.quiz-next { background:var(--accent); border:none; color:#fff; border-radius:7px; padding:0.4rem 1rem; cursor:pointer; font-family:var(--font-b); font-size:0.84rem; font-weight:500; margin-top:0.6rem; display:none; transition:opacity 0.15s; }
+.quiz-next.show { display:inline-block; }
+.quiz-next:hover { opacity:0.85; }
+
+/* ── MODULE-NAV ─────────────────────────────────────────────────── */
+.module-nav { max-width:820px; margin:0 auto; padding:1rem 1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; border-top:1px solid var(--border); }
+.mnav-btn { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 1.2rem; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:0.82rem; font-family:var(--font-b); font-weight:500; text-decoration:none; transition:all 0.18s; cursor:pointer; }
+.mnav-btn:hover { border-color:var(--accent); color:var(--text); background:var(--surface2); }
+.mnav-btn.primary { background:linear-gradient(135deg,var(--c7a),var(--c7b)); border-color:transparent; color:#fff; }
+.mnav-btn.primary:hover { opacity:0.9; }
+.mnav-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); display:block; }
+.mnav-btn.primary .mnav-label { color:rgba(255,255,255,0.75); }
+.mnav-title { display:block; }
+.mnav-btn.primary .mnav-title { color:#fff; }
+
+/* ── LÄRAR-TIPS ─────────────────────────────────────────────────── */
+.teacher-guide { margin-top:1rem; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.tg-header { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.9rem; cursor:pointer; font-size:0.82rem; color:var(--muted); background:var(--surface2); user-select:none; transition:background 0.15s; }
+.tg-header:hover { background:var(--border); }
+.tg-chevron { margin-left:auto; font-size:0.7rem; transition:transform 0.25s; }
+.tg-header.open .tg-chevron { transform:rotate(180deg); }
+.tg-body { padding:0.8rem 1rem; font-size:0.84rem; color:var(--muted); line-height:1.65; display:none; flex-direction:column; gap:0.5rem; }
+.tg-body.open { display:flex; }
+.tg-body strong { color:var(--text); }
+
+/* ── RESPONSIV ──────────────────────────────────────────────────── */
+@media (max-width:600px) {
+  .portal-header-inner { padding:0 1rem; height:52px; }
+  .nav-tabs { padding:0.5rem 0.75rem; gap:0.25rem; top:52px; }
+  .tab-btn  { font-size:0.75rem; padding:0.3rem 0.7rem; }
+  .tab-panel { padding:1.2rem 1rem 2.5rem; }
+  .forms-row { gap:0.5rem; }
+  .form-box  { min-width:80px; padding:0.6rem 0.7rem; }
+  .glos-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+  .module-nav { padding:0.75rem 1rem 2rem; }
+}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <div class="portal-header-left">
+      <a class="portal-back" href="index.html">← Procent</a>
+      <div class="portal-crumb">
+        <span>7.6 Procent</span>
+        <span class="portal-crumb-sep">/</span>
+        <span>P1 — Procent som språk</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <button class="done-hdr-btn" onclick="markDone()">✓ Markera klar</button>
+      <button class="portal-theme-toggle" onclick="cyclePortalTheme()">
+        <span id="themeIcon">☀️</span>
+        <span id="themeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('forkunskaper',this)">Förkunskaper</button>
+  <button class="tab-btn"        onclick="showTab('genomgang',this)">Genomgång</button>
+  <button class="tab-btn"        onclick="showTab('gloskort',this)">Gloskort</button>
+  <button class="tab-btn"        onclick="showTab('ovning',this)">Övning</button>
+  <button class="tab-btn"        onclick="showTab('quiz',this)">Quiz</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 1: FÖRKUNSKAPER
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-forkunskaper">
+  <p class="section-title">Förkunskaper</p>
+  <p class="section-sub">Det här bör du ha med dig innan vi börjar med procent.</p>
+
+  <div class="info-box">
+    🔗 <strong>Bygger direkt på Bråk 5.</strong>
+    Stambråken och deras decimalform är din startpunkt — nu utökar vi dem med en tredje kolumn: procent.
+    Om något känns oklart kan du <a href="../7-5-brak/brak5.html" style="color:var(--accent);font-weight:600;">gå tillbaka till Bråk 5 →</a>
+  </div>
+
+  <div class="card">
+    <div style="font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">Färdigheter du bör ha med dig</div>
+    <div style="display:flex;flex-direction:column;gap:0.55rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--muted);line-height:1.5;">
+        <span style="font-size:1rem;flex-shrink:0;">🃏</span>
+        <span><strong style="color:var(--text);">Bråk-gloskorten</strong> — du känner igen
+          <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">2</span></span>,
+          <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span>,
+          <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">5</span></span>,
+          <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">10</span></span>
+          och deras decimalform.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--muted);line-height:1.5;">
+        <span style="font-size:1rem;flex-shrink:0;">🔢</span>
+        <span><strong style="color:var(--text);">Hundradelar</strong> — du vet att 0,48 betyder 48 hundradelar, alltså
+          <span class="fv fv-sm"><span class="fv-n">48</span><span class="fv-b"></span><span class="fv-d">100</span></span>.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--muted);line-height:1.5;">
+        <span style="font-size:1rem;flex-shrink:0;">➗</span>
+        <span><strong style="color:var(--text);">Division med 100</strong> — du kan dela hela tal med 100 i huvudet.</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:0.88rem;font-weight:600;color:var(--muted);margin-bottom:0.6rem;">Snabbkoll — kan du det här?</p>
+  <div class="pq-wrap">
+    <div class="pq-progress" id="pqPips"></div>
+    <div id="pqWrap"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 2: GENOMGÅNG
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-genomgang">
+  <p class="section-title">Genomgång</p>
+  <p class="section-sub">Procent är ett tredje sätt att skriva andelar — vid sidan av bråk och decimal.</p>
+
+  <!-- STEG 1 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">Vad betyder % ?</div>
+    </div>
+    <div class="step-body">
+      <p>Procenttecknet <strong>%</strong> betyder ordagrant <em>"av hundra"</em> — från latinets <em>per centum</em>. Det är alltså ett kortare sätt att skriva hundradelar.</p>
+      <p><strong>37% = 37 hundradelar =
+        <span class="fv fv-md"><span class="fv-n">37</span><span class="fv-b"></span><span class="fv-d">100</span></span>
+        = 0,37</strong></p>
+      <p>Det spelar ingen roll vilken form du väljer — de tre skriver alla samma andel. Flytta runt nedan och se hur rutorna lyser:</p>
+
+      <div style="text-align:center;">
+        <div class="hundred-grid" id="hgGrid"></div>
+        <div class="hg-slider-row">
+          <label>Antal rutor:</label>
+          <input type="range" min="0" max="100" value="25" id="hgSlider" oninput="updateHG(this.value)">
+          <span class="hg-val" id="hgVal">25%</span>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.85rem;color:var(--muted);" id="hgForms">
+          25 rutor av 100 &nbsp;=&nbsp;
+          <span class="fv fv-sm"><span class="fv-n">25</span><span class="fv-b"></span><span class="fv-d">100</span></span>
+          &nbsp;=&nbsp; 0,25 &nbsp;=&nbsp; <strong>25%</strong>
+        </div>
+      </div>
+    </div>
+    <div class="teacher-guide">
+      <div class="tg-header" onclick="toggleTG(this)">🧑‍🏫 Lärar-tips <span class="tg-chevron">▼</span></div>
+      <div class="tg-body">
+        <p><strong>Poäng:</strong> Rutnätet är det viktigaste bildstödet för procent. Låt eleverna dra i slidern och verbalisera: "25 rutor av 100 = en fjärdedel = 0,25 = 25%".</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 2 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">Tre former — samma andel</div>
+    </div>
+    <div class="step-body">
+      <p>Bråk, decimal och procent är tre <strong>olika namn på samma sak</strong>. Klicka på ett exempel för att se alla tre formerna:</p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.8rem 0;" id="exampleBtns">
+        <button class="level-btn active" onclick="showExample(0,this)">En fjärdedel</button>
+        <button class="level-btn" onclick="showExample(1,this)">En tiondel</button>
+        <button class="level-btn" onclick="showExample(2,this)">En hälft</button>
+        <button class="level-btn" onclick="showExample(3,this)">Tre femtedelar</button>
+        <button class="level-btn" onclick="showExample(4,this)">En hundradel</button>
+      </div>
+      <div class="forms-row" id="formsDisplay">
+        <div class="form-box hi-blue">
+          <div class="form-box-label">Bråkform</div>
+          <div class="form-box-val" id="frmBrak">
+            <span class="fv fv-lg"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+          </div>
+        </div>
+        <div class="forms-arrow">=</div>
+        <div class="form-box hi-orange">
+          <div class="form-box-label">Decimalform</div>
+          <div class="form-box-val" id="frmDec">0,25</div>
+        </div>
+        <div class="forms-arrow">=</div>
+        <div class="form-box hi-green">
+          <div class="form-box-label">Procentform</div>
+          <div class="form-box-val" id="frmPct">25%</div>
+        </div>
+      </div>
+      <div class="hl gold" style="margin-top:0.7rem;" id="frmHint">
+        💡 En fjärdedel av 100 är 25 — alltså 25 av 100 rutor = 25%.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 3 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">Omvandla bråk → procent</div>
+    </div>
+    <div class="step-body">
+      <p>Strategin är enkel: <strong>förvandla bråket till hundradelar</strong> — det är precis vad procent är.</p>
+      <p>Metod 1 — <strong>förlängning:</strong> om nämnaren delar 100 jämnt, förläng till nämnare 100.</p>
+      <div class="hl blue" style="margin:0.6rem 0;">
+        <span class="fv fv-md"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+        &nbsp;→&nbsp; förläng med 25 &nbsp;→&nbsp;
+        <span class="fv fv-md"><span class="fv-n">75</span><span class="fv-b"></span><span class="fv-d">100</span></span>
+        &nbsp;=&nbsp; <strong>75%</strong>
+      </div>
+      <p>Metod 2 — <strong>division:</strong> täljare ÷ nämnare ger decimalen, multiplicera med 100.</p>
+      <div class="hl gold" style="margin:0.6rem 0;">
+        <span class="fv fv-md"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">8</span></span>
+        &nbsp;→&nbsp; 3 ÷ 8 = 0,375 &nbsp;→&nbsp; 0,375 × 100 &nbsp;=&nbsp; <strong>37,5%</strong>
+      </div>
+      <p>Metod 3 — <strong>glosorna:</strong> om du känner igen bråket direkt (1/4 = 25%) behöver du inte räkna alls!</p>
+    </div>
+    <div class="teacher-guide">
+      <div class="tg-header" onclick="toggleTG(this)">🧑‍🏫 Lärar-tips <span class="tg-chevron">▼</span></div>
+      <div class="tg-body">
+        <p><strong>Prioritet:</strong> I åk 7 prioriterar vi metod 3 (glosorna) och metod 1 (förlängning). Metod 2 med division är mer abstrakt och hör hemma i åk 8 när eleverna är trygga med decimalformen.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 4 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">Omvandla procent → bråk och decimal</div>
+    </div>
+    <div class="step-body">
+      <p><strong>Procent → bråk:</strong> Skriv procenten som täljare och 100 som nämnare, förkorta sedan om möjligt.</p>
+      <div class="hl blue" style="margin:0.6rem 0;">
+        60% &nbsp;=&nbsp;
+        <span class="fv fv-md"><span class="fv-n">60</span><span class="fv-b"></span><span class="fv-d">100</span></span>
+        &nbsp;=&nbsp;
+        <span class="fv fv-md"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">5</span></span>
+      </div>
+      <p><strong>Procent → decimal:</strong> Dela med 100 (flytta kommat två steg åt vänster).</p>
+      <div class="hl gold" style="margin:0.6rem 0;">
+        37% &nbsp;=&nbsp; 37 ÷ 100 &nbsp;=&nbsp; <strong>0,37</strong>
+        &nbsp;&nbsp;&nbsp; 8% &nbsp;=&nbsp; 8 ÷ 100 &nbsp;=&nbsp; <strong>0,08</strong>
+      </div>
+      <p>Lägg märke till 8%: kommat hoppar <em>två</em> steg — så det blir 0,<strong>0</strong>8, inte 0,8.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 3: GLOSKORT
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-gloskort">
+  <p class="section-title">Gloskort — bråk, decimal och procent</p>
+  <p class="section-sub">Klicka på ett kort för att vända det och se alla tre formerna. Dessa är dina viktigaste "glosor" i procenträkning.</p>
+
+  <div class="glos-controls">
+    <span style="font-size:0.82rem;color:var(--muted);">Visa baksida:</span>
+    <button class="glos-toggle active" id="toggleAll" onclick="flipAll()">Vänd alla</button>
+    <button class="glos-toggle" onclick="resetAll()">Återställ</button>
+  </div>
+
+  <p class="glos-hint">🖱️ Klicka på ett kort för att vända det</p>
+
+  <div class="glos-grid" id="glosGrid"></div>
+
+  <div class="teacher-guide" style="margin-top:1.2rem;">
+    <div class="tg-header" onclick="toggleTG(this)">🧑‍🏫 Koppling till Bråk 5 <span class="tg-chevron">▼</span></div>
+    <div class="tg-body">
+      <p><strong>Från bråk-kapitlet</strong> känner eleverna redan framsidan (bråk + decimal). Nu utökas korten med procentkolumnen på baksidan — det är samma gloskort, inte ett nytt moment.</p>
+      <p><strong>Tips:</strong> Be eleverna täcka procentraden och försöka komma ihåg den innan de vänder. Repetition via igenkänning är effektivare än att läsa av svaret.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 4: ÖVNING
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-ovning">
+  <p class="section-title">Övning — omvandla mellan formerna</p>
+  <p class="section-sub">Välj nivå och träna på att växla mellan bråk, decimal och procent.</p>
+
+  <div class="level-row">
+    <button class="level-btn active" onclick="setLevel('A',this)">Grundnivå</button>
+    <button class="level-btn"        onclick="setLevel('B',this)">Mellannivå</button>
+    <button class="level-btn"        onclick="setLevel('C',this)">Självständigt</button>
+  </div>
+
+  <div class="ex-card" id="exCard">
+    <div class="ex-num" id="exNum">Uppgift 1</div>
+    <div class="ex-q"   id="exQ"></div>
+    <div class="ex-input-row" id="exInputRow"></div>
+    <button class="check-btn" id="exCheckBtn" onclick="checkEx()">Kontrollera</button>
+    <div class="ex-fb" id="exFb"></div>
+    <div class="ex-next-row">
+      <button class="ex-next-big" id="exNextBtn" onclick="nextEx()" style="display:none;">Nästa uppgift →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 5: QUIZ
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-quiz">
+  <p class="section-title">Quiz — testa dig</p>
+  <p class="section-sub">Fem frågor om procent som språk. Välj rätt svar och se hur det går!</p>
+
+  <div class="quiz-card">
+    <div class="quiz-progress" id="quizPips"></div>
+    <div id="quizWrap"></div>
+  </div>
+</div>
+
+<!-- MODULE NAV -->
+<div class="module-nav">
+  <a class="mnav-btn" href="index.html">
+    <span>←</span>
+    <div>
+      <span class="mnav-label">Tillbaka</span>
+      <span class="mnav-title">7.6 Procent</span>
+    </div>
+  </a>
+  <a class="mnav-btn primary" href="procent2.html">
+    <div style="text-align:right;">
+      <span class="mnav-label">Nästa modul</span>
+      <span class="mnav-title">P2 — Beräkna delen</span>
+    </div>
+    <span>→</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:1.5rem;font-size:0.75rem;color:var(--muted);border-top:1px solid var(--border);">
+  <p>© <span id="yr"></span> Patrick Tegnefur &nbsp;·&nbsp; Förstelärare och IT-pedagog &nbsp;·&nbsp; Alfred Dalinskolan, Huskvarna</p>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── Tema ────────────────────────────────────────────────────────
+const THEMES = [
+  {id:'pt-light',label:'PT Ljust', icon:'☀️'},
+  {id:'pt-dark', label:'PT Mörkt', icon:'🌙'},
+  {id:'ad-light',label:'AD Ljust', icon:'🌿'},
+  {id:'ad-dark', label:'AD Mörkt', icon:'🌑'},
+];
+let themeIdx = 0;
+function applyPortalTheme(idx) {
+  const t = THEMES[idx];
+  document.documentElement.setAttribute('data-theme', t.id);
+  document.getElementById('themeLabel').textContent = t.label;
+  document.getElementById('themeIcon').textContent  = t.icon;
+  localStorage.setItem('math-portal-theme', t.id);
+}
+function cyclePortalTheme() { themeIdx = (themeIdx+1)%THEMES.length; applyPortalTheme(themeIdx); }
+const saved = localStorage.getItem('math-portal-theme');
+if (saved && THEMES.some(t=>t.id===saved)) themeIdx = THEMES.findIndex(t=>t.id===saved);
+applyPortalTheme(themeIdx);
+
+// ── Tabs ────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Klar-markering ──────────────────────────────────────────────
+function markDone() {
+  try {
+    const p = JSON.parse(localStorage.getItem('procent-progress')||'{}');
+    p[1] = 'done';
+    localStorage.setItem('procent-progress', JSON.stringify(p));
+  } catch(e){}
+  const btn = document.querySelector('.done-hdr-btn');
+  btn.textContent = '✓ Klar!';
+  btn.style.background = 'rgba(24,163,72,0.25)';
+  btn.style.borderColor = 'rgba(24,163,72,0.5)';
+}
+
+// ── Lärar-tips ──────────────────────────────────────────────────
+function toggleTG(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ── Bråkvisning helpers ─────────────────────────────────────────
+function fv(t,n,tc,dc) {
+  const tc2 = tc||'var(--accent)';
+  return `<span class="fv fv-md"><span class="fv-n" style="color:${tc2}">${t}</span><span class="fv-b"></span><span class="fv-d" style="${dc?'color:'+dc:''}">${n}</span></span>`;
+}
+
+// ── Hundrarutnät ────────────────────────────────────────────────
+(function buildGrid(){
+  const g = document.getElementById('hgGrid');
+  for (let i=0;i<100;i++) {
+    const d = document.createElement('div');
+    d.className = 'hg-cell';
+    d.id = 'hg'+i;
+    g.appendChild(d);
+  }
+  updateHG(25);
+})();
+
+function updateHG(v) {
+  v = parseInt(v);
+  document.getElementById('hgSlider').value = v;
+  document.getElementById('hgVal').textContent = v+'%';
+  for (let i=0;i<100;i++) {
+    document.getElementById('hg'+i).className = 'hg-cell' + (i<v?' on':'');
+  }
+  // Förenkla bråket
+  function gcd(a,b){return b===0?a:gcd(b,a%b);}
+  const g = gcd(v,100);
+  const ts = v/g, ns = 100/g;
+  const brakStr = v===0 ? '0' : (ns===1 ? `${ts}` : fv(ts,ns));
+  const decStr = (v/100).toFixed(v%10===0&&v<=10?1:2).replace('.',',');
+  document.getElementById('hgForms').innerHTML =
+    `${v} rutor av 100 &nbsp;=&nbsp; ${brakStr} &nbsp;=&nbsp; ${decStr} &nbsp;=&nbsp; <strong>${v}%</strong>`;
+}
+
+// ── Tre-former-examples ─────────────────────────────────────────
+const EXAMPLES = [
+  { brak:fv(1,4), dec:'0,25', pct:'25%', hint:'En fjärdedel av 100 är 25 — alltså 25%.' },
+  { brak:fv(1,10), dec:'0,1', pct:'10%', hint:'En tiondel: 100÷10 = 10 — alltså 10%.' },
+  { brak:fv(1,2), dec:'0,5', pct:'50%', hint:'En halv av 100 är 50 — alltså 50%.' },
+  { brak:fv(3,5), dec:'0,6', pct:'60%', hint:'3/5: förläng med 20 → 60/100 → 60%.' },
+  { brak:fv(1,100), dec:'0,01', pct:'1%', hint:'En hundradel är exakt 1%.' },
+];
+function showExample(i, btn) {
+  document.querySelectorAll('#exampleBtns .level-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const e = EXAMPLES[i];
+  document.getElementById('frmBrak').innerHTML = e.brak;
+  document.getElementById('frmDec').textContent = e.dec;
+  document.getElementById('frmPct').textContent = e.pct;
+  document.getElementById('frmHint').innerHTML = '💡 '+e.hint;
+}
+
+// ── Gloskort ────────────────────────────────────────────────────
+const GLOS = [
+  { brak:'1/2',  t:1, n:2,  dec:'0,5',   pct:'50%' },
+  { brak:'1/4',  t:1, n:4,  dec:'0,25',  pct:'25%' },
+  { brak:'3/4',  t:3, n:4,  dec:'0,75',  pct:'75%' },
+  { brak:'1/5',  t:1, n:5,  dec:'0,2',   pct:'20%' },
+  { brak:'2/5',  t:2, n:5,  dec:'0,4',   pct:'40%' },
+  { brak:'4/5',  t:4, n:5,  dec:'0,8',   pct:'80%' },
+  { brak:'1/10', t:1, n:10, dec:'0,1',   pct:'10%' },
+  { brak:'3/10', t:3, n:10, dec:'0,3',   pct:'30%' },
+  { brak:'7/10', t:7, n:10, dec:'0,7',   pct:'70%' },
+  { brak:'1/8',  t:1, n:8,  dec:'0,125', pct:'12,5%' },
+  { brak:'1/100',t:1, n:100,dec:'0,01',  pct:'1%' },
+  { brak:'1/1',  t:1, n:1,  dec:'1',     pct:'100%' },
+];
+
+(function buildGlos(){
+  const grid = document.getElementById('glosGrid');
+  GLOS.forEach((g,i) => {
+    const card = document.createElement('div');
+    card.className = 'glos-card';
+    card.id = 'gc'+i;
+    card.onclick = () => card.classList.toggle('flipped');
+    card.innerHTML = `
+      <div class="glos-inner">
+        <div class="glos-front">
+          <div class="glos-brak">
+            <span class="gb-t">${g.t}</span>
+            <span class="gb-line"></span>
+            <span class="gb-d">${g.n}</span>
+          </div>
+          <div class="glos-dec">${g.dec}</div>
+        </div>
+        <div class="glos-back">
+          <div class="pct-big">${g.pct}</div>
+          <div class="pct-label">Procent</div>
+          <div class="glos-back-row"><strong>${g.t}/${g.n}</strong><span>=</span><strong>${g.dec}</strong></div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+})();
+
+let allFlipped = false;
+function flipAll() {
+  allFlipped = !allFlipped;
+  document.querySelectorAll('.glos-card').forEach(c => {
+    if (allFlipped) c.classList.add('flipped');
+    else c.classList.remove('flipped');
+  });
+  document.getElementById('toggleAll').textContent = allFlipped ? 'Vänd tillbaka' : 'Vänd alla';
+}
+function resetAll() {
+  allFlipped = false;
+  document.querySelectorAll('.glos-card').forEach(c=>c.classList.remove('flipped'));
+  document.getElementById('toggleAll').textContent = 'Vänd alla';
+}
+
+// ── FÖRKUNSKAPS-QUIZ ────────────────────────────────────────────
+const PQ = [
+  { q:'Vad är 1/4 i decimalform?', opts:['0,14','0,25','0,4','0,50'], ok:1, fb:'1/4 = 0,25 — ett av de viktigaste bråk-glosorna.' },
+  { q:'Hur många hundradelar är 0,07?', opts:['7','0,7','70','700'], ok:0, fb:'0,07 = 7 hundradelar = 7/100.' },
+  { q:'Vad är 300 ÷ 100?', opts:['30','3','0,3','300'], ok:1, fb:'300 ÷ 100 = 3. Division med 100 används hela tiden i procenträkning.' },
+  { q:'Vilket bråk är lika med 0,5?', opts:['5/10 och 1/2','1/5','5/1','1/50'], ok:0, fb:'0,5 = 5/10 = 1/2. Båda är rätt — de är likvärdiga bråk.' },
+];
+let pqIdx=0, pqRes=Array(PQ.length).fill(null);
+
+function renderPQ() {
+  const q = PQ[pqIdx];
+  document.getElementById('pqPips').innerHTML = PQ.map((_,i)=>{
+    let c='pq-pip';
+    if(i===pqIdx) c+=' cur';
+    else if(pqRes[i]===true) c+=' ok';
+    else if(pqRes[i]===false) c+=' err';
+    return `<div class="${c}"></div>`;
+  }).join('');
+  document.getElementById('pqWrap').innerHTML = `
+    <div class="pq-q">${q.q}</div>
+    <div class="pq-opts">${q.opts.map((o,i)=>`<button class="pq-opt" onclick="ansPQ(${i},this)">${o}</button>`).join('')}</div>
+    <div class="pq-fb" id="pqFb"></div>
+    <button class="pq-next" id="pqNext" onclick="nextPQ()">${pqIdx<PQ.length-1?'Nästa →':'Se resultat'}</button>`;
+}
+
+function ansPQ(i,btn) {
+  const q=PQ[pqIdx], ok=i===q.ok;
+  pqRes[pqIdx]=ok;
+  document.querySelectorAll('.pq-opt').forEach((b,j)=>{
+    b.disabled=true;
+    if(j===i) b.classList.add(ok?'ok':'err');
+    if(j===q.ok) b.classList.add('reveal');
+  });
+  const fb=document.getElementById('pqFb');
+  fb.textContent=(ok?'✓ ':'✗ ')+q.fb;
+  fb.className='pq-fb '+(ok?'ok':'err');
+  document.getElementById('pqNext').classList.add('show');
+  renderPQPips();
+}
+
+function renderPQPips() {
+  document.getElementById('pqPips').innerHTML = PQ.map((_,i)=>{
+    let c='pq-pip';
+    if(i===pqIdx) c+=' cur';
+    else if(pqRes[i]===true) c+=' ok';
+    else if(pqRes[i]===false) c+=' err';
+    return `<div class="${c}"></div>`;
+  }).join('');
+}
+
+function nextPQ() {
+  if(pqIdx<PQ.length-1){ pqIdx++; renderPQ(); }
+  else {
+    const ok=pqRes.filter(r=>r===true).length;
+    document.getElementById('pqPips').innerHTML='';
+    document.getElementById('pqWrap').innerHTML=`
+      <div style="text-align:center;padding:0.75rem 0;">
+        <div style="font-size:1.8rem;margin-bottom:0.3rem;">${ok===PQ.length?'🎉':ok>0?'👍':'💪'}</div>
+        <div style="font-family:var(--font-d);font-size:1.2rem;color:var(--accent2);margin-bottom:0.3rem;">${ok} / ${PQ.length} rätt</div>
+        <div style="font-size:0.85rem;color:var(--muted);">${ok===PQ.length?'Du är redo — gå vidare till Genomgång!':'Repetera gärna Bråk 5 på de delar du missade.'}</div>
+        <button style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;font-family:var(--font-b);" onclick="pqIdx=0;pqRes=Array(${PQ.length}).fill(null);renderPQ();">Försök igen</button>
+      </div>`;
+  }
+}
+renderPQ();
+
+// ── ÖVNINGAR ────────────────────────────────────────────────────
+// Format: { q, type:'pct'|'dec'|'brak', answer, hint }
+// type styr vilken typ av svar som efterfrågas
+const EX = {
+  A: [
+    { q:'Vad är <strong>1/2</strong> i procentform?',       ans:'50',    unit:'%',    fb:'1/2 = 50 av 100 = 50%.' },
+    { q:'Vad är <strong>1/4</strong> i procentform?',       ans:'25',    unit:'%',    fb:'1/4 = 25 av 100 = 25%.' },
+    { q:'Vad är <strong>1/10</strong> i procentform?',      ans:'10',    unit:'%',    fb:'1/10 = 10 av 100 = 10%.' },
+    { q:'Vad är <strong>50%</strong> i decimalform?',       ans:'0,5',   unit:'',     fb:'50% = 50 ÷ 100 = 0,5.' },
+    { q:'Vad är <strong>25%</strong> i decimalform?',       ans:'0,25',  unit:'',     fb:'25% = 25 ÷ 100 = 0,25.' },
+    { q:'Vad är <strong>10%</strong> i decimalform?',       ans:'0,1',   unit:'',     fb:'10% = 10 ÷ 100 = 0,1.' },
+    { q:'Vad är <strong>0,75</strong> i procentform?',      ans:'75',    unit:'%',    fb:'0,75 × 100 = 75%.' },
+    { q:'Vad är <strong>0,2</strong> i procentform?',       ans:'20',    unit:'%',    fb:'0,2 × 100 = 20%.' },
+  ],
+  B: [
+    { q:'Skriv <strong>3/4</strong> som procent.',          ans:'75',    unit:'%',    fb:'3/4 → förlängning: ×25 → 75/100 = 75%.' },
+    { q:'Skriv <strong>2/5</strong> som procent.',          ans:'40',    unit:'%',    fb:'2/5 → ×20 → 40/100 = 40%.' },
+    { q:'Skriv <strong>7/10</strong> som procent.',         ans:'70',    unit:'%',    fb:'7/10 → ×10 → 70/100 = 70%.' },
+    { q:'Skriv <strong>30%</strong> som bråk (förenklat, nämnare).',  ans:'10',    unit:'',     fb:'30% = 30/100 = 3/10. Nämnaren är 10.' },
+    { q:'Skriv <strong>80%</strong> som bråk (förenklat, nämnare).',  ans:'5',     unit:'',     fb:'80% = 80/100 = 4/5. Nämnaren är 5.' },
+    { q:'Vad är <strong>0,08</strong> i procentform?',      ans:'8',     unit:'%',    fb:'0,08 × 100 = 8%. Notera: kommat hoppar två steg.' },
+    { q:'Vad är <strong>1%</strong> i decimalform?',        ans:'0,01',  unit:'',     fb:'1% = 1 ÷ 100 = 0,01.' },
+    { q:'Vad är <strong>4/5</strong> i procentform?',       ans:'80',    unit:'%',    fb:'4/5 → ×20 → 80/100 = 80%.' },
+  ],
+  C: [
+    { q:'Skriv <strong>1/8</strong> som procent.',          ans:'12,5',  unit:'%',    fb:'1/8 = 0,125 = 12,5%.' },
+    { q:'Skriv <strong>3/8</strong> som procent.',          ans:'37,5',  unit:'%',    fb:'3/8 = 0,375 = 37,5%.' },
+    { q:'Skriv <strong>0,005</strong> i procentform.',      ans:'0,5',   unit:'%',    fb:'0,005 × 100 = 0,5%.' },
+    { q:'Skriv <strong>125%</strong> i decimalform.',       ans:'1,25',  unit:'',     fb:'125% = 125 ÷ 100 = 1,25. Mer än 1 hel!' },
+    { q:'Skriv <strong>0,625</strong> i procentform.',      ans:'62,5',  unit:'%',    fb:'0,625 × 100 = 62,5%.' },
+    { q:'Skriv <strong>5/8</strong> som procent.',          ans:'62,5',  unit:'%',    fb:'5/8 = 0,625 = 62,5%.' },
+    { q:'Skriv <strong>150%</strong> som bråk (blandad form: skriv täljaren i ×/2).',  ans:'3',  unit:'/2', fb:'150% = 150/100 = 3/2 = 1½. Täljaren är 3.' },
+    { q:'Vad är <strong>0,04</strong> i procentform?',      ans:'4',     unit:'%',    fb:'0,04 × 100 = 4%.' },
+  ],
+};
+
+let exLevel='A', exBank=[], exIdx=0, exAnswered=false;
+
+function setLevel(l, btn) {
+  exLevel=l;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  exBank = shuffle([...EX[l]]);
+  exIdx=0; exAnswered=false;
+  renderEx();
+}
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function renderEx() {
+  const e = exBank[exIdx % exBank.length];
+  exAnswered = false;
+  document.getElementById('exNum').textContent = `Uppgift ${exIdx+1}`;
+  document.getElementById('exQ').innerHTML = e.q;
+  document.getElementById('exFb').textContent = '';
+  document.getElementById('exFb').className = 'ex-fb';
+  document.getElementById('exNextBtn').style.display = 'none';
+  document.getElementById('exCheckBtn').style.display = 'inline-block';
+  const row = document.getElementById('exInputRow');
+  row.innerHTML = `<input class="ex-input" id="exAns" type="text" placeholder="Svar" autocomplete="off" /><span class="ex-unit">${e.unit}</span>`;
+  const inp = document.getElementById('exAns');
+  inp.focus();
+  inp.addEventListener('keydown', e2=>{ if(e2.key==='Enter') checkEx(); });
+}
+
+function normalise(s) {
+  return s.trim().toLowerCase().replace(',','.').replace(/\s/g,'');
+}
+
+function checkEx() {
+  if(exAnswered) return;
+  const e = exBank[exIdx % exBank.length];
+  const userRaw = document.getElementById('exAns').value;
+  const user = normalise(userRaw);
+  const correct = normalise(e.ans);
+  const ok = user===correct;
+  exAnswered = true;
+  const inp = document.getElementById('exAns');
+  inp.disabled = true;
+  inp.classList.add(ok?'ok':'err');
+  const fb = document.getElementById('exFb');
+  fb.textContent = (ok?'✓ Rätt! ':'✗ Fel. ')+e.fb;
+  fb.className = 'ex-fb '+(ok?'ok':'err');
+  document.getElementById('exNextBtn').style.display = 'inline-block';
+  document.getElementById('exCheckBtn').style.display = 'none';
+}
+
+function nextEx() { exIdx++; renderEx(); }
+
+// Init
+(function(){ exBank=shuffle([...EX['A']]); renderEx(); })();
+
+// ── QUIZ ────────────────────────────────────────────────────────
+const QUIZ = [
+  { q:'Vad betyder procenttecknet %?', opts:['Per tusen','Av hundra','Delat med tio','En halv'], ok:1, fb:'% = "av hundra" (per centum på latin). 37% = 37 av 100.' },
+  { q:'Vilket tal är lika med 0,4?', opts:['4%','0,4%','40%','400%'], ok:2, fb:'0,4 × 100 = 40%.' },
+  { q:'Hur skriver man 3/5 i procentform?', opts:['35%','15%','53%','60%'], ok:3, fb:'3/5 → förlängning ×20 → 60/100 = 60%.' },
+  { q:'Vad är 75% i decimalform?', opts:['7,5','0,075','0,75','7,50'], ok:2, fb:'75 ÷ 100 = 0,75.' },
+  { q:'Vilket bråk (förenklat) är lika med 20%?', opts:['2/5','1/5','1/20','20/5'], ok:1, fb:'20% = 20/100 = 1/5 (dela täljare och nämnare med 20).' },
+  { q:'Vad är 0,08 i procentform?', opts:['80%','0,8%','8%','0,08%'], ok:2, fb:'0,08 × 100 = 8%. Kommat hoppar två steg åt höger.' },
+];
+
+let qIdx=0, qRes=Array(QUIZ.length).fill(null);
+
+function renderQuiz() {
+  const q=QUIZ[qIdx];
+  document.getElementById('quizPips').innerHTML=QUIZ.map((_,i)=>{
+    let c='quiz-pip';
+    if(i===qIdx) c+=' cur';
+    else if(qRes[i]===true) c+=' ok';
+    else if(qRes[i]===false) c+=' err';
+    return `<div class="${c}"></div>`;
+  }).join('');
+  document.getElementById('quizWrap').innerHTML=`
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="ansQuiz(${i},this)">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="qFb"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQuiz()">${qIdx<QUIZ.length-1?'Nästa →':'Se resultat'}</button>`;
+}
+
+function ansQuiz(i,btn) {
+  const q=QUIZ[qIdx], ok=i===q.ok;
+  qRes[qIdx]=ok;
+  document.querySelectorAll('.quiz-opt').forEach((b,j)=>{
+    b.disabled=true;
+    if(j===i) b.classList.add(ok?'correct':'wrong');
+    if(j===q.ok) b.classList.add('correct');
+  });
+  const fb=document.getElementById('qFb');
+  fb.textContent=(ok?'✓ ':'✗ ')+q.fb;
+  fb.className='quiz-fb show '+(ok?'ok':'bad');
+  document.getElementById('qNext').classList.add('show');
+  document.getElementById('quizPips').innerHTML=QUIZ.map((_,i)=>{
+    let c='quiz-pip';
+    if(i===qIdx) c+=' cur';
+    else if(qRes[i]===true) c+=' ok';
+    else if(qRes[i]===false) c+=' err';
+    return `<div class="${c}"></div>`;
+  }).join('');
+}
+
+function nextQuiz() {
+  if(qIdx<QUIZ.length-1){ qIdx++; renderQuiz(); }
+  else {
+    const ok=qRes.filter(r=>r===true).length;
+    document.getElementById('quizPips').innerHTML='';
+    document.getElementById('quizWrap').innerHTML=`
+      <div style="text-align:center;padding:1rem 0;">
+        <div style="font-size:2rem;margin-bottom:0.4rem;">${ok===QUIZ.length?'🎉':ok>=4?'👍':'💪'}</div>
+        <div style="font-family:var(--font-d);font-size:1.3rem;color:var(--accent2);margin-bottom:0.4rem;">${ok} / ${QUIZ.length} rätt</div>
+        <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;">${ok===QUIZ.length?'Perfekt! Du kan procent som språk.':ok>=4?'Bra jobbat! Repetera de du missade.':'Gå tillbaka till Genomgång och Gloskorten.'}</div>
+        <button style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-size:0.84rem;font-family:var(--font-b);" onclick="qIdx=0;qRes=Array(${QUIZ.length}).fill(null);renderQuiz();">Gör om quizet</button>
+      </div>`;
+    if(ok===QUIZ.length) markDone();
+  }
+}
+renderQuiz();
+</script>
+</body>
+</html>

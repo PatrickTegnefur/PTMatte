@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.6 Procent — PT Matematik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+/* ── GLOBALA TOKENS ─────────────────────────────────────────────── */
+:root {
+  --radius: 14px;
+  --trans:  0.32s cubic-bezier(.4,0,.2,1);
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'Sora', sans-serif;
+}
+
+/* ── AD LJUST ───────────────────────────────────────────────────── */
+[data-theme="ad-light"] {
+  --bg:           #f2fbf8;
+  --surface:      #ffffff;
+  --surface2:     #e4f5ef;
+  --border:       #b8ddd4;
+  --text:         #0b1e18;
+  --muted:        #527060;
+  --hdr-bg:       linear-gradient(120deg, #00A19A 0%, #007870 100%);
+  --hdr-text:     #ffffff;
+  --stripe-fade:  rgba(255,255,255,0.30);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #1a6ef5;
+  --accent2:      #FBBC33;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --shadow:       0 2px 12px rgba(0,161,154,.10);
+  --shadow-hov:   0 8px 28px rgba(0,161,154,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+}
+
+/* ── AD MÖRKT ───────────────────────────────────────────────────── */
+[data-theme="ad-dark"] {
+  --bg:           #0c1512;
+  --surface:      #152018;
+  --surface2:     #1c2c20;
+  --border:       #283c2c;
+  --text:         #e4f5ee;
+  --muted:        #6a9878;
+  --hdr-bg:       linear-gradient(120deg, #081a10 0%, #051208 100%);
+  --hdr-text:     #e4f5ee;
+  --stripe-fade:  rgba(255,255,255,0.12);
+  --btn-active:   linear-gradient(90deg, #00A19A, #FBBC33);
+  --accent:       #4ecb8a;
+  --accent2:      #FBBC33;
+  --hi:           #5dd68c;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --shadow:       0 2px 16px rgba(0,0,0,.40);
+  --shadow-hov:   0 8px 32px rgba(0,0,0,.60);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+}
+
+/* ── PT LJUST ───────────────────────────────────────────────────── */
+[data-theme="pt-light"] {
+  --bg:           #f6f4ff;
+  --surface:      #ffffff;
+  --surface2:     #eae6ff;
+  --border:       #ccc5f0;
+  --text:         #100e28;
+  --muted:        #585078;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe-fade:  rgba(255,255,255,0.35);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #306BF0;
+  --accent2:      #EC6095;
+  --hi:           #5ba3ff;
+  --hi2:          #F4A261;
+  --correct:      #18a348;
+  --wrong:        #e02020;
+  --shadow:       0 2px 14px rgba(48,107,240,.12);
+  --shadow-hov:   0 8px 30px rgba(48,107,240,.22);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+}
+
+/* ── PT MÖRKT ───────────────────────────────────────────────────── */
+[data-theme="pt-dark"] {
+  --bg:           #12101c;
+  --surface:      #1c192c;
+  --surface2:     #262238;
+  --border:       #342e54;
+  --text:         #eae8ff;
+  --muted:        #8880b8;
+  --hdr-bg:       linear-gradient(120deg, #66C7C2 0%, #F4A261 50%, #EC6095 100%);
+  --hdr-text:     #ffffff;
+  --stripe-fade:  rgba(255,255,255,0.15);
+  --btn-active:   linear-gradient(90deg, #66C7C2, #EC6095);
+  --accent:       #6a9aff;
+  --accent2:      #EC6095;
+  --hi:           #80aaff;
+  --hi2:          #F4A261;
+  --correct:      #39C762;
+  --wrong:        #F03048;
+  --shadow:       0 2px 16px rgba(48,107,240,.18);
+  --shadow-hov:   0 8px 36px rgba(48,107,240,.35);
+  --c7a: #1a6ef5; --c7b: #5ba3ff;
+}
+
+[data-theme="pt-dark"] .tag-btn.active,
+[data-theme="pt-dark"] .mq-next { background: #EC6095 !important; border-color: transparent !important; color: #fff !important; }
+[data-theme="pt-dark"] .progress-fill { background: linear-gradient(90deg, #66C7C2, #F4A261, #EC6095); }
+[data-theme="ad-dark"] .tag-btn.active { background: linear-gradient(90deg, #00A19A, #FBBC33); border-color: transparent; color: #fff; }
+
+/* ── RESET & BAS ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+a { text-decoration: none; color: inherit; }
+
+/* ── HEADER ─────────────────────────────────────────────────────── */
+.portal-header {
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 24px rgba(0,0,0,.20);
+}
+.portal-header::after {
+  content: '';
+  display: block;
+  height: 10px;
+  background: linear-gradient(to bottom, transparent, var(--stripe-fade));
+  pointer-events: none;
+}
+.portal-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 48px;
+}
+.portal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.portal-back {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-back:hover { background: rgba(255,255,255,0.22); }
+.portal-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hdr-text);
+}
+.portal-crumb-sep { opacity: 0.4; font-weight: 300; }
+.portal-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  padding: 4px 11px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.68rem;
+  font-family: var(--font-b);
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.portal-theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* ── HERO ───────────────────────────────────────────────────────── */
+.chapter-hero {
+  max-width: 960px;
+  margin: 2.2rem auto 0;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+.chapter-badge {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  color: #fff;
+  font-family: var(--font-d);
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+.chapter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 0.15rem;
+}
+.chapter-title {
+  font-family: var(--font-d);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+}
+.chapter-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 620px;
+}
+
+/* ── KOPPLING TILL BRÅK (info-banner) ──────────────────────────── */
+.brak-link-banner {
+  max-width: 960px;
+  margin: 1.2rem auto 0;
+  padding: 0 1.5rem;
+}
+.brak-link-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.brak-link-icon { font-size: 1.3rem; flex-shrink: 0; }
+.brak-link-inner a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.brak-link-inner a:hover { opacity: 0.8; }
+
+/* ── PROGRESS ───────────────────────────────────────────────────── */
+.progress-section {
+  max-width: 960px;
+  margin: 1.4rem auto 0;
+  padding: 0 1.5rem;
+}
+.progress-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+.progress-text { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+.progress-track {
+  flex: 1;
+  min-width: 120px;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c7a), var(--c7b));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.progress-pct { font-size: 0.82rem; color: var(--accent); font-weight: 600; white-space: nowrap; }
+.reset-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 11px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-b);
+  transition: all 0.15s;
+}
+.reset-btn:hover { border-color: var(--wrong); color: var(--wrong); }
+
+/* ── KUNSKAPSMÅL ────────────────────────────────────────────────── */
+.goals-section {
+  max-width: 960px;
+  margin: 1.2rem auto 0;
+  padding: 0 1.5rem;
+}
+.goals-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.goals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.goals-header:hover { background: var(--surface2); }
+.goals-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.goals-icon  { font-size: 1rem; }
+.goals-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.goals-chevron { font-size: 0.65rem; color: var(--muted); transition: transform 0.25s; }
+.goals-header.open .goals-chevron { transform: rotate(180deg); }
+.goals-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.goals-body.open { /* controlled by JS */ }
+.goals-list {
+  list-style: none;
+  padding: 0 1.1rem 0.9rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.goals-list li {
+  font-size: 0.86rem;
+  color: var(--muted);
+  padding-left: 1.2em;
+  position: relative;
+  line-height: 1.55;
+}
+.goals-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--correct);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+/* ── TAGGFILTER ─────────────────────────────────────────────────── */
+.filter-section {
+  max-width: 960px;
+  margin: 1.2rem auto 0;
+  padding: 0 1.5rem;
+}
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.5rem;
+}
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tag-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 13px;
+  font-size: 0.78rem;
+  font-family: var(--font-b);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tag-btn:hover { border-color: var(--accent); color: var(--text); }
+.tag-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── KLUSTER & MODULKORT ────────────────────────────────────────── */
+.clusters {
+  max-width: 960px;
+  margin: 1.4rem auto 0;
+  padding: 0 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+.cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.cluster.all-hidden { display: none; }
+.cluster-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.module-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  transition: box-shadow var(--trans), border-color var(--trans), transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.module-card:hover {
+  box-shadow: var(--shadow-hov);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.module-card.hidden { display: none; }
+.module-card.done {
+  border-color: var(--correct);
+  background: linear-gradient(135deg, var(--surface), rgba(24,163,72,0.04));
+}
+.module-card.in-progress-card {
+  border-color: var(--hi2);
+  background: linear-gradient(135deg, var(--surface), rgba(244,162,97,0.04));
+}
+
+.mod-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  color: #fff;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.module-card.done .mod-num { background: linear-gradient(135deg, var(--correct), #5dd68c); }
+
+.mod-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.1rem;
+}
+.mod-title {
+  font-family: var(--font-d);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.mod-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 0.5rem;
+}
+.mod-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.mod-topic {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.mod-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.pill { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+.pill-video  { background: #fff0e0; color: #c05000; border-color: #f5c080; }
+.pill-sim    { background: #e0f0ff; color: #005090; border-color: #80c0f5; }
+.pill-drill  { background: #e8ffe8; color: #006020; border-color: #80d880; }
+[data-theme="ad-dark"] .pill-video,
+[data-theme="pt-dark"] .pill-video { background: #3a1800; color: #ffb060; border-color: #804000; }
+[data-theme="ad-dark"] .pill-sim,
+[data-theme="pt-dark"] .pill-sim   { background: #001830; color: #80c8ff; border-color: #004080; }
+[data-theme="ad-dark"] .pill-drill,
+[data-theme="pt-dark"] .pill-drill { background: #001a00; color: #60e060; border-color: #004800; }
+
+.prereq-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-family: var(--font-b);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-block;
+}
+.prereq-btn:hover { border-color: var(--accent); color: var(--text); }
+
+.mod-right {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.mod-status {
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.mod-status.not-started { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.mod-status.in-progress { background: rgba(244,162,97,0.14); color: #b06000; border: 1px solid rgba(244,162,97,0.4); }
+.mod-status.done        { background: rgba(24,163,72,0.12); color: var(--correct); border: 1px solid rgba(24,163,72,0.3); }
+[data-theme="pt-dark"] .mod-status.in-progress,
+[data-theme="ad-dark"] .mod-status.in-progress { color: var(--hi2); }
+.mod-arrow { font-size: 1rem; color: var(--muted); }
+
+.no-results {
+  max-width: 960px;
+  margin: 1rem auto;
+  padding: 0 1.5rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  display: none;
+}
+.no-results.visible { display: block; }
+
+/* ── PREREQ MODAL ───────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.30);
+  transform: translateY(12px);
+  transition: transform 0.25s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-close {
+  float: right;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 11px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-b);
+  transition: all 0.15s;
+  margin-bottom: 0.5rem;
+}
+.modal-close:hover { border-color: var(--wrong); color: var(--wrong); }
+.modal-title {
+  font-family: var(--font-d);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+  clear: both;
+}
+.modal-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+.prereq-section { margin-bottom: 1rem; }
+.prereq-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+.skill-list { display: flex; flex-direction: column; gap: 0.45rem; }
+.skill-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.skill-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+.skill-text strong { color: var(--text); }
+
+.prev-module-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.prev-module-link:hover { border-color: var(--accent); }
+.pml-num {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--c7a), var(--c7b));
+  color: #fff;
+  font-family: var(--font-d);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pml-title { font-size: 0.84rem; font-weight: 600; color: var(--text); }
+.pml-desc  { font-size: 0.75rem; color: var(--muted); }
+.pml-arrow { margin-left: auto; color: var(--muted); font-size: 0.9rem; }
+
+/* Förkunskaps-quiz */
+.mq-pips, .mq-progress {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.6rem;
+}
+.mq-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.mq-pip.ok  { background: var(--correct); border-color: var(--correct); }
+.mq-pip.err { background: var(--wrong);   border-color: var(--wrong); }
+.mq-pip.cur { background: var(--accent);  border-color: var(--accent); transform: scale(1.2); }
+.mq-question { font-size: 0.9rem; color: var(--text); font-weight: 600; margin-bottom: 0.55rem; line-height: 1.45; }
+.mq-opts { display: flex; flex-direction: column; gap: 0.35rem; }
+.mq-opt {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.38rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.87rem;
+  color: var(--muted);
+  text-align: left;
+  transition: all 0.15s;
+}
+.mq-opt:hover { border-color: var(--accent); color: var(--text); }
+.mq-opt.mq-ok     { border-color: var(--correct); background: rgba(24,163,72,0.10); color: var(--correct); }
+.mq-opt.mq-err    { border-color: var(--wrong);   background: rgba(224,32,32,0.10); color: var(--wrong); }
+.mq-opt.mq-reveal { border-color: var(--correct); color: var(--correct); }
+.mq-fb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  min-height: 1.2em;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.mq-fb.mq-fb-ok  { color: var(--correct); }
+.mq-fb.mq-fb-err { color: var(--wrong); }
+.mq-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: none;
+  transition: opacity 0.15s;
+}
+.mq-next.show { display: inline-block; }
+.mq-next:hover { opacity: 0.85; }
+
+/* ── FOOTER ─────────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+
+/* ── RESPONSIV ──────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .portal-header-inner { padding: 0 1rem; height: 52px; }
+  .portal-crumb        { font-size: 0.85rem; }
+  .chapter-hero        { flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; }
+  .chapter-title       { font-size: 1.5rem; }
+  .clusters            { padding: 0 1rem 2rem; }
+  .goals-section,
+  .filter-section,
+  .progress-section,
+  .brak-link-banner    { padding: 0 1rem; }
+  .mod-right           { display: none; }
+}
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="portal-header">
+    <div class="portal-header-inner">
+      <div class="portal-header-left">
+        <a class="portal-back" href="../../index.html">← Tillbaka</a>
+        <div class="portal-crumb">
+          <span>Åk 7</span>
+          <span class="portal-crumb-sep">/</span>
+          <span>7.6 Procent</span>
+        </div>
+      </div>
+      <button class="portal-theme-toggle" onclick="cycleTheme()">
+        <span id="themeIcon">☀️</span>
+        <span id="themeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="chapter-hero">
+    <div class="chapter-badge">7.6</div>
+    <div class="chapter-intro">
+      <p class="chapter-label">Årskurs 7</p>
+      <h1 class="chapter-title">Procent</h1>
+      <p class="chapter-desc">
+        Procent är ett tredje sätt att beskriva andelar — vid sidan av bråk och decimaltal.
+        Här lär du dig att röra dig fritt mellan formerna, och att använda smarta
+        huvudräkningsstrategier som fungerar utan miniräknare.
+      </p>
+    </div>
+  </div>
+
+  <!-- KOPPLING TILL BRÅK -->
+  <div class="brak-link-banner">
+    <div class="brak-link-inner">
+      <span class="brak-link-icon">🔗</span>
+      <span>
+        <strong>Bygger på kapitel 7.5 Bråk.</strong>
+        Du känner redan igen 1/4&nbsp;=&nbsp;0,25 — nu lägger vi till att det också är 25&nbsp;%.
+        Gloskorten från bråk-kapitlet är din startpunkt.
+        <a href="../7-5-brak/index.html">Gå till 7.5 Bråk →</a>
+      </span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div class="progress-inner">
+      <span class="progress-text" id="progressText">0 av 5 moduler klara</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <span class="progress-pct" id="progressPct">0%</span>
+      <button class="reset-btn" onclick="resetProgress()">Återställ</button>
+    </div>
+  </div>
+
+  <!-- KUNSKAPSMÅL -->
+  <div class="goals-section">
+    <div class="goals-card">
+      <div class="goals-header" onclick="toggleGoals(this)">
+        <div class="goals-header-left">
+          <span class="goals-icon">🎯</span>
+          <span class="goals-title">Du ska kunna...</span>
+        </div>
+        <span class="goals-chevron">▼</span>
+      </div>
+      <div class="goals-body">
+        <ul class="goals-list">
+          <li>Växla mellan bråkform, decimalform och procentform.</li>
+          <li>Beräkna delen av något för vanliga andelar (1%, 10%, 20%, 25%, 50%) — utan miniräknare.</li>
+          <li>Beräkna delen av något för valfri procent (1–100%) med hjälp av 1%-metoden.</li>
+          <li>Beräkna andelen — avgöra hur stor procent en del är av en helhet.</li>
+          <li>Beräkna helheten — hitta 100% när du vet en del och hur stor procent den utgör.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAGGFILTER -->
+  <div class="filter-section">
+    <p class="filter-label">🔍 Filtrera på ämne</p>
+    <div class="filter-tags">
+      <button class="tag-btn active" data-tag="alla"        onclick="filterTag('alla')">Alla</button>
+      <button class="tag-btn"        data-tag="p1"          onclick="filterTag('p1')">Procent 1</button>
+      <button class="tag-btn"        data-tag="p2"          onclick="filterTag('p2')">Procent 2</button>
+      <button class="tag-btn"        data-tag="p3"          onclick="filterTag('p3')">Procent 3</button>
+      <button class="tag-btn"        data-tag="p4"          onclick="filterTag('p4')">Procent 4</button>
+      <button class="tag-btn"        data-tag="p5"          onclick="filterTag('p5')">Procent 5</button>
+      <button class="tag-btn"        data-tag="former"      onclick="filterTag('former')">Talformer</button>
+      <button class="tag-btn"        data-tag="delen"       onclick="filterTag('delen')">Beräkna delen</button>
+      <button class="tag-btn"        data-tag="andelen"     onclick="filterTag('andelen')">Beräkna andelen</button>
+      <button class="tag-btn"        data-tag="helheten"    onclick="filterTag('helheten')">Beräkna helheten</button>
+    </div>
+  </div>
+
+  <!-- KLUSTER -->
+  <div class="clusters" id="clusters">
+
+    <!-- KLUSTER 1: Talformer -->
+    <div class="cluster" data-tags="former p1">
+      <div class="cluster-label">🔄 Talformer och samband</div>
+
+      <div class="module-card" id="card-1" data-tags="former p1" onclick="openModule(1)">
+        <div class="mod-num" id="num-1">1</div>
+        <div>
+          <div class="mod-label">Procent 1</div>
+          <div class="mod-title">Procent som språk</div>
+          <div class="mod-desc">Förstå vad procent betyder och lär dig att röra dig fritt mellan bråk, decimal och procent. Gloskorten från bråk-kapitlet blir din startpunkt.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Bråk ↔ decimal ↔ procent</span>
+            <span class="mod-topic">Hundradelar</span>
+            <span class="mod-topic">Gloskort</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(1)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-1">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KLUSTER 2: Beräkna delen -->
+    <div class="cluster" data-tags="delen p2 p3">
+      <div class="cluster-label">🧮 Beräkna delen</div>
+
+      <div class="module-card" id="card-2" data-tags="delen p2" onclick="openModule(2)">
+        <div class="mod-num" id="num-2">2</div>
+        <div>
+          <div class="mod-label">Procent 2</div>
+          <div class="mod-title">Beräkna delen — snygga tal</div>
+          <div class="mod-desc">Använd dina glosor! 50% = 1/2, 25% = 1/4, 10% = 1/10... Räkna smidigt utan miniräknare med bråkstrategier du redan kan.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Glosstrategi</span>
+            <span class="mod-topic">Huvudräkning</span>
+            <span class="mod-topic">1%, 10%, 25%, 50%</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(2)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-2">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="module-card" id="card-3" data-tags="delen p3" onclick="openModule(3)">
+        <div class="mod-num" id="num-3">3</div>
+        <div>
+          <div class="mod-label">Procent 3</div>
+          <div class="mod-title">Beräkna delen — alla tal</div>
+          <div class="mod-desc">1%-metoden: dela med 100 för att hitta 1%, multiplicera sedan med den procent du söker. Fungerar för valfri procent — ingen miniräknare behövs.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">1%-metoden</span>
+            <span class="mod-topic">Kortdivision</span>
+            <span class="mod-topic">Valfri procent</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(3)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-3">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KLUSTER 3: Omvänd rörelse -->
+    <div class="cluster" data-tags="andelen helheten p4 p5">
+      <div class="cluster-label">↩️ Omvänd tanke</div>
+
+      <div class="module-card" id="card-4" data-tags="andelen p4" onclick="openModule(4)">
+        <div class="mod-num" id="num-4">4</div>
+        <div>
+          <div class="mod-label">Procent 4</div>
+          <div class="mod-title">Beräkna andelen</div>
+          <div class="mod-desc">Givet en del och en helhet — hur stor procent är delen? Lär dig att ställa upp och lösa andelsuppgifter med division och omvandling.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Del ÷ helhet</span>
+            <span class="mod-topic">Omvandla till procent</span>
+            <span class="mod-topic">Andelsuppgifter</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(4)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-4">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="module-card" id="card-5" data-tags="helheten p5" onclick="openModule(5)">
+        <div class="mod-num" id="num-5">5</div>
+        <div>
+          <div class="mod-label">Procent 5</div>
+          <div class="mod-title">Beräkna helheten</div>
+          <div class="mod-desc">Givet att en viss procent är ett känt värde — vad är 100%? Lär dig att backa till helheten och förstå varför det är ett eget tankessteg.</div>
+          <div class="mod-topics">
+            <span class="mod-topic">Hitta 100%</span>
+            <span class="mod-topic">Omvänd 1%-metoden</span>
+            <span class="mod-topic">Helhetsproblem</span>
+          </div>
+          <div class="mod-pills">
+            <span class="pill pill-video">▶ Video</span>
+            <span class="pill pill-sim">◈ Simulering</span>
+            <span class="pill pill-drill">⚡ Övningar</span>
+          </div>
+          <button class="prereq-btn" onclick="event.stopPropagation();openPrereq(5)">📚 Förkunskaper</button>
+        </div>
+        <div class="mod-right">
+          <span class="mod-status not-started" id="status-5">Inte påbörjad</span>
+          <span class="mod-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="no-results" id="noResults">Inga moduler matchar den valda taggen.</p>
+
+  <!-- PREREQ MODAL -->
+  <div class="modal-overlay" id="prereqOverlay" onclick="closePrereqOutside(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closePrereq()">✕ Stäng</button>
+      <div class="modal-title" id="prereqTitle"></div>
+      <div class="modal-sub" id="prereqSub"></div>
+      <div class="prereq-section">
+        <div class="prereq-section-title">Färdigheter du bör ha med dig</div>
+        <div class="skill-list" id="prereqSkills"></div>
+      </div>
+      <div class="prereq-section">
+        <div class="prereq-section-title">Snabbkoll — kan du det här?</div>
+        <div class="mq-progress" id="mqPips"></div>
+        <div id="mqWrap"></div>
+      </div>
+      <div class="prereq-section" id="prevModSection"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© <span id="yr"></span> Patrick Tegnefur &nbsp;·&nbsp; Förstelärare och IT-pedagog &nbsp;·&nbsp; Alfred Dalinskolan, Huskvarna</p>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // ── Tema ───────────────────────────────────────────────────────
+    const THEMES = [
+      { id:'pt-light', label:'PT Ljust',  icon:'☀️' },
+      { id:'pt-dark',  label:'PT Mörkt',  icon:'🌙' },
+      { id:'ad-light', label:'AD Ljust',  icon:'🌿' },
+      { id:'ad-dark',  label:'AD Mörkt',  icon:'🌑' },
+    ];
+    let currentIdx = 0;
+    function applyTheme(idx) {
+      const t = THEMES[idx];
+      document.documentElement.setAttribute('data-theme', t.id);
+      document.getElementById('themeLabel').textContent = t.label;
+      document.getElementById('themeIcon').textContent  = t.icon;
+      localStorage.setItem('math-portal-theme', t.id);
+    }
+    function cycleTheme() { currentIdx = (currentIdx + 1) % THEMES.length; applyTheme(currentIdx); }
+    const saved = localStorage.getItem('math-portal-theme');
+    if (saved && THEMES.some(t => t.id === saved)) currentIdx = THEMES.findIndex(t => t.id === saved);
+    applyTheme(currentIdx);
+
+    // ── Kunskapsmål ────────────────────────────────────────────────
+    function toggleGoals(header) {
+      const body = header.nextElementSibling;
+      const open = header.classList.toggle('open');
+      body.classList.toggle('open', open);
+      body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+    }
+    toggleGoals(document.querySelector('.goals-header'));
+
+    // ── Taggfilter ─────────────────────────────────────────────────
+    function filterTag(tag) {
+      document.querySelectorAll('.tag-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tag === tag));
+      document.querySelectorAll('.module-card').forEach(card => {
+        const tags = (card.dataset.tags || '').split(' ');
+        card.classList.toggle('hidden', tag !== 'alla' && !tags.includes(tag));
+      });
+      document.querySelectorAll('.cluster').forEach(cluster => {
+        const visible = cluster.querySelectorAll('.module-card:not(.hidden)').length;
+        cluster.classList.toggle('all-hidden', visible === 0);
+      });
+      const any = document.querySelectorAll('.module-card:not(.hidden)').length > 0;
+      document.getElementById('noResults').classList.toggle('visible', !any);
+    }
+
+    // ── Progress ───────────────────────────────────────────────────
+    const TOTAL = 5;
+    const MODULE_FILES = {
+      1:'procent1.html', 2:'procent2.html', 3:'procent3.html',
+      4:'procent4.html', 5:'procent5.html'
+    };
+    const STATUS_LABELS = {
+      'not-started':'Inte påbörjad', 'in-progress':'Påbörjad', 'done':'Klar ✓'
+    };
+    function loadProgress() {
+      try { return JSON.parse(localStorage.getItem('procent-progress') || '{}'); } catch(e) { return {}; }
+    }
+    function saveProgress(p) { localStorage.setItem('procent-progress', JSON.stringify(p)); }
+
+    function renderProgress() {
+      const p = loadProgress(); let done = 0;
+      for (let i = 1; i <= TOTAL; i++) {
+        const st = p[i] || 'not-started';
+        const card = document.getElementById('card-' + i);
+        const statusEl = document.getElementById('status-' + i);
+        const numEl = document.getElementById('num-' + i);
+        if (!card) continue;
+        if (statusEl) { statusEl.textContent = STATUS_LABELS[st]; statusEl.className = 'mod-status ' + st; }
+        card.classList.remove('done', 'in-progress-card');
+        if (st === 'done')        { card.classList.add('done'); if (numEl) numEl.textContent = '✓'; done++; }
+        else if (st === 'in-progress') { card.classList.add('in-progress-card'); if (numEl) numEl.textContent = i; }
+        else { if (numEl) numEl.textContent = i; }
+      }
+      const pct = Math.round(done / TOTAL * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = `${done} av ${TOTAL} moduler klara`;
+      document.getElementById('progressPct').textContent = pct + '%';
+    }
+
+    function openModule(n) {
+      const p = loadProgress();
+      if (!p[n] || p[n] === 'not-started') p[n] = 'in-progress';
+      saveProgress(p);
+      window.location.href = MODULE_FILES[n];
+    }
+
+    function resetProgress() {
+      if (confirm('Återställ allt framsteg för Procent?')) {
+        localStorage.removeItem('procent-progress');
+        renderProgress();
+      }
+    }
+
+    renderProgress();
+
+    // ── Prereq-modal ───────────────────────────────────────────────
+    const PREREQ = {
+      1: {
+        title: 'Procent 1 — Procent som språk',
+        sub: 'Förkunskaper inför modulen',
+        prev: null,
+        brakRef: { title: 'Bråk 5 — Bråkform och decimalform', desc: 'Stambråk, gloskort och omvandling bråk ↔ decimal.', href: '../7-5-brak/brak5.html' },
+        skills: [
+          { icon:'🃏', text:'<strong>Bråk-gloskort</strong> — du känner igen 1/2, 1/4, 1/5, 1/10 och deras decimalform.' },
+          { icon:'🔢', text:'<strong>Hundradelar</strong> — du vet att 0,48 betyder 48 hundradelar.' },
+          { icon:'➗', text:'<strong>Division med 100</strong> — du kan dela hela tal med 100.' },
+        ],
+        quiz: [
+          { q:'Vad är 1/4 i decimalform?', opts:['0,14','0,25','0,4','0,50'], ok:1, fb:'1/4 = 0,25 — ett av de viktigaste bråk-glosorna.' },
+          { q:'Hur många hundradelar är 0,07?', opts:['7','0,7','70','700'], ok:0, fb:'0,07 = 7 hundradelar = 7/100.' },
+          { q:'Vad är 300 ÷ 100?', opts:['30','3','0,3','300'], ok:1, fb:'300 ÷ 100 = 3. Division med 100 är grunden i procenträkning.' },
+        ],
+      },
+      2: {
+        title: 'Procent 2 — Beräkna delen (snygga tal)',
+        sub: 'Förkunskaper inför modulen',
+        prev: { n:1, title:'Procent 1 — Procent som språk', desc:'Bråk, decimal och procent — tre sätt att skriva samma andel.' },
+        skills: [
+          { icon:'🔄', text:'<strong>Talformer</strong> — du vet att 25% = 1/4 och 50% = 1/2.' },
+          { icon:'➗', text:'<strong>Division</strong> — du kan dela ett tal med 2, 4 och 10 i huvudet.' },
+          { icon:'🧮', text:'<strong>Bråkräkning</strong> — du kan beräkna en del genom att dela med nämnaren.' },
+        ],
+        quiz: [
+          { q:'Vad är 50% av 200 kr?', opts:['20 kr','100 kr','50 kr','150 kr'], ok:1, fb:'50% = 1/2. Hälften av 200 kr = 100 kr.' },
+          { q:'Vilket bråk motsvarar 10%?', opts:['1/4','1/5','1/10','1/100'], ok:2, fb:'10% = 10/100 = 1/10.' },
+          { q:'Vad är 1/4 av 80?', opts:['4','20','40','16'], ok:1, fb:'80 ÷ 4 = 20.' },
+        ],
+      },
+      3: {
+        title: 'Procent 3 — Beräkna delen (alla tal)',
+        sub: 'Förkunskaper inför modulen',
+        prev: { n:2, title:'Procent 2 — Beräkna delen (snygga tal)', desc:'Gloss-strategin: 25% = 1/4, 10% = 1/10 och så vidare.' },
+        skills: [
+          { icon:'➗', text:'<strong>Division med 100</strong> — du hittar 1% genom att dela helheten med 100.' },
+          { icon:'✖️', text:'<strong>Multiplikation</strong> — du kan multiplicera ett tal med valfritt heltal.' },
+          { icon:'🧮', text:'<strong>Procent som hundradelar</strong> — du förstår att 1% betyder "en hundradel".' },
+        ],
+        quiz: [
+          { q:'Vad är 1% av 500 kr?', opts:['50 kr','5 kr','1 kr','0,5 kr'], ok:1, fb:'500 ÷ 100 = 5. Alltså är 1% av 500 kr = 5 kr.' },
+          { q:'Du hittar 1% och vill ha 7%. Vad gör du?', opts:['Delar med 7','Multiplicerar med 7','Adderar 7','Delar med 100 igen'], ok:1, fb:'1% × 7 = 7%. Det är hela idén med 1%-metoden.' },
+          { q:'Vad är 600 ÷ 100?', opts:['60','6','0,6','6 000'], ok:1, fb:'600 ÷ 100 = 6.' },
+        ],
+      },
+      4: {
+        title: 'Procent 4 — Beräkna andelen',
+        sub: 'Förkunskaper inför modulen',
+        prev: { n:3, title:'Procent 3 — Beräkna delen (alla tal)', desc:'1%-metoden: hitta 1%, multiplicera sedan till önskad procent.' },
+        skills: [
+          { icon:'➗', text:'<strong>Division</strong> — du kan dela ett tal med ett annat och förstår vad kvoten betyder.' },
+          { icon:'🔄', text:'<strong>Omvandla decimal → procent</strong> — du vet att 0,25 = 25%.' },
+          { icon:'🧮', text:'<strong>Del och helhet</strong> — du förstår relationen mellan en del och det hela.' },
+        ],
+        quiz: [
+          { q:'15 av 60 elever cyklade. Skriv detta som ett bråk.', opts:['15/60','60/15','1/15','15/100'], ok:0, fb:'Del/helhet = 15/60. Nästa steg är att omvandla till procent.' },
+          { q:'Vad är 0,4 i procentform?', opts:['4%','0,4%','40%','400%'], ok:2, fb:'0,4 × 100 = 40%.' },
+          { q:'Vad är 30 ÷ 150?', opts:['0,2','0,5','5','2'], ok:0, fb:'30 ÷ 150 = 0,2 = 20%.' },
+        ],
+      },
+      5: {
+        title: 'Procent 5 — Beräkna helheten',
+        sub: 'Förkunskaper inför modulen',
+        prev: { n:4, title:'Procent 4 — Beräkna andelen', desc:'Del ÷ helhet ger andelen som decimal, multiplicera med 100 för procent.' },
+        skills: [
+          { icon:'🔄', text:'<strong>1%-metoden</strong> — du kan använda den framlänges (hitta en del given helheten).' },
+          { icon:'➗', text:'<strong>Division</strong> — du kan lösa ut en okänd helhet med division.' },
+          { icon:'🧮', text:'<strong>Procent och del</strong> — du förstår att en del är X% av något okänt helt.' },
+        ],
+        quiz: [
+          { q:'20% av ett tal är 60. Vad är 1% av talet?', opts:['6','3','12','60'], ok:1, fb:'20% = 60, så 1% = 60 ÷ 20 = 3.' },
+          { q:'Du vet att 1% av talet är 8. Vad är hela talet (100%)?', opts:['8','80','800','8 000'], ok:2, fb:'1% = 8, alltså 100% = 8 × 100 = 800.' },
+          { q:'25% av priset är 150 kr. Vilket steg tar du FÖRST?', opts:['Multiplicera 150 med 25','Dela 150 med 25','Multiplicera 150 med 100','Dela 150 med 100'], ok:1, fb:'25% = 150 → 1% = 150 ÷ 25 = 6 → 100% = 6 × 100 = 600 kr.' },
+        ],
+      },
+    };
+
+    let mqData = [], mqIdx = 0, mqResults = [];
+
+    function openPrereq(n) {
+      const data = PREREQ[n];
+      if (!data) return;
+      document.getElementById('prereqTitle').textContent = data.title;
+      document.getElementById('prereqSub').textContent   = data.sub;
+      document.getElementById('prereqSkills').innerHTML  = data.skills.map(s =>
+        `<div class="skill-item"><span class="skill-icon">${s.icon}</span><span class="skill-text">${s.text}</span></div>`
+      ).join('');
+      mqData = data.quiz; mqIdx = 0; mqResults = Array(mqData.length).fill(null);
+      renderMQ();
+
+      const ps = document.getElementById('prevModSection');
+      // Visa antingen länk till bråk-kapitlet (modul 1) eller föregående procent-modul
+      if (n === 1 && data.brakRef) {
+        ps.innerHTML = `
+          <div class="prereq-section-title">Repetition — föregående kapitel</div>
+          <div class="prev-module-link" onclick="window.location.href='${data.brakRef.href}'">
+            <div class="pml-num">5</div>
+            <div>
+              <div class="pml-title">${data.brakRef.title}</div>
+              <div class="pml-desc">${data.brakRef.desc}</div>
+            </div>
+            <span class="pml-arrow">→</span>
+          </div>`;
+      } else if (data.prev) {
+        ps.innerHTML = `
+          <div class="prereq-section-title">Repetition — tidigare modul</div>
+          <div class="prev-module-link" onclick="openModule(${data.prev.n})">
+            <div class="pml-num">${data.prev.n}</div>
+            <div>
+              <div class="pml-title">${data.prev.title}</div>
+              <div class="pml-desc">${data.prev.desc}</div>
+            </div>
+            <span class="pml-arrow">→</span>
+          </div>`;
+      } else {
+        ps.innerHTML = `
+          <div class="prereq-section-title">Startmodul</div>
+          <div class="skill-item"><span class="skill-icon">🚀</span><span class="skill-text">Detta är den första procent-modulen!</span></div>`;
+      }
+
+      document.getElementById('prereqOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePrereq() {
+      document.getElementById('prereqOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closePrereqOutside(e) {
+      if (e.target === document.getElementById('prereqOverlay')) closePrereq();
+    }
+
+    function renderMQ() {
+      const q = mqData[mqIdx];
+      document.getElementById('mqPips').innerHTML = mqData.map((_, i) => {
+        let c = 'mq-pip';
+        if (i === mqIdx) c += ' cur';
+        else if (mqResults[i] === true)  c += ' ok';
+        else if (mqResults[i] === false) c += ' err';
+        return `<div class="${c}"></div>`;
+      }).join('');
+      document.getElementById('mqWrap').innerHTML = `
+        <div class="mq-question">${q.q}</div>
+        <div class="mq-opts">${q.opts.map((o, i) => `<button class="mq-opt" onclick="answerMQ(${i},this)">${o}</button>`).join('')}</div>
+        <div class="mq-fb" id="mqFb"></div>
+        <button class="mq-next" id="mqNext" onclick="nextMQ()">${mqIdx < mqData.length - 1 ? 'Nästa →' : 'Se resultat'}</button>`;
+    }
+
+    function answerMQ(i, btn) {
+      const q = mqData[mqIdx];
+      const ok = i === q.ok;
+      mqResults[mqIdx] = ok;
+      document.querySelectorAll('.mq-opt').forEach((b, j) => {
+        b.disabled = true;
+        if (j === i)    b.classList.add(ok ? 'mq-ok' : 'mq-err');
+        if (j === q.ok) b.classList.add('mq-reveal');
+      });
+      const fb = document.getElementById('mqFb');
+      fb.textContent = (ok ? '✓ ' : '✗ ') + q.fb;
+      fb.className = 'mq-fb ' + (ok ? 'mq-fb-ok' : 'mq-fb-err');
+      document.getElementById('mqNext').classList.add('show');
+      renderMQPips();
+    }
+
+    function renderMQPips() {
+      document.getElementById('mqPips').innerHTML = mqData.map((_, i) => {
+        let c = 'mq-pip';
+        if (i === mqIdx) c += ' cur';
+        else if (mqResults[i] === true)  c += ' ok';
+        else if (mqResults[i] === false) c += ' err';
+        return `<div class="${c}"></div>`;
+      }).join('');
+    }
+
+    function nextMQ() {
+      if (mqIdx < mqData.length - 1) {
+        mqIdx++; renderMQ();
+      } else {
+        const correct = mqResults.filter(r => r === true).length;
+        document.getElementById('mqPips').innerHTML = '';
+        document.getElementById('mqWrap').innerHTML = `
+          <div style="text-align:center;padding:0.75rem 0;">
+            <div style="font-size:1.8rem;margin-bottom:0.3rem;">${correct === mqData.length ? '🎉' : correct > 0 ? '👍' : '💪'}</div>
+            <div style="font-family:var(--font-d);font-size:1.2rem;color:var(--accent2);margin-bottom:0.3rem;">${correct} / ${mqData.length} rätt</div>
+            <div style="font-size:0.85rem;color:var(--muted);">${correct === mqData.length ? 'Du verkar redo — kör på!' : 'Repetera gärna de frågorna du missade.'}</div>
+            <button style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;font-family:var(--font-b);" onclick="mqIdx=0;mqResults=Array(mqData.length).fill(null);renderMQ();">Försök igen</button>
+          </div>`;
+      }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePrereq(); });
+  </script>
+</body>
+</html>

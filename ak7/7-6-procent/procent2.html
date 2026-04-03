@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="pt-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Procent 2 — Beräkna delen (snygga tal)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+/* ── TOKENS ─────────────────────────────────────────────────────── */
+:root {
+  --radius:14px;
+  --trans:0.32s cubic-bezier(.4,0,.2,1);
+  --font-d:'Playfair Display',Georgia,serif;
+  --font-b:'Sora',sans-serif;
+}
+[data-theme="ad-light"] {
+  --bg:#f2fbf8; --surface:#fff; --surface2:#e4f5ef; --border:#b8ddd4;
+  --text:#0b1e18; --muted:#527060;
+  --hdr-bg:linear-gradient(120deg,#00A19A 0%,#007870 100%); --hdr-text:#fff;
+  --stripe-fade:rgba(255,255,255,0.30);
+  --accent:#1a6ef5; --accent2:#FBBC33; --hi:#5ba3ff; --hi2:#F4A261;
+  --correct:#18a348; --wrong:#e02020;
+  --shadow:0 2px 12px rgba(0,161,154,.10); --shadow-hov:0 8px 28px rgba(0,161,154,.22);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="ad-dark"] {
+  --bg:#0c1512; --surface:#152018; --surface2:#1c2c20; --border:#283c2c;
+  --text:#e4f5ee; --muted:#6a9878;
+  --hdr-bg:linear-gradient(120deg,#081a10 0%,#051208 100%); --hdr-text:#e4f5ee;
+  --stripe-fade:rgba(255,255,255,0.12);
+  --accent:#4ecb8a; --accent2:#FBBC33; --hi:#5dd68c; --hi2:#F4A261;
+  --correct:#39C762; --wrong:#F03048;
+  --shadow:0 2px 16px rgba(0,0,0,.40); --shadow-hov:0 8px 32px rgba(0,0,0,.60);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="pt-light"] {
+  --bg:#f6f4ff; --surface:#fff; --surface2:#eae6ff; --border:#ccc5f0;
+  --text:#100e28; --muted:#585078;
+  --hdr-bg:linear-gradient(120deg,#66C7C2 0%,#F4A261 50%,#EC6095 100%); --hdr-text:#fff;
+  --stripe-fade:rgba(255,255,255,0.35);
+  --accent:#306BF0; --accent2:#EC6095; --hi:#5ba3ff; --hi2:#F4A261;
+  --correct:#18a348; --wrong:#e02020;
+  --shadow:0 2px 14px rgba(48,107,240,.12); --shadow-hov:0 8px 30px rgba(48,107,240,.22);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="pt-dark"] {
+  --bg:#12101c; --surface:#1c192c; --surface2:#262238; --border:#342e54;
+  --text:#eae8ff; --muted:#8880b8;
+  --hdr-bg:linear-gradient(120deg,#66C7C2 0%,#F4A261 50%,#EC6095 100%); --hdr-text:#fff;
+  --stripe-fade:rgba(255,255,255,0.15);
+  --accent:#6a9aff; --accent2:#EC6095; --hi:#80aaff; --hi2:#F4A261;
+  --correct:#39C762; --wrong:#F03048;
+  --shadow:0 2px 16px rgba(48,107,240,.18); --shadow-hov:0 8px 36px rgba(48,107,240,.35);
+  --c7a:#1a6ef5; --c7b:#5ba3ff;
+}
+[data-theme="pt-dark"] .tab-btn.active,
+[data-theme="pt-dark"] .check-btn,
+[data-theme="pt-dark"] .start-btn,
+[data-theme="pt-dark"] .quiz-next,
+[data-theme="pt-dark"] .mq-next-btn { background:#EC6095 !important; border-color:transparent !important; color:#fff !important; }
+[data-theme="pt-dark"] .progress-fill { background:linear-gradient(90deg,#66C7C2,#F4A261,#EC6095); }
+[data-theme="ad-dark"] .tab-btn.active { background:linear-gradient(90deg,#00A19A,#FBBC33); border-color:transparent; color:#fff; }
+
+/* ── RESET & BAS ─────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:var(--font-b); background:var(--bg); color:var(--text); min-height:100vh; transition:background var(--trans),color var(--trans); }
+
+/* ── HEADER ──────────────────────────────────────────────────────── */
+.portal-header { background:var(--hdr-bg); color:var(--hdr-text); position:sticky; top:0; z-index:200; box-shadow:0 2px 24px rgba(0,0,0,.20); }
+.portal-header::after { content:''; display:block; height:10px; background:linear-gradient(to bottom,transparent,var(--stripe-fade)); pointer-events:none; }
+.portal-header-inner { max-width:960px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; height:48px; }
+.portal-header-left { display:flex; align-items:center; gap:0.8rem; }
+.portal-back { display:flex; align-items:center; gap:0.35rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); border-radius:30px; padding:4px 11px; color:rgba(255,255,255,0.9); font-size:0.68rem; font-family:var(--font-b); font-weight:500; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
+.portal-back:hover { background:rgba(255,255,255,0.22); }
+.portal-crumb { display:flex; align-items:center; gap:0.35rem; font-family:var(--font-d); font-size:1rem; font-weight:700; color:var(--hdr-text); }
+.portal-crumb-sep { opacity:0.4; font-weight:300; }
+.portal-theme-toggle { display:flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); border-radius:30px; padding:4px 11px; cursor:pointer; color:rgba(255,255,255,0.9); font-size:0.68rem; font-family:var(--font-b); font-weight:500; transition:background 0.2s; white-space:nowrap; }
+.portal-theme-toggle:hover { background:rgba(255,255,255,0.22); }
+.done-hdr-btn { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:rgba(255,255,255,0.85); border-radius:20px; padding:4px 11px; cursor:pointer; font-size:0.68rem; font-family:var(--font-b); font-weight:500; transition:background 0.2s; white-space:nowrap; }
+.done-hdr-btn:hover { background:rgba(255,255,255,0.22); }
+
+/* ── TABS ────────────────────────────────────────────────────────── */
+.nav-tabs { display:flex; justify-content:center; gap:0.35rem; padding:0.7rem 1rem; background:var(--surface); border-bottom:1px solid var(--border); flex-wrap:wrap; position:sticky; top:58px; z-index:100; }
+.tab-btn { background:none; border:1px solid var(--border); border-radius:8px; padding:0.38rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.82rem; color:var(--muted); transition:all 0.18s; white-space:nowrap; }
+.tab-btn:hover { border-color:var(--accent); color:var(--text); }
+.tab-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+.tab-panel { display:none; max-width:820px; margin:0 auto; padding:1.8rem 1.5rem 3rem; }
+.tab-panel.active { display:block; }
+
+/* ── TYPOGRAFI & KORT ────────────────────────────────────────────── */
+.section-title { font-family:var(--font-d); font-size:1.3rem; font-weight:700; color:var(--text); margin-bottom:0.3rem; }
+.section-sub   { font-size:0.86rem; color:var(--muted); margin-bottom:1.4rem; line-height:1.6; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1rem; }
+.info-box { background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:0.6rem 0.9rem; font-size:0.88rem; color:var(--text); margin-bottom:0.9rem; line-height:1.6; }
+.hl { background:var(--surface2); border-radius:8px; padding:0.7rem 1rem; font-size:0.9rem; line-height:1.65; }
+.hl.gold { border-left:3px solid var(--hi2); }
+.hl.blue { border-left:3px solid var(--accent); }
+.hl.green { border-left:3px solid var(--correct); }
+
+/* ── BRÅKVISNING ─────────────────────────────────────────────────── */
+.fv { display:inline-flex; flex-direction:column; align-items:center; line-height:1.1; margin:0 0.22rem; vertical-align:middle; gap:1px; margin-top:0.15em; margin-bottom:0.15em; }
+.fv .fv-n { font-family:var(--font-b); color:var(--accent); font-weight:500; }
+.fv .fv-b { width:100%; min-width:1em; height:1.5px; background:currentColor; border-radius:1px; opacity:0.6; }
+.fv .fv-d { font-family:var(--font-b); }
+.fv.fv-sm .fv-n,.fv.fv-sm .fv-d { font-size:0.82em; }
+.fv.fv-md .fv-n,.fv.fv-md .fv-d { font-size:1.05em; }
+.fv.fv-lg .fv-n,.fv.fv-lg .fv-d { font-size:1.5em; }
+
+/* ── STEG-WRAP ───────────────────────────────────────────────────── */
+.step-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.4rem 1.5rem; margin-bottom:1rem; }
+.step-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem; }
+.step-num { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--c7a),var(--c7b)); color:#fff; font-family:var(--font-d); font-size:0.9rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-title { font-family:var(--font-d); font-size:1.05rem; font-weight:700; color:var(--text); }
+.step-body { font-size:0.9rem; color:var(--muted); line-height:1.7; }
+.step-body p { margin-bottom:0.7rem; }
+.step-body p:last-child { margin-bottom:0; }
+.step-body strong { color:var(--text); }
+
+/* ── GLOS-TABELL ─────────────────────────────────────────────────── */
+.glos-table { width:100%; border-collapse:collapse; margin:0.8rem 0; font-size:0.88rem; }
+.glos-table th { background:var(--surface2); color:var(--muted); font-weight:700; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; padding:0.5rem 0.8rem; text-align:center; border-bottom:2px solid var(--border); }
+.glos-table td { padding:0.55rem 0.8rem; text-align:center; border-bottom:1px solid var(--border); color:var(--text); }
+.glos-table tr:last-child td { border-bottom:none; }
+.glos-table tr:hover td { background:var(--surface2); }
+.glos-table .td-pct { font-weight:700; color:var(--correct); }
+.glos-table .td-brak { color:var(--accent); }
+.glos-table .td-strat { color:var(--muted); font-size:0.82rem; text-align:left; }
+
+/* ── STEG-FÖR-STEG ANIMATION ─────────────────────────────────────── */
+.steps-box { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.3rem; margin:0.8rem 0; }
+.step-line { display:flex; align-items:flex-start; gap:0.7rem; padding:0.5rem 0; border-bottom:1px dashed var(--border); opacity:0.3; transition:opacity 0.4s; }
+.step-line:last-child { border-bottom:none; }
+.step-line.visible { opacity:1; }
+.step-line-num { width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,var(--c7a),var(--c7b)); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:0.1rem; }
+.step-line-text { font-size:0.88rem; color:var(--text); line-height:1.55; }
+.step-line-text .emph { color:var(--accent); font-weight:700; }
+.step-line-text .emph-orange { color:var(--hi2); font-weight:700; }
+.step-line-text .emph-green { color:var(--correct); font-weight:700; }
+.step-nav { display:flex; align-items:center; gap:0.6rem; margin-top:0.8rem; }
+.step-nav-btn { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:0.35rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.82rem; color:var(--muted); transition:all 0.15s; }
+.step-nav-btn:hover { border-color:var(--accent); color:var(--text); }
+.step-nav-btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+.step-nav-btn.primary:hover { opacity:0.88; }
+.step-counter { font-size:0.78rem; color:var(--muted); margin-left:auto; }
+
+/* ── RÄKNEVERKTYG ────────────────────────────────────────────────── */
+.tool-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.3rem 1.5rem; }
+.tool-row { display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tool-label { font-size:0.82rem; color:var(--muted); white-space:nowrap; min-width:80px; }
+.tool-select { border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.7rem; font-family:var(--font-b); font-size:0.9rem; color:var(--text); background:var(--surface2); cursor:pointer; transition:border-color 0.15s; }
+.tool-select:focus { outline:none; border-color:var(--accent); }
+.tool-input { width:100px; border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.6rem; font-family:var(--font-b); font-size:0.9rem; color:var(--text); background:var(--surface2); text-align:center; transition:border-color 0.15s; }
+.tool-input:focus { outline:none; border-color:var(--accent); }
+.tool-btn { background:var(--accent); border:none; color:#fff; border-radius:8px; padding:0.42rem 1.1rem; cursor:pointer; font-family:var(--font-b); font-size:0.85rem; font-weight:600; transition:opacity 0.15s; }
+.tool-btn:hover { opacity:0.85; }
+.tool-result { display:none; margin-top:0.5rem; }
+.tool-result.show { display:block; }
+
+/* Stapeldiagram */
+.bar-wrap { margin:0.9rem 0; }
+.bar-label { font-size:0.78rem; color:var(--muted); margin-bottom:0.3rem; }
+.bar-track { height:32px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; overflow:hidden; position:relative; }
+.bar-fill { height:100%; background:linear-gradient(90deg,var(--c7a),var(--c7b)); border-radius:8px; transition:width 0.6s cubic-bezier(.4,0,.2,1); display:flex; align-items:center; justify-content:flex-end; padding-right:0.5rem; min-width:0; }
+.bar-fill-label { font-size:0.75rem; font-weight:700; color:#fff; white-space:nowrap; }
+.bar-total-label { position:absolute; right:0.5rem; top:50%; transform:translateY(-50%); font-size:0.75rem; color:var(--muted); }
+
+.result-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:0.9rem 1.1rem; }
+.result-answer { font-family:var(--font-d); font-size:1.6rem; font-weight:700; color:var(--correct); margin-bottom:0.2rem; }
+.result-steps { font-size:0.84rem; color:var(--muted); line-height:1.7; }
+.result-steps .rs-step { display:flex; align-items:baseline; gap:0.4rem; padding:0.18rem 0; }
+.result-steps .rs-arrow { color:var(--accent); font-weight:700; }
+
+/* ── VARNING-RUTA ─────────────────────────────────────────────────── */
+.warn-box { background:rgba(224,32,32,0.07); border:1px solid rgba(224,32,32,0.25); border-radius:10px; padding:0.8rem 1rem; font-size:0.88rem; color:var(--text); margin:0.7rem 0; line-height:1.6; }
+.warn-box strong { color:var(--wrong); }
+
+/* ── FÖRKUNSKAPS-QUIZ ───────────────────────────────────────────── */
+.pq-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.4rem; }
+.pq-progress { display:flex; gap:4px; margin-bottom:0.8rem; }
+.pq-pip { width:8px; height:8px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); transition:all 0.2s; }
+.pq-pip.ok  { background:var(--correct); border-color:var(--correct); }
+.pq-pip.err { background:var(--wrong);   border-color:var(--wrong); }
+.pq-pip.cur { background:var(--accent);  border-color:var(--accent); transform:scale(1.2); }
+.pq-q { font-size:0.92rem; font-weight:600; color:var(--text); margin-bottom:0.6rem; line-height:1.45; }
+.pq-opts { display:flex; flex-direction:column; gap:0.35rem; }
+.pq-opt { background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.87rem; color:var(--muted); text-align:left; transition:all 0.15s; }
+.pq-opt:hover { border-color:var(--accent); color:var(--text); }
+.pq-opt.ok     { border-color:var(--correct); background:rgba(24,163,72,0.10); color:var(--correct); }
+.pq-opt.err    { border-color:var(--wrong);   background:rgba(224,32,32,0.10); color:var(--wrong); }
+.pq-opt.reveal { border-color:var(--correct); color:var(--correct); }
+.pq-fb { font-size:0.82rem; margin-top:0.4rem; padding:0.3rem 0.5rem; border-radius:6px; min-height:1.2em; color:var(--muted); }
+.pq-fb.ok  { color:var(--correct); }
+.pq-fb.err { color:var(--wrong); }
+.pq-next { background:var(--accent); border:none; color:#fff; border-radius:7px; padding:0.38rem 0.9rem; cursor:pointer; font-family:var(--font-b); font-size:0.82rem; font-weight:500; margin-top:0.5rem; display:none; transition:opacity 0.15s; }
+.pq-next.show { display:inline-block; }
+.pq-next:hover { opacity:0.85; }
+
+/* ── ÖVNINGAR ────────────────────────────────────────────────────── */
+.level-row { display:flex; gap:0.4rem; margin-bottom:1rem; flex-wrap:wrap; }
+.level-btn { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:4px 13px; font-size:0.78rem; font-family:var(--font-b); color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.level-btn:hover { border-color:var(--accent); color:var(--text); }
+.level-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+.ex-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.3rem 1.5rem; }
+.ex-num  { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.3rem; }
+.ex-q    { font-size:1rem; color:var(--text); margin-bottom:1rem; line-height:1.55; }
+.ex-q strong { color:var(--accent); }
+.ex-context { font-size:0.82rem; color:var(--muted); margin-bottom:0.7rem; font-style:italic; }
+.ex-input-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.7rem; }
+.ex-input { width:90px; border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.6rem; font-family:var(--font-b); font-size:0.9rem; color:var(--text); background:var(--surface2); text-align:center; transition:border-color 0.15s; }
+.ex-input:focus { outline:none; border-color:var(--accent); }
+.ex-input.ok  { border-color:var(--correct); background:rgba(24,163,72,0.08); }
+.ex-input.err { border-color:var(--wrong);   background:rgba(224,32,32,0.08); }
+.ex-unit { font-size:0.88rem; color:var(--muted); }
+.check-btn { background:var(--accent); border:none; color:#fff; border-radius:8px; padding:0.42rem 1.1rem; cursor:pointer; font-family:var(--font-b); font-size:0.85rem; font-weight:600; transition:opacity 0.15s; }
+.check-btn:hover { opacity:0.85; }
+.ex-fb { font-size:0.84rem; margin-top:0.3rem; padding:0.3rem 0.5rem; border-radius:6px; min-height:1.2em; color:var(--muted); line-height:1.5; }
+.ex-fb.ok  { color:var(--correct); }
+.ex-fb.err { color:var(--wrong); }
+.ex-next-row { margin-top:0.9rem; display:flex; justify-content:flex-end; }
+.ex-next-big { background:linear-gradient(135deg,var(--c7a),var(--c7b)); border:none; color:#fff; border-radius:9px; padding:0.5rem 1.3rem; cursor:pointer; font-family:var(--font-b); font-size:0.88rem; font-weight:600; transition:opacity 0.15s,transform 0.15s; }
+.ex-next-big:hover { opacity:0.88; transform:translateY(-1px); }
+
+/* ── QUIZ ────────────────────────────────────────────────────────── */
+.quiz-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.3rem 1.5rem; }
+.quiz-progress { display:flex; gap:4px; margin-bottom:0.8rem; }
+.quiz-pip { width:8px; height:8px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); transition:all 0.2s; }
+.quiz-pip.ok  { background:var(--correct); border-color:var(--correct); }
+.quiz-pip.err { background:var(--wrong);   border-color:var(--wrong); }
+.quiz-pip.cur { background:var(--accent);  border-color:var(--accent); transform:scale(1.2); }
+.quiz-q { font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:0.7rem; line-height:1.5; }
+.quiz-opts { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.5rem; }
+.quiz-opt { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:0.55rem 0.9rem; cursor:pointer; font-size:0.88rem; color:var(--muted); font-family:var(--font-b); text-align:left; transition:all 0.18s; }
+.quiz-opt:hover   { border-color:var(--accent); color:var(--text); }
+.quiz-opt.correct { border-color:var(--correct); background:rgba(24,163,72,0.10); color:var(--correct); }
+.quiz-opt.wrong   { border-color:var(--wrong);   background:rgba(224,32,32,0.10); color:var(--wrong); }
+.quiz-fb { font-size:0.84rem; margin-top:0.4rem; padding:0.35rem 0.6rem; border-radius:6px; display:none; color:var(--muted); line-height:1.5; }
+.quiz-fb.show { display:block; }
+.quiz-fb.ok  { color:var(--correct); }
+.quiz-fb.bad { color:var(--wrong); }
+.quiz-next { background:var(--accent); border:none; color:#fff; border-radius:7px; padding:0.4rem 1rem; cursor:pointer; font-family:var(--font-b); font-size:0.84rem; font-weight:500; margin-top:0.6rem; display:none; transition:opacity 0.15s; }
+.quiz-next.show { display:inline-block; }
+.quiz-next:hover { opacity:0.85; }
+
+/* ── MODUL-NAV ───────────────────────────────────────────────────── */
+.module-nav { max-width:820px; margin:0 auto; padding:1rem 1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; border-top:1px solid var(--border); }
+.mnav-btn { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 1.2rem; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:0.82rem; font-family:var(--font-b); font-weight:500; text-decoration:none; transition:all 0.18s; }
+.mnav-btn:hover { border-color:var(--accent); color:var(--text); background:var(--surface2); }
+.mnav-btn.primary { background:linear-gradient(135deg,var(--c7a),var(--c7b)); border-color:transparent; color:#fff; }
+.mnav-btn.primary:hover { opacity:0.9; }
+.mnav-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); display:block; }
+.mnav-btn.primary .mnav-label { color:rgba(255,255,255,0.75); }
+.mnav-title { display:block; }
+.mnav-btn.primary .mnav-title { color:#fff; }
+
+/* ── LÄRAR-TIPS ──────────────────────────────────────────────────── */
+.teacher-guide { margin-top:1rem; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.tg-header { display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.9rem; cursor:pointer; font-size:0.82rem; color:var(--muted); background:var(--surface2); user-select:none; transition:background 0.15s; }
+.tg-header:hover { background:var(--border); }
+.tg-chevron { margin-left:auto; font-size:0.7rem; transition:transform 0.25s; }
+.tg-header.open .tg-chevron { transform:rotate(180deg); }
+.tg-body { padding:0.8rem 1rem; font-size:0.84rem; color:var(--muted); line-height:1.65; display:none; flex-direction:column; gap:0.5rem; }
+.tg-body.open { display:flex; }
+.tg-body strong { color:var(--text); }
+
+/* ── RESPONSIV ───────────────────────────────────────────────────── */
+@media (max-width:600px) {
+  .portal-header-inner { padding:0 1rem; height:52px; }
+  .nav-tabs { padding:0.5rem 0.75rem; gap:0.25rem; top:52px; }
+  .tab-btn  { font-size:0.75rem; padding:0.3rem 0.7rem; }
+  .tab-panel { padding:1.2rem 1rem 2.5rem; }
+  .tool-row { gap:0.5rem; }
+  .module-nav { padding:0.75rem 1rem 2rem; }
+  .glos-table .td-strat { display:none; }
+}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <div class="portal-header-left">
+      <a class="portal-back" href="index.html">← Procent</a>
+      <div class="portal-crumb">
+        <span>7.6 Procent</span>
+        <span class="portal-crumb-sep">/</span>
+        <span>P2 — Beräkna delen</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <button class="done-hdr-btn" onclick="markDone()">✓ Markera klar</button>
+      <button class="portal-theme-toggle" onclick="cyclePortalTheme()">
+        <span id="themeIcon">☀️</span>
+        <span id="themeLabel">PT Ljust</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('forkunskaper',this)">Förkunskaper</button>
+  <button class="tab-btn"        onclick="showTab('genomgang',this)">Genomgång</button>
+  <button class="tab-btn"        onclick="showTab('verktyg',this)">Räkneverktyg</button>
+  <button class="tab-btn"        onclick="showTab('ovning',this)">Övning</button>
+  <button class="tab-btn"        onclick="showTab('quiz',this)">Quiz</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 1: FÖRKUNSKAPER
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-forkunskaper">
+  <p class="section-title">Förkunskaper</p>
+  <p class="section-sub">Det här behöver du ha med dig för att använda gloss-strategin.</p>
+
+  <div class="info-box">
+    🔗 <strong>Bygger på Procent 1.</strong>
+    Du vet redan att 25% = <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span> = 0,25.
+    Nu använder vi det kunskapen för att <em>räkna</em> — utan miniräknare.
+  </div>
+
+  <div class="card">
+    <div style="font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">Färdigheter du bör ha med dig</div>
+    <div style="display:flex;flex-direction:column;gap:0.55rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--muted);line-height:1.5;">
+        <span style="font-size:1rem;flex-shrink:0;">🔄</span>
+        <span><strong style="color:var(--text);">Talformer</strong> — du vet att 25% =
+          <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+          och 50% =
+          <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">2</span></span>.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--muted);line-height:1.5;">
+        <span style="font-size:1rem;flex-shrink:0;">➗</span>
+        <span><strong style="color:var(--text);">Division i huvudet</strong> — du kan dela ett tal med 2, 4, 5 och 10.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:var(--muted);line-height:1.5;">
+        <span style="font-size:1rem;flex-shrink:0;">✖️</span>
+        <span><strong style="color:var(--text);">Multiplikation</strong> — du kan multiplicera ett tal med 2, 3 och 4.</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:0.88rem;font-weight:600;color:var(--muted);margin-bottom:0.6rem;">Snabbkoll — kan du det här?</p>
+  <div class="pq-wrap">
+    <div class="pq-progress" id="pqPips"></div>
+    <div id="pqWrap"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 2: GENOMGÅNG
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-genomgang">
+  <p class="section-title">Genomgång</p>
+  <p class="section-sub">Bråk-glosorna du redan kan är dina bästa räkneverktyg.</p>
+
+  <!-- STEG 1 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">Glosorna som beräkningsstrategi</div>
+    </div>
+    <div class="step-body">
+      <p>Eftersom 25% = <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span> kan vi byta ut procenten mot ett bråk — och sedan räkna med bråket istället. Det är lättare!</p>
+
+      <div class="hl blue" style="margin:0.7rem 0;">
+        <strong>25% av 800 kr</strong><br>
+        → 25% =
+        <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span>
+        → 800 ÷ 4 = <strong style="color:var(--correct);">200 kr</strong>
+      </div>
+
+      <p>Här är de viktigaste glosorna — lär dig dem utantill:</p>
+
+      <table class="glos-table">
+        <thead>
+          <tr><th>Procent</th><th>Bråk</th><th>Strategi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="td-pct">1%</td>  <td class="td-brak"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">100</span></span></td><td class="td-strat">Dela med 100</td></tr>
+          <tr><td class="td-pct">10%</td> <td class="td-brak"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">10</span></span></td><td class="td-strat">Dela med 10</td></tr>
+          <tr><td class="td-pct">20%</td> <td class="td-brak"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">5</span></span></td><td class="td-strat">Dela med 5</td></tr>
+          <tr><td class="td-pct">25%</td> <td class="td-brak"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">4</span></span></td><td class="td-strat">Dela med 4</td></tr>
+          <tr><td class="td-pct">50%</td> <td class="td-brak"><span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">2</span></span></td><td class="td-strat">Dela med 2</td></tr>
+          <tr><td class="td-pct">75%</td> <td class="td-brak"><span class="fv fv-sm"><span class="fv-n">3</span><span class="fv-b"></span><span class="fv-d">4</span></span></td><td class="td-strat">Dela med 4, multiplicera med 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="teacher-guide">
+      <div class="tg-header" onclick="toggleTG(this)">🧑‍🏫 Lärar-tips <span class="tg-chevron">▼</span></div>
+      <div class="tg-body">
+        <p><strong>Poäng med strategin:</strong> Elever som förstår kopplingen bråk ↔ procent slipper memorera en formel — de <em>resonerar</em> sig fram. "25% är en fjärdedel, så jag delar med 4."</p>
+        <p><strong>75% är det knepigaste:</strong> Här behöver man två steg. Börja med att befästa 1/4-strategin, sedan 3/4 som naturlig förlängning.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 2 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">Kombinationer — bygg från det du kan</div>
+    </div>
+    <div class="step-body">
+      <p>Flera procentsatser kan <strong>kombineras</strong> av de delar du redan kan. Exempel:</p>
+
+      <div class="hl gold" style="margin:0.6rem 0;">
+        <strong>30% av 200</strong><br>
+        → 10% av 200 = 20 &nbsp;&nbsp; → 30% = 20 × 3 = <strong style="color:var(--correct);">60</strong>
+      </div>
+
+      <div class="hl gold" style="margin:0.6rem 0;">
+        <strong>75% av 120</strong><br>
+        → 25% av 120 = 30 &nbsp;&nbsp; → 75% = 30 × 3 = <strong style="color:var(--correct);">90</strong>
+      </div>
+
+      <div class="hl gold" style="margin:0.6rem 0;">
+        <strong>15% av 300</strong><br>
+        → 10% av 300 = 30 &nbsp;&nbsp; → 5% = 15 &nbsp;&nbsp; → 15% = 30 + 15 = <strong style="color:var(--correct);">45</strong>
+      </div>
+
+      <p style="margin-top:0.7rem;">Strategin: <strong>hitta en del du kan beräkna, bygg sedan till det du söker</strong> med multiplikation eller addition.</p>
+    </div>
+  </div>
+
+  <!-- STEG 3 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">Steg för steg — 25% av 360 kr</div>
+    </div>
+    <div class="step-body">
+      <p>Klicka dig igenom hur strategin ser ut i detalj:</p>
+      <div class="steps-box" id="stepsBox">
+        <div class="step-line visible" id="sl0">
+          <div class="step-line-num">1</div>
+          <div class="step-line-text">Uppgiften: <span class="emph">25% av 360 kr</span></div>
+        </div>
+        <div class="step-line" id="sl1">
+          <div class="step-line-num">2</div>
+          <div class="step-line-text">Känner vi igen 25%? Ja! &nbsp; 25% = <span class="emph">¼</span></div>
+        </div>
+        <div class="step-line" id="sl2">
+          <div class="step-line-num">3</div>
+          <div class="step-line-text">Byt ut procenten: <span class="emph">¼ av 360 kr</span></div>
+        </div>
+        <div class="step-line" id="sl3">
+          <div class="step-line-num">4</div>
+          <div class="step-line-text">Beräkna: 360 ÷ 4 = <span class="emph-green">90 kr</span></div>
+        </div>
+        <div class="step-line" id="sl4">
+          <div class="step-line-num">5</div>
+          <div class="step-line-text">Svar: 25% av 360 kr = <span class="emph-green">90 kr ✓</span></div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="step-nav-btn" onclick="prevStep()">← Föregående</button>
+        <button class="step-nav-btn primary" onclick="nextStep()">Nästa steg →</button>
+        <span class="step-counter" id="stepCounter">Steg 1 av 5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 4 -->
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">Det vanligaste misstaget</div>
+    </div>
+    <div class="step-body">
+      <div class="warn-box">
+        ⚠️ <strong>Fel:</strong> "20% av 80 — jag delar med 20."<br>
+        20 är procentsatsen, inte nämnaren! 20% = <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">5</span></span> → dela med <strong>5</strong>, inte 20.
+      </div>
+      <div class="hl green" style="margin-top:0.5rem;">
+        ✓ <strong>Rätt:</strong> 20% av 80 → 20% =
+        <span class="fv fv-sm"><span class="fv-n">1</span><span class="fv-b"></span><span class="fv-d">5</span></span>
+        → 80 ÷ 5 = <strong style="color:var(--correct);">16</strong>
+      </div>
+      <p style="margin-top:0.8rem;">Tumregeln: <strong>du delar alltid med nämnaren i bråket</strong> — aldrig med procenttalet direkt (om inte procentsatsen råkar vara nämnaren).</p>
+    </div>
+    <div class="teacher-guide">
+      <div class="tg-header" onclick="toggleTG(this)">🧑‍🏫 Lärar-tips <span class="tg-chevron">▼</span></div>
+      <div class="tg-body">
+        <p><strong>Diagnostisk fråga:</strong> "Vad delar du med när du beräknar 20% av ett tal?" — elever som svarar 20 behöver befästa kopplingen 20% = 1/5 = dela med 5 ytterligare.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 3: RÄKNEVERKTYG
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-verktyg">
+  <p class="section-title">Räkneverktyg</p>
+  <p class="section-sub">Välj procentsats och ange ett tal — verktyget visar strategin steg för steg.</p>
+
+  <div class="tool-wrap">
+    <div class="tool-row">
+      <span class="tool-label">Procentsats:</span>
+      <select class="tool-select" id="toolPct">
+        <option value="1">1%</option>
+        <option value="10">10%</option>
+        <option value="20">20%</option>
+        <option value="25" selected>25%</option>
+        <option value="50">50%</option>
+        <option value="75">75%</option>
+      </select>
+      <span class="tool-label" style="min-width:40px;">av</span>
+      <input class="tool-input" type="number" id="toolNum" value="200" min="1" max="10000" />
+      <button class="tool-btn" onclick="calcTool()">Beräkna</button>
+    </div>
+
+    <div class="tool-result" id="toolResult">
+      <div class="bar-wrap">
+        <div class="bar-label" id="barLabel">200 kr</div>
+        <div class="bar-track">
+          <div class="bar-fill" id="barFill" style="width:25%">
+            <span class="bar-fill-label" id="barFillLabel">25%</span>
+          </div>
+          <span class="bar-total-label" id="barTotalLabel">100%</span>
+        </div>
+      </div>
+      <div class="result-box">
+        <div class="result-answer" id="toolAnswer">50</div>
+        <div class="result-steps" id="toolSteps"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="teacher-guide" style="margin-top:1rem;">
+    <div class="tg-header" onclick="toggleTG(this)">🧑‍🏫 Hur du använder verktyget <span class="tg-chevron">▼</span></div>
+    <div class="tg-body">
+      <p><strong>Prova gärna:</strong> Ange 75% av 120 och se att svaret är 90. Justera sedan till 25% av 120 = 30 — och peka på att 75% = 3 × 25%.</p>
+      <p><strong>Utmaning:</strong> Kan du förutsäga svaret innan du klickar på Beräkna?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 4: ÖVNING
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-ovning">
+  <p class="section-title">Övning</p>
+  <p class="section-sub">Beräkna delen med gloss-strategin — utan miniräknare.</p>
+
+  <div class="level-row">
+    <button class="level-btn active" onclick="setLevel('A',this)">Grundnivå</button>
+    <button class="level-btn"        onclick="setLevel('B',this)">Mellannivå</button>
+    <button class="level-btn"        onclick="setLevel('C',this)">Självständigt</button>
+  </div>
+
+  <div class="ex-card" id="exCard">
+    <div class="ex-num" id="exNum">Uppgift 1</div>
+    <div class="ex-q"   id="exQ"></div>
+    <div class="ex-context" id="exCtx"></div>
+    <div class="ex-input-row" id="exInputRow"></div>
+    <button class="check-btn" id="exCheckBtn" onclick="checkEx()">Kontrollera</button>
+    <div class="ex-fb" id="exFb"></div>
+    <div class="ex-next-row">
+      <button class="ex-next-big" id="exNextBtn" onclick="nextEx()" style="display:none;">Nästa uppgift →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TAB 5: QUIZ
+══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-quiz">
+  <p class="section-title">Quiz — testa dig</p>
+  <p class="section-sub">Sex frågor om gloss-strategin. Välj rätt svar!</p>
+
+  <div class="quiz-card">
+    <div class="quiz-progress" id="quizPips"></div>
+    <div id="quizWrap"></div>
+  </div>
+</div>
+
+<!-- MODUL-NAV -->
+<div class="module-nav">
+  <a class="mnav-btn" href="procent1.html">
+    <span>←</span>
+    <div>
+      <span class="mnav-label">Föregående</span>
+      <span class="mnav-title">P1 — Procent som språk</span>
+    </div>
+  </a>
+  <a class="mnav-btn primary" href="procent3.html">
+    <div style="text-align:right;">
+      <span class="mnav-label">Nästa modul</span>
+      <span class="mnav-title">P3 — Beräkna delen (alla tal)</span>
+    </div>
+    <span>→</span>
+  </a>
+</div>
+
+<footer style="text-align:center;padding:1.5rem;font-size:0.75rem;color:var(--muted);border-top:1px solid var(--border);">
+  <p>© <span id="yr"></span> Patrick Tegnefur &nbsp;·&nbsp; Förstelärare och IT-pedagog &nbsp;·&nbsp; Alfred Dalinskolan, Huskvarna</p>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── Tema ────────────────────────────────────────────────────────
+const THEMES=[{id:'pt-light',label:'PT Ljust',icon:'☀️'},{id:'pt-dark',label:'PT Mörkt',icon:'🌙'},{id:'ad-light',label:'AD Ljust',icon:'🌿'},{id:'ad-dark',label:'AD Mörkt',icon:'🌑'}];
+let themeIdx=0;
+function applyPortalTheme(idx){const t=THEMES[idx];document.documentElement.setAttribute('data-theme',t.id);document.getElementById('themeLabel').textContent=t.label;document.getElementById('themeIcon').textContent=t.icon;localStorage.setItem('math-portal-theme',t.id);}
+function cyclePortalTheme(){themeIdx=(themeIdx+1)%THEMES.length;applyPortalTheme(themeIdx);}
+const saved=localStorage.getItem('math-portal-theme');
+if(saved&&THEMES.some(t=>t.id===saved))themeIdx=THEMES.findIndex(t=>t.id===saved);
+applyPortalTheme(themeIdx);
+
+// ── Tabs ────────────────────────────────────────────────────────
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Klar ────────────────────────────────────────────────────────
+function markDone(){
+  try{const p=JSON.parse(localStorage.getItem('procent-progress')||'{}');p[2]='done';localStorage.setItem('procent-progress',JSON.stringify(p));}catch(e){}
+  const btn=document.querySelector('.done-hdr-btn');
+  btn.textContent='✓ Klar!';btn.style.background='rgba(24,163,72,0.25)';btn.style.borderColor='rgba(24,163,72,0.5)';
+}
+
+// ── Lärar-tips ──────────────────────────────────────────────────
+function toggleTG(h){h.classList.toggle('open');h.nextElementSibling.classList.toggle('open');}
+
+// ── Steg-animation ──────────────────────────────────────────────
+let stepVisible=1;const TOTAL_STEPS=5;
+function updateSteps(){
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const el=document.getElementById('sl'+i);
+    if(el) el.classList.toggle('visible',i<stepVisible);
+  }
+  document.getElementById('stepCounter').textContent=`Steg ${stepVisible} av ${TOTAL_STEPS}`;
+}
+function nextStep(){if(stepVisible<TOTAL_STEPS){stepVisible++;updateSteps();}}
+function prevStep(){if(stepVisible>1){stepVisible--;updateSteps();}}
+
+// ── Räkneverktyg ────────────────────────────────────────────────
+const TOOL_INFO={
+  1:  {brak:'1/100', strat:'dela med 100',      fn:x=>x/100},
+  10: {brak:'1/10',  strat:'dela med 10',        fn:x=>x/10},
+  20: {brak:'1/5',   strat:'dela med 5',         fn:x=>x/5},
+  25: {brak:'1/4',   strat:'dela med 4',         fn:x=>x/4},
+  50: {brak:'1/2',   strat:'dela med 2',         fn:x=>x/2},
+  75: {brak:'3/4',   strat:'dela med 4, ×3',     fn:x=>x/4*3},
+};
+
+function fvStr(t,n){return `<span class="fv fv-sm"><span class="fv-n">${t}</span><span class="fv-b"></span><span class="fv-d">${n}</span></span>`;}
+
+function calcTool(){
+  const pct=parseInt(document.getElementById('toolPct').value);
+  const num=parseFloat(document.getElementById('toolNum').value);
+  if(isNaN(num)||num<=0)return;
+  const info=TOOL_INFO[pct];
+  const ans=info.fn(num);
+  const ansStr=Number.isInteger(ans)?ans:ans.toFixed(2).replace('.',',');
+
+  document.getElementById('barFill').style.width=pct+'%';
+  document.getElementById('barFillLabel').textContent=pct+'%';
+  document.getElementById('barLabel').textContent=num;
+  document.getElementById('barTotalLabel').textContent='= '+num;
+  document.getElementById('toolAnswer').textContent=ansStr;
+
+  // Bygg steg-för-steg
+  let stepsHtml='';
+  const brakParts=info.brak.split('/');
+  stepsHtml+=`<div class="rs-step"><span class="rs-arrow">→</span><span>${pct}% = ${fvStr(brakParts[0],brakParts[1])}</span></div>`;
+  if(pct===75){
+    stepsHtml+=`<div class="rs-step"><span class="rs-arrow">→</span><span>${num} ÷ 4 = ${num/4}</span></div>`;
+    stepsHtml+=`<div class="rs-step"><span class="rs-arrow">→</span><span>${num/4} × 3 = <strong style="color:var(--correct)">${ansStr}</strong></span></div>`;
+  } else if(pct===20){
+    stepsHtml+=`<div class="rs-step"><span class="rs-arrow">→</span><span>${num} ÷ 5 = <strong style="color:var(--correct)">${ansStr}</strong></span></div>`;
+  } else {
+    const denom=parseInt(brakParts[1]);
+    stepsHtml+=`<div class="rs-step"><span class="rs-arrow">→</span><span>${num} ÷ ${denom} = <strong style="color:var(--correct)">${ansStr}</strong></span></div>`;
+  }
+  document.getElementById('toolSteps').innerHTML=stepsHtml;
+  document.getElementById('toolResult').classList.add('show');
+}
+
+// Kör direkt vid sidladdning
+window.addEventListener('load',calcTool);
+
+// ── FÖRKUNSKAPS-QUIZ ────────────────────────────────────────────
+const PQ=[
+  {q:'Vad är 50% av 80?', opts:['16','40','8','20'], ok:1, fb:'50% = 1/2 → 80 ÷ 2 = 40.'},
+  {q:'Vilket bråk är lika med 10%?', opts:['1/4','1/5','1/10','1/100'], ok:2, fb:'10% = 10/100 = 1/10.'},
+  {q:'Vad är 1/4 av 60?', opts:['40','4','15','12'], ok:2, fb:'60 ÷ 4 = 15.'},
+  {q:'20% = vilket bråk?', opts:['1/2','1/4','1/5','1/20'], ok:2, fb:'20% = 20/100 = 1/5. OBS: dela med 5, inte 20!'},
+];
+let pqIdx=0,pqRes=Array(PQ.length).fill(null);
+
+function renderPQ(){
+  const q=PQ[pqIdx];
+  document.getElementById('pqPips').innerHTML=PQ.map((_,i)=>{let c='pq-pip';if(i===pqIdx)c+=' cur';else if(pqRes[i]===true)c+=' ok';else if(pqRes[i]===false)c+=' err';return`<div class="${c}"></div>`;}).join('');
+  document.getElementById('pqWrap').innerHTML=`
+    <div class="pq-q">${q.q}</div>
+    <div class="pq-opts">${q.opts.map((o,i)=>`<button class="pq-opt" onclick="ansPQ(${i},this)">${o}</button>`).join('')}</div>
+    <div class="pq-fb" id="pqFb"></div>
+    <button class="pq-next" id="pqNext" onclick="nextPQ()">${pqIdx<PQ.length-1?'Nästa →':'Se resultat'}</button>`;
+}
+function ansPQ(i,btn){
+  const q=PQ[pqIdx],ok=i===q.ok;pqRes[pqIdx]=ok;
+  document.querySelectorAll('.pq-opt').forEach((b,j)=>{b.disabled=true;if(j===i)b.classList.add(ok?'ok':'err');if(j===q.ok)b.classList.add('reveal');});
+  const fb=document.getElementById('pqFb');fb.textContent=(ok?'✓ ':'✗ ')+q.fb;fb.className='pq-fb '+(ok?'ok':'err');
+  document.getElementById('pqNext').classList.add('show');
+  document.getElementById('pqPips').innerHTML=PQ.map((_,i)=>{let c='pq-pip';if(i===pqIdx)c+=' cur';else if(pqRes[i]===true)c+=' ok';else if(pqRes[i]===false)c+=' err';return`<div class="${c}"></div>`;}).join('');
+}
+function nextPQ(){
+  if(pqIdx<PQ.length-1){pqIdx++;renderPQ();}
+  else{
+    const ok=pqRes.filter(r=>r===true).length;
+    document.getElementById('pqPips').innerHTML='';
+    document.getElementById('pqWrap').innerHTML=`<div style="text-align:center;padding:0.75rem 0;"><div style="font-size:1.8rem;margin-bottom:0.3rem;">${ok===PQ.length?'🎉':ok>0?'👍':'💪'}</div><div style="font-family:var(--font-d);font-size:1.2rem;color:var(--accent2);margin-bottom:0.3rem;">${ok} / ${PQ.length} rätt</div><div style="font-size:0.85rem;color:var(--muted);">${ok===PQ.length?'Du är redo!':'Titta på Procent 1 igen om talformerna känns osäkra.'}</div><button style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;font-family:var(--font-b);" onclick="pqIdx=0;pqRes=Array(${PQ.length}).fill(null);renderPQ();">Försök igen</button></div>`;
+  }
+}
+renderPQ();
+
+// ── ÖVNINGAR ────────────────────────────────────────────────────
+const EX={
+  A:[
+    {q:'Vad är <strong>50%</strong> av 120 kr?',       ctx:'Hälften av priset.',                     ans:'60',  unit:'kr',   fb:'50% = 1/2 → 120 ÷ 2 = 60 kr.'},
+    {q:'Vad är <strong>25%</strong> av 80 kr?',        ctx:'En fjärdedel av beloppet.',               ans:'20',  unit:'kr',   fb:'25% = 1/4 → 80 ÷ 4 = 20 kr.'},
+    {q:'Vad är <strong>10%</strong> av 300 kr?',       ctx:'En tiondel av priset.',                   ans:'30',  unit:'kr',   fb:'10% = 1/10 → 300 ÷ 10 = 30 kr.'},
+    {q:'Vad är <strong>50%</strong> av 46 m?',         ctx:'Halva sträckan.',                         ans:'23',  unit:'m',    fb:'50% = 1/2 → 46 ÷ 2 = 23 m.'},
+    {q:'Vad är <strong>25%</strong> av 200 elever?',   ctx:'En fjärdedel av klassen.',                ans:'50',  unit:'elever',fb:'25% = 1/4 → 200 ÷ 4 = 50 elever.'},
+    {q:'Vad är <strong>10%</strong> av 150 min?',      ctx:'En tiondel av lektionstiden.',            ans:'15',  unit:'min',  fb:'10% = 1/10 → 150 ÷ 10 = 15 min.'},
+  ],
+  B:[
+    {q:'Vad är <strong>20%</strong> av 80 kr?',        ctx:'En femtedel av priset — dela med 5!',     ans:'16',  unit:'kr',   fb:'20% = 1/5 → 80 ÷ 5 = 16 kr.'},
+    {q:'Vad är <strong>75%</strong> av 120 kr?',       ctx:'Tre fjärdedelar av beloppet.',            ans:'90',  unit:'kr',   fb:'75% = 3/4 → 120 ÷ 4 = 30, × 3 = 90 kr.'},
+    {q:'Vad är <strong>20%</strong> av 350 kr?',       ctx:'Rabatten på ett klädesplagg.',            ans:'70',  unit:'kr',   fb:'20% = 1/5 → 350 ÷ 5 = 70 kr.'},
+    {q:'Vad är <strong>75%</strong> av 200 ml?',       ctx:'Hur mycket juice är kvar i en flaska?',   ans:'150', unit:'ml',   fb:'75% = 3/4 → 200 ÷ 4 = 50, × 3 = 150 ml.'},
+    {q:'Vad är <strong>25%</strong> av 360 kr?',       ctx:'Handpenning på ett köp.',                 ans:'90',  unit:'kr',   fb:'25% = 1/4 → 360 ÷ 4 = 90 kr.'},
+    {q:'Vad är <strong>20%</strong> av 45 km?',        ctx:'Del av en cykelsträcka.',                 ans:'9',   unit:'km',   fb:'20% = 1/5 → 45 ÷ 5 = 9 km.'},
+  ],
+  C:[
+    {q:'Vad är <strong>30%</strong> av 200 kr?',       ctx:'Tips: 10% av 200 = 20, sedan ×3.',        ans:'60',  unit:'kr',   fb:'10% = 20, × 3 = 60 kr.'},
+    {q:'Vad är <strong>15%</strong> av 300 kr?',       ctx:'Tips: 10% + 5% (hälften av 10%).',        ans:'45',  unit:'kr',   fb:'10% = 30, 5% = 15. 30+15 = 45 kr.'},
+    {q:'Vad är <strong>75%</strong> av 360 kr?',       ctx:'Tre fjärdedelar av summan.',              ans:'270', unit:'kr',   fb:'25% = 90, × 3 = 270 kr.'},
+    {q:'Vad är <strong>40%</strong> av 150 kr?',       ctx:'Tips: 10% av 150, sedan ×4.',             ans:'60',  unit:'kr',   fb:'10% = 15, × 4 = 60 kr.'},
+    {q:'Vad är <strong>5%</strong> av 240 kr?',        ctx:'Tips: 10% ÷ 2.',                          ans:'12',  unit:'kr',   fb:'10% = 24, ÷ 2 = 12 kr.'},
+    {q:'Vad är <strong>90%</strong> av 500 kr?',       ctx:'Tips: 100% − 10%.',                       ans:'450', unit:'kr',   fb:'100% = 500, 10% = 50. 500−50 = 450 kr.'},
+  ],
+};
+
+let exLevel='A',exBank=[],exIdx=0,exAnswered=false;
+
+function setLevel(l,btn){
+  exLevel=l;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  exBank=shuffle([...EX[l]]);
+  exIdx=0;exAnswered=false;renderEx();
+}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function renderEx(){
+  const e=exBank[exIdx%exBank.length];
+  exAnswered=false;
+  document.getElementById('exNum').textContent=`Uppgift ${exIdx+1}`;
+  document.getElementById('exQ').innerHTML=e.q;
+  document.getElementById('exCtx').textContent=e.ctx||'';
+  document.getElementById('exFb').textContent='';
+  document.getElementById('exFb').className='ex-fb';
+  document.getElementById('exNextBtn').style.display='none';
+  document.getElementById('exCheckBtn').style.display='inline-block';
+  const row=document.getElementById('exInputRow');
+  row.innerHTML=`<input class="ex-input" id="exAns" type="text" placeholder="Svar" autocomplete="off"/><span class="ex-unit">${e.unit}</span>`;
+  const inp=document.getElementById('exAns');
+  inp.focus();
+  inp.addEventListener('keydown',e2=>{if(e2.key==='Enter')checkEx();});
+}
+
+function normalise(s){return s.trim().toLowerCase().replace(',','.').replace(/\s/g,'');}
+
+function checkEx(){
+  if(exAnswered)return;
+  const e=exBank[exIdx%exBank.length];
+  const ok=normalise(document.getElementById('exAns').value)===normalise(e.ans);
+  exAnswered=true;
+  const inp=document.getElementById('exAns');
+  inp.disabled=true;inp.classList.add(ok?'ok':'err');
+  const fb=document.getElementById('exFb');
+  fb.textContent=(ok?'✓ Rätt! ':'✗ Fel. ')+e.fb;
+  fb.className='ex-fb '+(ok?'ok':'err');
+  document.getElementById('exNextBtn').style.display='inline-block';
+  document.getElementById('exCheckBtn').style.display='none';
+}
+
+function nextEx(){exIdx++;renderEx();}
+
+(function(){exBank=shuffle([...EX['A']]);renderEx();})();
+
+// ── QUIZ ────────────────────────────────────────────────────────
+const QUIZ=[
+  {q:'Vad är 25% av 160 kr?', opts:['25 kr','40 kr','80 kr','64 kr'], ok:1, fb:'25% = 1/4 → 160 ÷ 4 = 40 kr.'},
+  {q:'Vilken strategi används för 20% av ett tal?', opts:['Dela med 20','Dela med 2','Dela med 5','Multiplicera med 20'], ok:2, fb:'20% = 1/5 → dela med 5.'},
+  {q:'Vad är 50% av 74 kr?', opts:['25 kr','37 kr','7,4 kr','740 kr'], ok:1, fb:'50% = 1/2 → 74 ÷ 2 = 37 kr.'},
+  {q:'Vad är 75% av 80?', opts:['56','75','60','15'], ok:2, fb:'75% = 3/4 → 80 ÷ 4 = 20, × 3 = 60.'},
+  {q:'Vad är 10% av 430 kr?', opts:['4,3 kr','40 kr','43 kr','4 300 kr'], ok:2, fb:'10% = 1/10 → 430 ÷ 10 = 43 kr.'},
+  {q:'En jacka kostar 600 kr. Du får 25% rabatt. Hur mycket är rabatten?', opts:['25 kr','150 kr','250 kr','450 kr'], ok:1, fb:'25% = 1/4 → 600 ÷ 4 = 150 kr.'},
+];
+
+let qIdx=0,qRes=Array(QUIZ.length).fill(null);
+
+function renderQuiz(){
+  const q=QUIZ[qIdx];
+  document.getElementById('quizPips').innerHTML=QUIZ.map((_,i)=>{let c='quiz-pip';if(i===qIdx)c+=' cur';else if(qRes[i]===true)c+=' ok';else if(qRes[i]===false)c+=' err';return`<div class="${c}"></div>`;}).join('');
+  document.getElementById('quizWrap').innerHTML=`
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="ansQuiz(${i},this)">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="qFb"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQuiz()">${qIdx<QUIZ.length-1?'Nästa →':'Se resultat'}</button>`;
+}
+function ansQuiz(i,btn){
+  const q=QUIZ[qIdx],ok=i===q.ok;qRes[qIdx]=ok;
+  document.querySelectorAll('.quiz-opt').forEach((b,j)=>{b.disabled=true;if(j===i)b.classList.add(ok?'correct':'wrong');if(j===q.ok)b.classList.add('correct');});
+  const fb=document.getElementById('qFb');fb.textContent=(ok?'✓ ':'✗ ')+q.fb;fb.className='quiz-fb show '+(ok?'ok':'bad');
+  document.getElementById('qNext').classList.add('show');
+  document.getElementById('quizPips').innerHTML=QUIZ.map((_,i)=>{let c='quiz-pip';if(i===qIdx)c+=' cur';else if(qRes[i]===true)c+=' ok';else if(qRes[i]===false)c+=' err';return`<div class="${c}"></div>`;}).join('');
+}
+function nextQuiz(){
+  if(qIdx<QUIZ.length-1){qIdx++;renderQuiz();}
+  else{
+    const ok=qRes.filter(r=>r===true).length;
+    document.getElementById('quizPips').innerHTML='';
+    document.getElementById('quizWrap').innerHTML=`<div style="text-align:center;padding:1rem 0;"><div style="font-size:2rem;margin-bottom:0.4rem;">${ok===QUIZ.length?'🎉':ok>=4?'👍':'💪'}</div><div style="font-family:var(--font-d);font-size:1.3rem;color:var(--accent2);margin-bottom:0.4rem;">${ok} / ${QUIZ.length} rätt</div><div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;">${ok===QUIZ.length?'Perfekt! Du behärskar gloss-strategin.':ok>=4?'Bra jobbat! Öva lite till på de du missade.':'Gå tillbaka till Genomgången och räkneverktyget.'}</div><button style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-size:0.84rem;font-family:var(--font-b);" onclick="qIdx=0;qRes=Array(${QUIZ.length}).fill(null);renderQuiz();">Gör om quizet</button></div>`;
+    if(ok===QUIZ.length)markDone();
+  }
+}
+renderQuiz();
+</script>
+</body>
+</html>
